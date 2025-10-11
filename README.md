@@ -41,13 +41,15 @@ Template base para aplicações full-stack modernas com **Next.js 15**, **Supaba
 
 ### 1. Clone e Setup
 ```bash
-# Clone este template
-git clone https://github.com/seu-usuario/Base_Docker_NextJS_Supabase.git NOVO_PROJETO
-cd NOVO_PROJETO
-
-# Renomeie a pasta para o nome do seu projeto
-mv Base_Docker_NextJS_Supabase meu-projeto
+# Clone este template diretamente com o nome do seu projeto
+git clone https://github.com/seu-usuario/Base_Docker_NextJS_Supabase.git meu-projeto
 cd meu-projeto
+
+# Atualize o nome no package.json
+npm pkg set name="meu-projeto"
+
+# Atualize o título no layout.tsx
+# Edite: src/app/layout.tsx -> title: 'Meu Projeto'
 ```
 
 ### 2. Configure Supabase
