@@ -10,6 +10,8 @@ Template base para aplicações full-stack modernas com **Next.js 15**, **Supaba
 4. **Execute** `docker-compose up --build`
 5. **Comece** a desenvolver!
 
+> 📖 **Guia Detalhado**: Veja [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md) para instruções completas de personalização.
+
 ## ✨ Features Atuais
 
 - **Next.js 15 App Router**: Server Components, TypeScript, Turbopack para dev rápido
