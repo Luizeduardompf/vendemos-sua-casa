@@ -4,12 +4,34 @@ import { cn } from '@/lib/utils';
 
 export default function Home() {
   return (
-    <main className={cn('flex min-h-screen flex-col items-center justify-center p-24 space-y-8')}>
+    <div className="flex min-h-screen flex-col items-center justify-center py-16 px-4 space-y-8">
       <div className="text-center space-y-4">
         <h1 className="text-5xl font-bold text-primary">🏠 VENDEMOSSUACASA.PT</h1>
         <p className="text-xl text-muted-foreground">Portal de Angariação de Propriedades</p>
-        <p className="text-lg">Ponte entre proprietários e agentes imobiliários</p>
+        <p className="text-lg">Ponte entre proprietários, compradores e agentes imobiliários</p>
         <p className="text-sm text-muted-foreground">Sistema completo: agendamentos, propostas, CPCV e formalização</p>
+        
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold text-blue-900 mb-4">Por que é tão vantajoso para o proprietário?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+            <div className="space-y-2">
+              <h3 className="font-semibold text-blue-800">✅ Transparência Total</h3>
+              <p className="text-sm text-blue-700">Sem contratos de exclusividade. Todos os agentes têm acesso aos seus imóveis, criando competição saudável e melhores resultados.</p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-blue-800">🚫 Fim do Stress</h3>
+              <p className="text-sm text-blue-700">Acaba com a pressão de agentes e imobiliárias tentando forçar contratos de exclusividade. Você mantém o controle total.</p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-blue-800">💰 Melhor Preço</h3>
+              <p className="text-sm text-blue-700">Com múltiplos agentes trabalhando, você obtém o melhor preço de venda possível para seu imóvel.</p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-blue-800">⚡ Venda Mais Rápida</h3>
+              <p className="text-sm text-blue-700">Mais agentes = mais divulgação = mais compradores interessados = venda mais rápida.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
@@ -115,6 +137,6 @@ export default function Home() {
           <Button className="w-full mt-4">Acessar Sistema</Button>
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }
