@@ -22,18 +22,34 @@ export function Logo({ size = 'md', showText = true, className }: LogoProps) {
   return (
     <div className={cn('flex items-center space-x-2 sm:space-x-3', className)}>
       <div className={cn(
-        'bg-amber-600 rounded-lg flex items-center justify-center relative overflow-hidden',
+        'bg-gradient-to-br from-amber-400 to-amber-700 rounded-lg flex items-center justify-center relative overflow-hidden',
         sizeClasses[size]
       )}>
-        {/* Casa estilizada com V integrado */}
+        {/* Casa com aperto de mãos em forma de coração */}
         <div className="relative w-full h-full flex items-center justify-center">
-          {/* Telhado da casa (triângulo branco) */}
-          <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-b-[10px] border-l-transparent border-r-transparent border-b-white"></div>
-          {/* Corpo da casa (retângulo branco com cantos arredondados) */}
-          <div className="w-5 h-4 bg-white rounded-sm"></div>
-          {/* V estilizado integrado na casa */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-amber-800 font-black text-lg sm:text-xl" style={{ fontFamily: 'Arial, sans-serif' }}>V</span>
+          {/* Telhado da casa (triângulo) */}
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-b-[14px] border-l-transparent border-r-transparent border-b-amber-800"></div>
+          
+          {/* Corpo da casa */}
+          <div className="w-7 h-6 bg-amber-800 rounded-sm relative">
+            {/* Aperto de mãos em forma de coração */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              {/* Mão direita (superior) - polegar e indicador */}
+              <div className="absolute top-1 right-1 w-1 h-2 bg-amber-900 rounded-full transform rotate-12"></div>
+              <div className="absolute top-2 right-0 w-1 h-2 bg-amber-900 rounded-full transform rotate-45"></div>
+              
+              {/* Mão esquerda (inferior) - quatro dedos */}
+              <div className="absolute bottom-1 left-1 w-1 h-2 bg-amber-900 rounded-full transform -rotate-12"></div>
+              <div className="absolute bottom-2 left-0 w-1 h-2 bg-amber-900 rounded-full transform -rotate-45"></div>
+              <div className="absolute bottom-1 left-2 w-1 h-2 bg-amber-900 rounded-full transform -rotate-30"></div>
+              <div className="absolute bottom-2 left-3 w-1 h-2 bg-amber-900 rounded-full transform -rotate-60"></div>
+              
+              {/* Conexão central (formando coração) */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-amber-900 rounded-full"></div>
+              
+              {/* Forma do coração criada pelo aperto de mãos */}
+              <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3px] border-r-[3px] border-b-[5px] border-l-transparent border-r-transparent border-b-amber-900"></div>
+            </div>
           </div>
         </div>
       </div>
