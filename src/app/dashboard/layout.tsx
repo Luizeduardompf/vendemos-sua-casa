@@ -60,7 +60,7 @@ export default function DashboardLayout({
   };
 
   // Função para aplicar estilos dinâmicos
-  const applyStyles = (config: any) => {
+  const applyStyles = (config: Record<string, unknown>) => {
     const body = document.body;
     const dashboardContainer = document.querySelector('.dashboard-container');
     
