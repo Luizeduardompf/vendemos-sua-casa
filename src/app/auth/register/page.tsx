@@ -58,25 +58,25 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-4 px-4 sm:py-8 sm:px-6 lg:px-8">
+      <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Criar conta de proprietário</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Criar conta de proprietário</h2>
+          <p className="mt-2 text-xs sm:text-sm text-gray-600">
             Cadastre-se para angariar seus imóveis
           </p>
         </div>
 
         {/* Formulário de Registro */}
         <Card className="shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Cadastro</CardTitle>
-            <CardDescription className="text-center">
+          <CardHeader className="space-y-1 px-4 sm:px-6 pt-4 sm:pt-6">
+            <CardTitle className="text-xl sm:text-2xl text-center">Cadastro</CardTitle>
+            <CardDescription className="text-center text-sm">
               Preencha os dados para criar sua conta
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
@@ -178,21 +178,21 @@ export default function RegisterPage() {
                 />
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-start space-x-2">
                 <input
                   id="aceitaTermos"
                   type="checkbox"
                   checked={formData.aceitaTermos}
                   onChange={(e) => handleInputChange('aceitaTermos', e.target.checked)}
-                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mt-1"
                 />
-                <Label htmlFor="aceitaTermos" className="text-sm text-gray-600">
+                <Label htmlFor="aceitaTermos" className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                   Aceito os{' '}
-                  <Link href="/termos" className="text-primary hover:text-primary/80">
+                  <Link href="/termos" className="text-primary hover:text-primary/80 underline">
                     Termos de Uso
                   </Link>{' '}
                   e{' '}
-                  <Link href="/privacidade" className="text-primary hover:text-primary/80">
+                  <Link href="/privacidade" className="text-primary hover:text-primary/80 underline">
                     Política de Privacidade
                   </Link>
                 </Label>
@@ -207,8 +207,8 @@ export default function RegisterPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+            <div className="mt-4 sm:mt-6 text-center">
+              <p className="text-xs sm:text-sm text-gray-600">
                 Já tem uma conta?{' '}
                 <Link
                   href="/auth/login"
@@ -225,7 +225,7 @@ export default function RegisterPage() {
         <div className="text-center">
           <Link
             href="/"
-            className="text-sm text-gray-600 hover:text-gray-900"
+            className="text-xs sm:text-sm text-gray-600 hover:text-gray-900"
           >
             ← Voltar para o início
           </Link>

@@ -32,25 +32,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-4 px-4 sm:py-8 sm:px-6 lg:px-8">
+      <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Entrar na sua conta</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Entrar na sua conta</h2>
+          <p className="mt-2 text-xs sm:text-sm text-gray-600">
             Acesse o portal de angariação de propriedades
           </p>
         </div>
 
         {/* Formulário de Login */}
         <Card className="shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Login</CardTitle>
-            <CardDescription className="text-center">
+          <CardHeader className="space-y-1 px-4 sm:px-6 pt-4 sm:pt-6">
+            <CardTitle className="text-xl sm:text-2xl text-center">Login</CardTitle>
+            <CardDescription className="text-center text-sm">
               Digite seu email e senha para acessar
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
@@ -84,7 +84,7 @@ export default function LoginPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                 <div className="flex items-center space-x-2">
                   <input
                     id="remember-me"
@@ -92,13 +92,13 @@ export default function LoginPage() {
                     type="checkbox"
                     className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                   />
-                  <Label htmlFor="remember-me" className="text-sm text-gray-600">
+                  <Label htmlFor="remember-me" className="text-xs sm:text-sm text-gray-600">
                     Lembrar de mim
                   </Label>
                 </div>
                 <Link
                   href="/auth/forgot-password"
-                  className="text-sm text-primary hover:text-primary/80"
+                  className="text-xs sm:text-sm text-primary hover:text-primary/80 text-center sm:text-right"
                 >
                   Esqueceu a senha?
                 </Link>
@@ -123,17 +123,17 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
-                  Não tem uma conta?{' '}
-                  <Link
-                    href="/auth/register"
-                    className="font-medium text-primary hover:text-primary/80"
-                  >
-                    Cadastre-se aqui
-                  </Link>
-                </p>
-              </div>
+            <div className="mt-4 sm:mt-6 text-center">
+              <p className="text-xs sm:text-sm text-gray-600">
+                Não tem uma conta?{' '}
+                <Link
+                  href="/auth/register"
+                  className="font-medium text-primary hover:text-primary/80"
+                >
+                  Cadastre-se aqui
+                </Link>
+              </p>
+            </div>
             </div>
           </CardContent>
         </Card>
@@ -142,7 +142,7 @@ export default function LoginPage() {
         <div className="text-center">
           <Link
             href="/"
-            className="text-sm text-gray-600 hover:text-gray-900"
+            className="text-xs sm:text-sm text-gray-600 hover:text-gray-900"
           >
             ← Voltar para o início
           </Link>

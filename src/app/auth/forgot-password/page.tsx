@@ -34,25 +34,25 @@ export default function ForgotPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-4 px-4 sm:py-8 sm:px-6 lg:px-8">
+        <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         <div className="text-center">
         </div>
 
           <Card className="shadow-lg">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <CardHeader className="text-center px-4 sm:px-6 pt-4 sm:pt-6">
+              <div className="mx-auto w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <CardTitle className="text-2xl text-green-800">Email Enviado!</CardTitle>
-              <CardDescription className="text-gray-600">
+              <CardTitle className="text-xl sm:text-2xl text-green-800">Email Enviado!</CardTitle>
+              <CardDescription className="text-sm text-gray-600">
                 Enviamos um link de recuperação para <strong>{email}</strong>
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-gray-600 text-center">
+            <CardContent className="space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
+              <p className="text-xs sm:text-sm text-gray-600 text-center">
                 Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.
               </p>
               <div className="space-y-2">
@@ -80,25 +80,25 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-4 px-4 sm:py-8 sm:px-6 lg:px-8">
+      <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Esqueceu sua senha?</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Esqueceu sua senha?</h2>
+          <p className="mt-2 text-xs sm:text-sm text-gray-600">
             Digite seu email para receber um link de recuperação
           </p>
         </div>
 
         {/* Formulário de Recuperação */}
         <Card className="shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Recuperar Senha</CardTitle>
-            <CardDescription className="text-center">
+          <CardHeader className="space-y-1 px-4 sm:px-6 pt-4 sm:pt-6">
+            <CardTitle className="text-xl sm:text-2xl text-center">Recuperar Senha</CardTitle>
+            <CardDescription className="text-center text-sm">
               Enviaremos um link para redefinir sua senha
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
@@ -128,8 +128,8 @@ export default function ForgotPasswordPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+            <div className="mt-4 sm:mt-6 text-center">
+              <p className="text-xs sm:text-sm text-gray-600">
                 Lembrou da senha?{' '}
                 <Link
                   href="/auth/login"
@@ -146,7 +146,7 @@ export default function ForgotPasswordPage() {
         <div className="text-center">
           <Link
             href="/"
-            className="text-sm text-gray-600 hover:text-gray-900"
+            className="text-xs sm:text-sm text-gray-600 hover:text-gray-900"
           >
             ← Voltar para o início
           </Link>
