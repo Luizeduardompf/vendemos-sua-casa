@@ -42,6 +42,41 @@ export default function RegisterPage() {
     }
   };
 
+  // Funções de validação
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateNIF = (nif: string): boolean => {
+    // Validação de NIF português
+    if (!/^\d{9}$/.test(nif)) return false;
+    
+    const checkDigit = parseInt(nif[8]);
+    let sum = 0;
+    
+    for (let i = 0; i < 8; i++) {
+      sum += parseInt(nif[i]) * (9 - i);
+    }
+    
+    const remainder = sum % 11;
+    const expectedCheckDigit = remainder < 2 ? remainder : 11 - remainder;
+    
+    return checkDigit === expectedCheckDigit;
+  };
+
+  const validateNomeCompleto = (nome: string): boolean => {
+    // Nome deve ter pelo menos 2 palavras e cada palavra pelo menos 2 caracteres
+    const palavras = nome.trim().split(/\s+/);
+    return palavras.length >= 2 && palavras.every(palavra => palavra.length >= 2);
+  };
+
+  const validatePassword = (password: string): boolean => {
+    // Mínimo 8 caracteres, pelo menos 1 maiúscula, 1 minúscula e 1 número
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -51,13 +86,39 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError(null);
 
+    // Validações
+    if (!validateNomeCompleto(formData.nome)) {
+      setError('Nome completo deve ter pelo menos 2 palavras com 2 caracteres cada.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setError('Email inválido. Por favor, insira um email válido.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validateNIF(formData.nif)) {
+      setError('NIF inválido. Por favor, insira um NIF português válido.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
+      setError('Palavra-passe deve ter pelo menos 8 caracteres, incluindo 1 maiúscula, 1 minúscula e 1 número.');
+      setIsLoading(false);
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError('As palavras-passe não coincidem.');
       setIsLoading(false);
       return;
     }
+
     if (!formData.aceitaTermos) {
-      setError('Deve aceitar os Termos de Utilização e a Política de Privacidade.');
+      setError('Deve aceitar os Termos e Privacidade.');
       setIsLoading(false);
       return;
     }
@@ -107,6 +168,17 @@ export default function RegisterPage() {
             {/* Social Login primeiro */}
             <SocialLogin mode="register" userType={userType} />
 
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500 font-medium">
+                  Ou continue com email
+                </span>
+              </div>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
@@ -119,12 +191,13 @@ export default function RegisterPage() {
                 <Input
                   id="nome"
                   type="text"
-                  placeholder="O seu nome completo"
+                  placeholder="Ex: João Silva"
                   value={formData.nome}
                   onChange={(e) => handleInputChange('nome', e.target.value)}
                   required
                   className="h-11"
                 />
+                <p className="text-xs text-gray-500">Mínimo 2 palavras com 2 caracteres cada</p>
               </div>
 
               <div className="space-y-2">
@@ -138,6 +211,7 @@ export default function RegisterPage() {
                   required
                   className="h-11"
                 />
+                <p className="text-xs text-gray-500">Formato: nome@dominio.com</p>
               </div>
 
               <div className="space-y-2">
@@ -161,8 +235,10 @@ export default function RegisterPage() {
                   value={formData.nif}
                   onChange={(e) => handleInputChange('nif', e.target.value)}
                   required
+                  maxLength={9}
                   className="h-11"
                 />
+                <p className="text-xs text-gray-500">9 dígitos (ex: 123456789)</p>
               </div>
 
               {userType === 'proprietario' && (
@@ -221,6 +297,7 @@ export default function RegisterPage() {
                   minLength={8}
                   className="h-11"
                 />
+                <p className="text-xs text-gray-500">8+ caracteres, 1 maiúscula, 1 minúscula, 1 número</p>
               </div>
 
               <div className="space-y-2">
