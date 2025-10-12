@@ -4,9 +4,10 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   showText?: boolean;
   className?: string;
+  textColorClass?: string;
 }
 
-export function Logo({ size = 'md', showText = true, className }: LogoProps) {
+export function Logo({ size = 'md', showText = true, className, textColorClass = 'text-gray-900' }: LogoProps) {
   const sizeClasses = {
     sm: 'w-6 h-6',
     md: 'w-8 h-8 sm:w-10 sm:h-10',
@@ -33,7 +34,7 @@ export function Logo({ size = 'md', showText = true, className }: LogoProps) {
         />
       </div>
       {showText && (
-        <span className={cn('font-bold text-gray-900', textSizeClasses[size])}>
+        <span className={cn('font-bold', textSizeClasses[size], textColorClass)}>
           Vendemos Sua Casa
         </span>
       )}
