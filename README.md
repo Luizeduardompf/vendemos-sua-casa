@@ -1,348 +1,310 @@
-# VENDEMOSSUACASA.PT 🏠
+# 🏠 Vendemos Sua Casa
 
-Portal/Aplicativo focado na angariação de propriedades, servindo como ponte entre proprietários (pessoas singulares e construtores) e agentes vendedores. Sistema completo para gestão de imóveis, agendamentos, propostas e formalização de vendas.
+Portal completo para angariação e venda de imóveis, conectando proprietários, agentes imobiliários e imobiliárias em uma plataforma moderna e eficiente.
 
-## 🎯 **Funcionalidades Principais**
+## 🎯 **Visão Geral**
 
-### **Para Proprietários:**
-- **Cadastro de Imóveis**: Sistema completo para angariação e cadastro de propriedades
-- **Estudo de Mercado**: Análise automática com indicação de valor baseada no tempo de venda
-- **Gestão de Documentação**: Armazenamento seguro de todos os documentos necessários
-- **Agendamento de Visitas**: Sistema de marcação com aprovação do proprietário
-- **Relatórios Detalhados**: Acompanhamento de divulgação e visitas realizadas
-- **Gestão de Propostas**: Recebimento e análise de propostas de compra
-- **Processo CPCV**: Geração automática de contratos de promessa de compra e venda
+Sistema completo de gestão imobiliária que facilita a conexão entre proprietários que desejam vender seus imóveis e profissionais do setor imobiliário, oferecendo ferramentas avançadas para gestão, agendamentos, propostas e formalização de vendas.
 
-### **Para Agentes Imobiliários:**
-- **Acesso a Imóveis**: Catálogo completo de propriedades disponíveis
-- **Sistema de Agendamento**: Marcação de visitas com clientes qualificados
-- **Material de Divulgação**: Brochuras e formulários de avaliação
-- **Gestão de Propostas**: Criação e acompanhamento de propostas
-- **Sistema de Comissões**: Acompanhamento de comissões de até 70%
-- **Leads Distribuídos**: Recebimento automático de leads qualificados
+## ✨ **Funcionalidades Implementadas**
 
-### **Sistema de Comissões:**
-- **Imóveis Particulares**: 5% (+IVA) - 30% VENDEMOSSUACASA.PT / 70% Agente
-- **Empreendimentos**: 3% (+IVA) - 30% VENDEMOSSUACASA.PT / 70% Agente/Construtor
-- **Venda Direta**: 1,5% do valor do imóvel
+### 🔐 **Sistema de Autenticação Completo**
+- **Login/Registro** com validação robusta
+- **Login Social** (Google, Facebook, LinkedIn)
+- **Recuperação de senha** com email
+- **Confirmação de email** automática
+- **Tipos de usuário**: Proprietário, Agente, Imobiliária
+- **Validação de dados** (NIF, email, telefone)
 
-## ✨ Features Atuais
+### 🏠 **Dashboard Responsivo**
+- **Interface moderna** com design mobile-first
+- **Sidebar colapsível** com navegação intuitiva
+- **Notificações** em tempo real
+- **Temas personalizáveis** (5 cores disponíveis)
+- **Modo escuro/claro** dinâmico
+- **Configurações de usuário** personalizáveis
 
-- **Next.js 15 App Router**: Server Components, TypeScript, Turbopack para dev rápido
-- **Supabase Integration**: PostgreSQL cloud, autenticação SSR, queries assíncronas
-- **UI Moderna**: Tailwind CSS + shadcn/ui (Button, Card, Drawer, NavigationMenu)
-- **Sistema de Temas**: Suporte a modo claro/escuro com next-themes
-- **Performance**: Speed Insights do Vercel para monitoramento
-- **Containerização**: Docker multi-estágio para dev/prod
-- **Segurança**: Headers de segurança, middleware de autenticação
+### 👤 **Gestão de Dados Pessoais**
+- **Páginas "Meus Dados"** para cada tipo de usuário
+- **Edição de perfil** com validação
+- **Campos específicos** por tipo de usuário
+- **Validação de NIF** (Portugal)
+- **Gestão de AMI** para agentes e imobiliárias
 
-## 🛠️ Stack Tecnológica
+### ⚙️ **Sistema de Configurações Avançado**
+- **Temas de cor** (Azul, Verde, Roxo, Laranja, Vermelho)
+- **Tamanhos de fonte** (Pequeno, Médio, Grande)
+- **Modo compacto** para máxima produtividade
+- **Animações** (habilitar/desabilitar)
+- **Notificações sonoras** e vibração
+- **Persistência** no banco de dados
 
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **Styling**: Tailwind CSS, shadcn/ui, next-themes
-- **Backend**: Supabase (PostgreSQL, Auth, Real-time)
-- **Deployment**: Docker, Vercel
-- **Tools**: ESLint, Prettier, Turbopack
+### 🏘️ **Cadastro de Imóveis**
+- **Formulário completo** com validação
+- **Tipos de imóvel** (Apartamento, Casa, Moradia, Villa, etc.)
+- **Características detalhadas** (quartos, casas de banho, área)
+- **Localização** com validação
+- **Estado do imóvel** (Excelente, Bom, Razoável, Precisa obras)
+- **Interface responsiva** e intuitiva
 
-## 📋 Pré-requisitos
+### 🎨 **Design System Moderno**
+- **shadcn/ui** para componentes consistentes
+- **Tailwind CSS** para estilização
+- **Design mobile-first** otimizado
+- **Temas dinâmicos** com CSS variables
+- **Componentes reutilizáveis**
+- **Acessibilidade** implementada
 
-- **Docker Desktop** (Mac M4/ARM64)
-- **Git** 
-- **Conta Supabase** (gratuita em supabase.com)
-- **Editor** (VSCode recomendado)
+## 🛠️ **Stack Tecnológica**
 
-## 🚀 Configuração
+### **Frontend**
+- **Next.js 15** com App Router
+- **React 19** com Server Components
+- **TypeScript** para type safety
+- **Tailwind CSS** para estilização
+- **shadcn/ui** para componentes
 
-### 1. Clone e Setup
+### **Backend**
+- **Supabase** (PostgreSQL + Auth + Real-time)
+- **APIs RESTful** personalizadas
+- **Row Level Security (RLS)**
+- **Autenticação JWT**
+
+### **Ferramentas**
+- **Docker** para containerização
+- **Vercel** para deploy
+- **ESLint + Prettier** para qualidade
+- **Turbopack** para dev rápido
+
+## 🚀 **Instalação e Configuração**
+
+### **1. Pré-requisitos**
+```bash
+# Node.js 18+ e npm
+node --version
+npm --version
+
+# Git
+git --version
+```
+
+### **2. Clone e Instalação**
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/vendemos-sua-casa.git
+git clone https://github.com/Luizeduardompf/vendemos-sua-casa.git
 cd vendemos-sua-casa
 
 # Instale as dependências
 npm install
 ```
 
-### 2. Configure Supabase
+### **3. Configuração do Supabase**
 ```bash
 # Copie o arquivo de exemplo
 cp env.example .env.local
 
-# Edite .env.local com suas credenciais do Supabase
-# Obtenha as chaves em: https://supabase.com/dashboard
+# Configure suas variáveis no .env.local
+NEXT_PUBLIC_SUPABASE_URL=sua_url_aqui
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_aqui
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-### 3. Configure o Banco de Dados no Supabase
-```sql
--- Tabela de proprietários
-CREATE TABLE proprietarios (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
-  nome TEXT NOT NULL,
-  telefone TEXT,
-  nif TEXT UNIQUE,
-  morada TEXT,
-  tipo_pessoa TEXT CHECK (tipo_pessoa IN ('singular', 'construtor')),
-  contrato_assinado BOOLEAN DEFAULT FALSE,
-  contrato_data TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+### **4. Configuração do Banco de Dados**
+Execute os scripts SQL na seguinte ordem no Supabase SQL Editor:
 
--- Tabela de agências imobiliárias
-CREATE TABLE agencias (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  nome TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  telefone TEXT,
-  nif TEXT UNIQUE,
-  ami TEXT UNIQUE NOT NULL, -- Número AMI obrigatório
-  morada TEXT,
-  contrato_assinado BOOLEAN DEFAULT FALSE,
-  contrato_data TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de agentes imobiliários
-CREATE TABLE agentes (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  nome TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  telefone TEXT,
-  cc TEXT UNIQUE,
-  agencia_id UUID REFERENCES agencias(id) ON DELETE CASCADE,
-  ativo BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de imóveis
-CREATE TABLE imoveis (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  titulo TEXT NOT NULL,
-  descricao TEXT,
-  preco DECIMAL(12,2) NOT NULL,
-  tipo_imovel TEXT NOT NULL CHECK (tipo_imovel IN ('casa', 'apartamento', 'terreno', 'comercial', 'empreendimento')),
-  quartos INTEGER,
-  casas_banho INTEGER,
-  area DECIMAL(8,2),
-  morada TEXT NOT NULL,
-  cidade TEXT NOT NULL,
-  distrito TEXT NOT NULL,
-  codigo_postal TEXT,
-  latitude DECIMAL(10,8),
-  longitude DECIMAL(11,8),
-  fotos TEXT[],
-  video_url TEXT,
-  tour_3d_url TEXT,
-  caracteristicas TEXT[],
-  privacidade BOOLEAN DEFAULT FALSE, -- TRUE = não divulgar em portais
-  status TEXT DEFAULT 'disponivel' CHECK (status IN ('disponivel', 'reservado', 'vendido', 'cancelado')),
-  proprietario_id UUID REFERENCES proprietarios(id) ON DELETE CASCADE,
-  estudo_mercado JSONB, -- Dados do estudo de mercado
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de documentos
-CREATE TABLE documentos (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
-  tipo_documento TEXT NOT NULL CHECK (tipo_documento IN ('caderneta_predial', 'certificado_energetico', 'licenca_utilizacao', 'certidao_permanente', 'cc_proprietario', 'planta', 'outros')),
-  nome_arquivo TEXT NOT NULL,
-  url_arquivo TEXT NOT NULL,
-  uploaded_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de agendamentos
-CREATE TABLE agendamentos (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
-  agente_id UUID REFERENCES agentes(id) ON DELETE CASCADE,
-  cliente_nome TEXT NOT NULL,
-  cliente_cc TEXT NOT NULL,
-  data_visita TIMESTAMPTZ NOT NULL,
-  status TEXT DEFAULT 'pendente' CHECK (status IN ('pendente', 'aceite', 'rejeitado', 'realizado', 'cancelado')),
-  proprietario_resposta TIMESTAMPTZ,
-  proprietario_observacoes TEXT,
-  reagendamento_data1 TIMESTAMPTZ,
-  reagendamento_data2 TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de avaliações de visitas
-CREATE TABLE avaliacoes_visitas (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  agendamento_id UUID REFERENCES agendamentos(id) ON DELETE CASCADE,
-  pontos_fortes TEXT,
-  pontos_fracos TEXT,
-  comentarios TEXT,
-  avaliacao_geral INTEGER CHECK (avaliacao_geral >= 1 AND avaliacao_geral <= 5),
-  submitted_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de propostas
-CREATE TABLE propostas (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
-  agente_id UUID REFERENCES agentes(id) ON DELETE CASCADE,
-  valor_proposta DECIMAL(12,2) NOT NULL,
-  condicoes TEXT,
-  prazo_escritura INTEGER, -- dias
-  financiamento BOOLEAN DEFAULT FALSE,
-  valor_entrada DECIMAL(12,2),
-  status TEXT DEFAULT 'pendente' CHECK (status IN ('pendente', 'aceite', 'rejeitada', 'expirada')),
-  documento_proposta TEXT, -- URL do documento assinado
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de CPCV
-CREATE TABLE cpcv (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  proposta_id UUID REFERENCES propostas(id) ON DELETE CASCADE,
-  numero_cpcv TEXT UNIQUE,
-  valor_sinal DECIMAL(12,2),
-  data_assinatura TIMESTAMPTZ,
-  data_escritura TIMESTAMPTZ,
-  status TEXT DEFAULT 'rascunho' CHECK (status IN ('rascunho', 'assinado', 'executado', 'cancelado')),
-  documento_cpcv TEXT, -- URL do documento
-  advogada_aprovacao BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de comissões
-CREATE TABLE comissoes (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
-  agente_id UUID REFERENCES agentes(id) ON DELETE CASCADE,
-  valor_imovel DECIMAL(12,2) NOT NULL,
-  percentagem_comissao DECIMAL(5,2) NOT NULL, -- 5% ou 3%
-  valor_comissao DECIMAL(12,2) NOT NULL,
-  percentagem_agencia DECIMAL(5,2) NOT NULL, -- 70%
-  valor_agencia DECIMAL(12,2) NOT NULL,
-  percentagem_vendemos DECIMAL(5,2) NOT NULL, -- 30%
-  valor_vendemos DECIMAL(12,2) NOT NULL,
-  status_pagamento TEXT DEFAULT 'pendente' CHECK (status_pagamento IN ('pendente', 'parcial', 'pago')),
-  data_pagamento_parcial TIMESTAMPTZ,
-  data_pagamento_final TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Tabela de leads distribuídos
-CREATE TABLE leads_distribuidos (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
-  agente_id UUID REFERENCES agentes(id) ON DELETE CASCADE,
-  cliente_nome TEXT NOT NULL,
-  cliente_telefone TEXT,
-  cliente_email TEXT,
-  status TEXT DEFAULT 'disponivel' CHECK (status IN ('disponivel', 'aceite', 'rejeitado', 'convertido')),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Índices para performance
-CREATE INDEX idx_imoveis_cidade ON imoveis(cidade);
-CREATE INDEX idx_imoveis_preco ON imoveis(preco);
-CREATE INDEX idx_imoveis_tipo ON imoveis(tipo_imovel);
-CREATE INDEX idx_imoveis_status ON imoveis(status);
-CREATE INDEX idx_agendamentos_data ON agendamentos(data_visita);
-CREATE INDEX idx_propostas_status ON propostas(status);
-CREATE INDEX idx_cpcv_status ON cpcv(status);
-```
-
-## 🏃‍♂️ Desenvolvimento
-
-### Iniciar o projeto
 ```bash
-# Limpar volumes antigos
-docker-compose down -v
+# 1. Setup principal
+database/sql/setup/supabase_complete_setup.sql
 
-# Construir e iniciar
-docker-compose up --build
+# 2. Schema da tabela users
+database/sql/setup/supabase_users_schema.sql
+
+# 3. Integração com login social
+database/sql/setup/social_login_integration.sql
+
+# 4. Configurações de autenticação
+database/sql/config/supabase_auth_config.sql
+
+# 5. Políticas RLS
+database/sql/config/rls_policies_corrected.sql
+
+# 6. Configurações de usuário
+database/sql/settings/create_user_settings_complete.sql
+
+# 7. Correção RLS para user_settings
+database/sql/settings/fix_user_settings_rls.sql
 ```
 
-Acesse: http://localhost:3000
-
-### Hot Reload
-- Edite arquivos em `src/` e veja as mudanças instantaneamente
-- Turbopack para rebuilds rápidos (~1s)
-
-### Comandos úteis
+**Ou use o script principal:**
 ```bash
-# Instalar componentes shadcn/ui
-docker-compose exec vendemos-sua-casa npx shadcn@latest add button card drawer
+database/sql/EXECUTAR_NO_SUPABASE.sql
+```
+
+### **5. Executar o Projeto**
+```bash
+# Modo desenvolvimento
+npm run dev
+
+# Acesse: http://localhost:3000
+```
+
+## 📁 **Estrutura do Projeto**
+
+```
+vendemos-sua-casa/
+├── 📁 src/
+│   ├── 📁 app/                    # Next.js App Router
+│   │   ├── 📁 auth/              # Páginas de autenticação
+│   │   ├── 📁 dashboard/         # Dashboard por tipo de usuário
+│   │   ├── 📁 api/               # APIs RESTful
+│   │   └── 📄 layout.tsx         # Layout principal
+│   ├── 📁 components/            # Componentes React
+│   │   ├── 📁 ui/                # shadcn/ui components
+│   │   ├── 📁 auth/              # Componentes de auth
+│   │   └── 📁 dashboard/         # Componentes do dashboard
+│   ├── 📁 lib/                   # Utilitários e configurações
+│   └── 📁 hooks/                 # Custom React hooks
+├── 📁 database/                  # Scripts SQL organizados
+│   ├── 📁 sql/
+│   │   ├── 📁 setup/            # Scripts de configuração
+│   │   ├── 📁 config/           # Configurações do banco
+│   │   ├── 📁 settings/         # Configurações de usuário
+│   │   └── 📁 development/      # Scripts para desenvolvimento
+│   └── 📄 README.md             # Documentação do banco
+├── 📁 scripts/                   # Scripts de automação
+│   ├── 📄 git-setup.sh          # Configuração Git
+│   ├── 📄 run-sql.sh            # Executor de SQLs
+│   └── 📄 cleanup-*.sh          # Scripts de limpeza
+├── 📁 public/                    # Arquivos estáticos
+└── 📄 *.md                       # Documentação
+```
+
+## 🔧 **Scripts de Automação**
+
+### **Configuração Git**
+```bash
+# Configurar Git com boas práticas
+./scripts/git-setup.sh
+```
+
+### **Executar SQLs**
+```bash
+# Menu interativo para executar SQLs
+./scripts/run-sql.sh
+```
+
+### **Limpeza**
+```bash
+# Limpar arquivos temporários
+./scripts/cleanup-temp-files.sh
+
+# Limpar arquivos SQL desnecessários
+./scripts/cleanup-sql-files.sh
+```
+
+## 🎨 **Personalização e Temas**
+
+### **Cores Disponíveis**
+- 🔵 **Azul** (padrão)
+- 🟢 **Verde**
+- 🟣 **Roxo**
+- 🟠 **Laranja**
+- 🔴 **Vermelho**
+
+### **Tamanhos de Fonte**
+- **Pequeno**: 12px (muito compacto)
+- **Médio**: 14px (padrão)
+- **Grande**: 16px (acessibilidade)
+
+### **Modo Compacto**
+- **Espaçamentos reduzidos** para máxima produtividade
+- **Elementos menores** para telas pequenas
+- **Otimizado para mobile**
+
+## 🚀 **Deploy**
+
+### **Vercel (Recomendado)**
+1. Conecte seu repositório GitHub ao Vercel
+2. Configure as variáveis de ambiente
+3. Deploy automático a cada push na branch `main`
+
+### **Docker**
+```bash
+# Build da imagem
+docker build -t vendemos-sua-casa .
+
+# Executar container
+docker run -p 3000:3000 vendemos-sua-casa
+```
+
+## 📊 **APIs Disponíveis**
+
+### **Autenticação**
+- `POST /api/auth/register` - Registro de usuário
+- `POST /api/auth/login` - Login
+- `POST /api/auth/logout` - Logout
+- `GET /api/auth/profile` - Perfil do usuário
+- `POST /api/auth/forgot-password` - Recuperação de senha
+
+### **Configurações**
+- `GET /api/user/settings/bypass` - Buscar configurações
+- `PUT /api/user/settings/bypass` - Atualizar configurações
+- `POST /api/user/settings/reset` - Resetar configurações
+
+## 🔒 **Segurança**
+
+- **Row Level Security (RLS)** no Supabase
+- **Validação de dados** com Zod
+- **Autenticação JWT** segura
+- **Headers de segurança** configurados
+- **Validação de NIF** (Portugal)
+
+## 📱 **Responsividade**
+
+- **Mobile-first** design
+- **Breakpoints** otimizados
+- **Touch-friendly** interfaces
+- **Performance** otimizada
+
+## 🧪 **Testes**
+
+```bash
+# Executar testes
+npm test
+
+# Build de produção
+npm run build
 
 # Lint e formatação
-docker-compose exec vendemos-sua-casa npm run lint -- --fix
-
-# Ver logs do container
-docker-compose logs -f vendemos-sua-casa
-
-# Entrar no container
-docker-compose exec vendemos-sua-casa sh
-
-# Parar containers
-docker-compose down
-
-# Ver status dos containers
-docker-compose ps
+npm run lint
 ```
 
-## 🚀 Deploy
+## 📚 **Documentação Adicional**
 
-### Docker Production
-```bash
-# Modificar docker-compose.yml para target: runner
-docker-compose down -v && docker-compose up --build
-```
+- **[Guia de Boas Práticas Git](GIT_BEST_PRACTICES.md)**
+- **[Setup Git Rápido](SETUP_GIT.md)**
+- **[Guia de Testes](GUIA_TESTE.md)**
+- **[Documentação das APIs](API_CONFIGURACOES.md)**
+- **[Análise dos Arquivos SQL](SQL_FILES_ANALYSIS.md)**
 
-### Vercel
-```bash
-# Instalar Vercel CLI
-docker-compose exec app npm install -g vercel
+## 🤝 **Contribuição**
 
-# Deploy
-vercel --prod
-```
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -m 'feat: adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
 
-## 📁 Estrutura do Projeto
+## 📄 **Licença**
 
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── layout.tsx         # Layout principal com ThemeProvider
-│   ├── page.tsx           # Página inicial com query Supabase
-│   └── globals.css        # Estilos Tailwind
-├── components/
-│   ├── ui/                # Componentes shadcn/ui
-│   ├── providers/         # ThemeProvider
-│   └── insights/          # Speed Insights
-├── lib/
-│   ├── supabase.ts        # Clientes Supabase (browser/server)
-│   └── utils.ts           # Utilitários (cn helper)
-└── middleware.ts          # Middleware de autenticação
-```
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 🔧 Troubleshooting
+## 🆘 **Suporte**
 
-### Problemas Comuns
-- **Next.js 15 Cookies**: Use `await cookies()` em server components
-- **Hot-reload não funciona**: Verifique volumes Docker
-- **Erro Supabase**: Confirme variáveis de ambiente em `.env.local`
-- **Build lento**: Use `docker builder prune -f` para limpar cache
+- **Issues**: [GitHub Issues](https://github.com/Luizeduardompf/vendemos-sua-casa/issues)
+- **Documentação**: Consulte os arquivos `.md` no projeto
+- **Email**: [seu-email@exemplo.com]
 
-## 📚 Referências
+---
 
-- [Next.js 15 Docs](https://nextjs.org/docs)
-- [Supabase + Next.js](https://supabase.com/docs/guides/auth/server-side/nextjs)
-- [shadcn/ui](https://ui.shadcn.com/docs)
-- [Docker + Next.js](https://nextjs.org/docs/app/building-your-application/deploying#docker-image)
-
-## 📄 Licença
-
-MIT License - Template base para desenvolvimento rápido
-
+**Desenvolvido com ❤️ para revolucionar o mercado imobiliário português**
