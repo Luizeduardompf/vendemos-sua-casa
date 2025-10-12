@@ -1,7 +1,15 @@
+# VendemosSuaCasa - Plataforma para venda de imóveis
+# Dockerfile para Next.js + Supabase
+
 # Estágio base
 FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
+
+# Metadados da imagem
+LABEL maintainer="VendemosSuaCasa Team"
+LABEL description="Plataforma completa para venda de imóveis"
+LABEL version="1.0.0"
 
 # Estágio dev (para desenvolvimento)
 FROM base AS dev

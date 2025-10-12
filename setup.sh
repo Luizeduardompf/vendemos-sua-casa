@@ -33,6 +33,10 @@ echo "🐳 Construindo e iniciando containers Docker..."
 docker-compose down -v
 docker-compose up --build -d
 
+# Verificar se o container está rodando
+echo "🔍 Verificando status do container..."
+docker-compose ps
+
 echo ""
 echo "🎉 Configuração concluída!"
 echo ""
@@ -42,8 +46,10 @@ echo "2. Execute o SQL de configuração do banco no Supabase Dashboard"
 echo "3. Acesse http://localhost:3000"
 echo ""
 echo "🔧 Comandos úteis:"
-echo "- Ver logs: docker-compose logs -f"
+echo "- Ver logs: docker-compose logs -f vendemos-sua-casa"
 echo "- Parar: docker-compose down"
 echo "- Reiniciar: docker-compose up --build"
+echo "- Status: docker-compose ps"
+echo "- Entrar no container: docker-compose exec vendemos-sua-casa sh"
 echo ""
 echo "📚 Documentação completa em README.md"

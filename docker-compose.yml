@@ -1,5 +1,5 @@
 services:
-  app:
+  vendemos-sua-casa:
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,6 +27,11 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - "com.vendemos-sua-casa.name=vendemos-sua-casa"
+      - "com.vendemos-sua-casa.description=Plataforma para venda de imóveis"
+      - "com.vendemos-sua-casa.version=1.0.0"
+      - "com.vendemos-sua-casa.environment=development"
 
 volumes:
   vendemos-sua-casa-volume:

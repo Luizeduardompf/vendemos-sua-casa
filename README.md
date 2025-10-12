@@ -145,13 +145,22 @@ Acesse: http://localhost:3000
 ### Comandos úteis
 ```bash
 # Instalar componentes shadcn/ui
-docker-compose exec app npx shadcn@latest add button card drawer
+docker-compose exec vendemos-sua-casa npx shadcn@latest add button card drawer
 
 # Lint e formatação
-docker-compose exec app npm run lint -- --fix
+docker-compose exec vendemos-sua-casa npm run lint -- --fix
+
+# Ver logs do container
+docker-compose logs -f vendemos-sua-casa
+
+# Entrar no container
+docker-compose exec vendemos-sua-casa sh
 
 # Parar containers
 docker-compose down
+
+# Ver status dos containers
+docker-compose ps
 ```
 
 ## 🚀 Deploy
