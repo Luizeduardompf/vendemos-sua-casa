@@ -8,8 +8,8 @@ import { SpeedInsightsComponent } from '@/components/insights/speed-insights';  
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'NOVO_PROJETO',
-  description: 'Full-stack app with Next.js, Supabase, and shadcn',
+  title: 'Next.js + Supabase Template',
+  description: 'Template base para aplicações full-stack com Next.js, Supabase e shadcn/ui',
 };
 
 export default function RootLayout({

@@ -1,4 +1,4 @@
-# Base Docker NextJS + Supabase 🚀
+# Next.js + Supabase Template 🚀
 
 Template base para aplicações full-stack modernas com **Next.js 15**, **Supabase**, **Tailwind CSS** + **shadcn/ui** e **Docker**. Perfeito para iniciar novos projetos rapidamente com todas as configurações prontas.
 
@@ -42,7 +42,7 @@ Template base para aplicações full-stack modernas com **Next.js 15**, **Supaba
 ### 1. Clone e Setup
 ```bash
 # Clone este template diretamente com o nome do seu projeto
-git clone https://github.com/seu-usuario/Base_Docker_NextJS_Supabase.git meu-projeto
+git clone https://github.com/seu-usuario/nextjs-supabase-template.git meu-projeto
 cd meu-projeto
 
 # Atualize o nome no package.json
@@ -53,11 +53,11 @@ npm pkg set name="meu-projeto"
 ```
 
 ### 2. Configure Supabase
-Crie `.env.local`:
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-NEXT_TELEMETRY_DISABLED=1
+```bash
+# Copie o arquivo de exemplo
+cp .env.example .env.local
+
+# Edite .env.local com suas credenciais do Supabase
 ```
 
 ### 3. Crie tabela de teste no Supabase
@@ -157,5 +157,5 @@ src/
 
 ## 📄 Licença
 
-MIT License - Desenvolvido por [luizeduardompf](https://github.com/luizeduardompf)
+MIT License - Template base para desenvolvimento rápido
 

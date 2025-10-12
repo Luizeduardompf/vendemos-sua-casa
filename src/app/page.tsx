@@ -25,8 +25,8 @@ export default async function Home() {
 
   return (
     <main className={cn('flex min-h-screen flex-col items-center justify-center p-24 space-y-8')}>
-      <h1 className="text-4xl font-bold">NOVO_PROJETO Live!</h1>
-      <p className="text-lg">Template base pronto! Edite src/app/page.tsx para começar</p>
+      <h1 className="text-4xl font-bold">🚀 Template Base Pronto!</h1>
+      <p className="text-lg">Next.js + Supabase + shadcn/ui. Edite src/app/page.tsx para começar seu projeto</p>
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle>Supabase Test</CardTitle>
