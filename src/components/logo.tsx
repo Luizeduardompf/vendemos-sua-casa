@@ -22,18 +22,18 @@ export function Logo({ size = 'md', showText = true, className }: LogoProps) {
   return (
     <div className={cn('flex items-center space-x-2 sm:space-x-3', className)}>
       <div className={cn(
-        'bg-primary rounded-lg flex items-center justify-center relative overflow-hidden',
+        'bg-amber-600 rounded-lg flex items-center justify-center relative overflow-hidden',
         sizeClasses[size]
       )}>
-        {/* Casa estilizada com V */}
+        {/* Casa estilizada com V integrado */}
         <div className="relative w-full h-full flex items-center justify-center">
-          {/* Telhado da casa */}
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"></div>
-          {/* Corpo da casa */}
-          <div className="w-4 h-3 bg-white rounded-sm"></div>
-          {/* V estilizado */}
+          {/* Telhado da casa (triângulo branco) */}
+          <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-b-[10px] border-l-transparent border-r-transparent border-b-white"></div>
+          {/* Corpo da casa (retângulo branco com cantos arredondados) */}
+          <div className="w-5 h-4 bg-white rounded-sm"></div>
+          {/* V estilizado integrado na casa */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-primary font-bold text-xs sm:text-sm">V</span>
+            <span className="text-amber-800 font-black text-lg sm:text-xl" style={{ fontFamily: 'Arial, sans-serif' }}>V</span>
           </div>
         </div>
       </div>

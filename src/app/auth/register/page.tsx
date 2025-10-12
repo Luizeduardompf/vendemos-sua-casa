@@ -107,17 +107,6 @@ export default function RegisterPage() {
             {/* Social Login primeiro */}
             <SocialLogin mode="register" userType={userType} />
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500 font-medium">
-                  Ou continue com email
-                </span>
-              </div>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
@@ -255,14 +244,14 @@ export default function RegisterPage() {
                   onChange={(e) => handleInputChange('aceitaTermos', e.target.checked)}
                   className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mt-1"
                 />
-                <Label htmlFor="aceitaTermos" className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                <Label htmlFor="aceitaTermos" className="text-xs sm:text-sm text-gray-600">
                   Aceito os{' '}
                   <Link href="/termos" className="text-primary hover:text-primary/80 underline">
-                    Termos de Utilização
+                    Termos
                   </Link>{' '}
                   e{' '}
                   <Link href="/privacidade" className="text-primary hover:text-primary/80 underline">
-                    Política de Privacidade
+                    Privacidade
                   </Link>
                 </Label>
               </div>

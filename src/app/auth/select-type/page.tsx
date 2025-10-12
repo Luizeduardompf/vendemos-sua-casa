@@ -45,11 +45,6 @@ export default function SelectUserTypePage() {
                     Entrar como Proprietário
                   </Link>
                 </Button>
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/auth/register?type=proprietario">
-                    Registar como Proprietário
-                  </Link>
-                </Button>
               </div>
             </CardContent>
           </Card>
@@ -81,11 +76,6 @@ export default function SelectUserTypePage() {
                     Entrar como Agente
                   </Link>
                 </Button>
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/auth/register?type=agente">
-                    Registar como Agente
-                  </Link>
-                </Button>
               </div>
             </CardContent>
           </Card>
@@ -115,11 +105,6 @@ export default function SelectUserTypePage() {
                 <Button asChild className="w-full bg-purple-600 hover:bg-purple-700">
                   <Link href="/auth/login?type=imobiliaria">
                     Entrar como Imobiliária
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/auth/register?type=imobiliaria">
-                    Registar como Imobiliária
                   </Link>
                 </Button>
               </div>

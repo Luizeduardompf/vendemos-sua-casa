@@ -55,7 +55,7 @@ export function Header() {
                 Entrar
               </Button>
             </Link>
-            <Link href="/auth/select-type">
+            <Link href="/auth/register?type=proprietario">
               <Button size="sm" className="bg-primary hover:bg-primary/90">
                 VENDER
               </Button>
@@ -69,7 +69,7 @@ export function Header() {
                 Entrar
               </Button>
             </Link>
-            <Link href="/auth/select-type">
+            <Link href="/auth/register?type=proprietario">
               <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs px-2">
                 VENDER
               </Button>

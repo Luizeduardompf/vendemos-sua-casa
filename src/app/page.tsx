@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -48,7 +49,9 @@ export default function Home() {
               <p>• Relatórios detalhados de divulgação</p>
               <p>• Processo CPCV automatizado</p>
             </div>
-            <Button className="w-full text-xs sm:text-sm">Cadastrar Imóvel</Button>
+                <Button asChild className="w-full text-xs sm:text-sm">
+                  <Link href="/auth/register?type=proprietario">Cadastrar Imóvel</Link>
+                </Button>
           </CardContent>
         </Card>
 
