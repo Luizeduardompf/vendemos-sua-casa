@@ -27,7 +27,7 @@ export function Logo({ size = 'md', showText = true, className }: LogoProps) {
       )}>
         {/* Logo exata da imagem fornecida */}
         <img 
-          src="/logo-handshake-house.png" 
+          src="/logo-handshake-house.svg" 
           alt="Vendemos Sua Casa Logo" 
           className="w-full h-full object-contain"
         />
