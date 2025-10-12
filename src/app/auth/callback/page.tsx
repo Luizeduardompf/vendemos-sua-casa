@@ -1,39 +1,184 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createClientComponentClient } from '@/lib/supabase';
 
-export default function AuthCallback() {
+function AuthCallbackContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClientComponentClient();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        const { data, error } = await supabase.auth.getSession();
+        setIsLoading(true);
+        console.log('🔵 Iniciando callback de autenticação...');
+        console.log('🔵 URL atual:', window.location.href);
+        console.log('🔵 Hash:', window.location.hash);
+        console.log('🔵 Search params:', window.location.search);
         
-        if (error) {
-          console.error('Erro na autenticação:', error);
-          router.push('/auth/login?error=auth_failed');
+        // Obter a sessão atual
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        console.log('🔵 Resultado getSession:');
+        console.log('🔵 Session:', session);
+        console.log('🔵 Session Error:', sessionError);
+        
+        if (sessionError) {
+          console.error('❌ Erro na sessão:', sessionError);
+          console.error('❌ Session Error Code:', sessionError.code);
+          console.error('❌ Session Error Message:', sessionError.message);
+          setError('Erro na autenticação');
           return;
         }
 
-        if (data.session) {
-          // Redirecionar para o dashboard do proprietário
-          router.push('/dashboard/proprietario');
-        } else {
-          // Se não há sessão, redirecionar para login
-          router.push('/auth/login');
+        if (!session?.user) {
+          console.error('❌ Nenhuma sessão encontrada');
+          console.error('❌ Session object:', session);
+          setError('Sessão não encontrada');
+          return;
         }
+        
+        console.log('✅ Sessão encontrada:', session.user);
+
+        // Verificar se o utilizador existe na tabela users
+        console.log('🔵 Verificando utilizador na tabela users...');
+        console.log('🔵 Auth User ID:', session.user.id);
+        
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('auth_user_id', session.user.id)
+          .single();
+
+        console.log('🔵 Resultado da consulta users:');
+        console.log('🔵 User Data:', userData);
+        console.log('🔵 User Error:', userError);
+
+        if (userError && userError.code !== 'PGRST116') {
+          console.error('❌ Erro ao verificar utilizador:', userError);
+          console.error('❌ User Error Code:', userError.code);
+          console.error('❌ User Error Message:', userError.message);
+          setError('Erro ao verificar dados do utilizador');
+          return;
+        }
+
+        // Se o utilizador não existe, criar com dados do social login
+        if (!userData) {
+          console.log('🔵 Utilizador não existe, criando via API...');
+          console.log('🔵 User metadata:', session.user.user_metadata);
+          console.log('🔵 User email:', session.user.email);
+          
+          const userDataToCreate = {
+            email: session.user.email,
+            password: 'social_login_temp_password', // Password temporária
+            nome_completo: session.user.user_metadata?.full_name || session.user.email,
+            telefone: session.user.user_metadata?.phone_number,
+            user_type: 'proprietario', // Default para social login
+            aceita_termos: true,
+            aceita_privacidade: true,
+            aceita_marketing: false
+          };
+          
+          console.log('🔵 Dados para criar utilizador:', userDataToCreate);
+          
+          // Usar a API para criar o utilizador
+          const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userDataToCreate),
+          });
+
+          console.log('🔵 Resposta da API register:');
+          console.log('🔵 Status:', response.status);
+          console.log('🔵 OK:', response.ok);
+          
+          const responseData = await response.json();
+          console.log('🔵 Response Data:', responseData);
+
+          if (!response.ok) {
+            console.error('❌ Erro ao criar utilizador via API:', responseData);
+            setError('Erro ao criar perfil do utilizador');
+            return;
+          }
+          
+          console.log('✅ Utilizador criado com sucesso via API');
+        } else {
+          console.log('✅ Utilizador já existe na tabela users');
+        }
+
+        // Redirecionar baseado no tipo de utilizador
+        const userType = userData?.user_type || 'proprietario';
+        console.log('🔵 Redirecionando para dashboard...');
+        console.log('🔵 User Type:', userType);
+        
+        switch (userType) {
+          case 'proprietario':
+            console.log('✅ Redirecionando para dashboard do proprietário');
+            router.push('/dashboard/proprietario');
+            break;
+          case 'agente':
+            console.log('✅ Redirecionando para dashboard do agente');
+            router.push('/dashboard/agente');
+            break;
+          case 'imobiliaria':
+            console.log('✅ Redirecionando para dashboard da imobiliária');
+            router.push('/dashboard/imobiliaria');
+            break;
+          case 'admin':
+          case 'super_admin':
+            console.log('✅ Redirecionando para dashboard de admin');
+            router.push('/admin/dashboard');
+            break;
+          default:
+            console.log('✅ Redirecionando para dashboard padrão (proprietário)');
+            router.push('/dashboard/proprietario');
+        }
+
       } catch (error) {
-        console.error('Erro inesperado:', error);
-        router.push('/auth/login?error=unexpected_error');
+        console.error('❌ Erro inesperado no callback:', error);
+        console.error('❌ Error type:', typeof error);
+        console.error('❌ Error constructor:', error?.constructor?.name);
+        console.error('❌ Full error object:', JSON.stringify(error, null, 2));
+        setError('Erro inesperado durante a autenticação');
+      } finally {
+        setIsLoading(false);
       }
     };
 
     handleAuthCallback();
-  }, [router, supabase.auth]);
+  }, [router, supabase]);
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Erro na Autenticação
+          </h2>
+          <p className="text-gray-600 mb-4">
+            {error}
+          </p>
+          <button
+            onClick={() => router.push('/auth/login')}
+            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+          >
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -47,5 +192,22 @@ export default function AuthCallback() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function AuthCallback() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            A carregar...
+          </h2>
+        </div>
+      </div>
+    }>
+      <AuthCallbackContent />
+    </Suspense>
   );
 }

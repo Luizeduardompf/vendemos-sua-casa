@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,9 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SocialLogin } from '@/components/auth/social-login';
+import { Modal } from '@/components/ui/modal';
 
-export default function RegisterPage() {
+function RegisterContent() {
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -24,6 +25,8 @@ export default function RegisterPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [userType, setUserType] = useState<string>('proprietario');
   const searchParams = useSearchParams();
 
@@ -85,50 +88,85 @@ export default function RegisterPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setFieldErrors({});
 
-    // Validações
+    // Validações com erros por campo
+    const errors: Record<string, string> = {};
+
     if (!validateNomeCompleto(formData.nome)) {
-      setError('Nome completo deve ter pelo menos 2 palavras com 2 caracteres cada.');
-      setIsLoading(false);
-      return;
+      errors.nome = 'Nome completo deve ter pelo menos 2 palavras com 2 caracteres cada.';
     }
 
     if (!validateEmail(formData.email)) {
-      setError('Email inválido. Por favor, insira um email válido.');
-      setIsLoading(false);
-      return;
+      errors.email = 'Email inválido. Por favor, insira um email válido.';
     }
 
-    if (!validateNIF(formData.nif)) {
-      setError('NIF inválido. Por favor, insira um NIF português válido.');
-      setIsLoading(false);
-      return;
+    if (formData.nif && !validateNIF(formData.nif)) {
+      errors.nif = 'NIF inválido. Por favor, insira um NIF português válido.';
     }
 
     if (!validatePassword(formData.password)) {
-      setError('Palavra-passe deve ter pelo menos 8 caracteres, incluindo 1 maiúscula, 1 minúscula e 1 número.');
-      setIsLoading(false);
-      return;
+      errors.password = 'Palavra-passe deve ter pelo menos 8 caracteres, incluindo 1 maiúscula, 1 minúscula e 1 número.';
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('As palavras-passe não coincidem.');
-      setIsLoading(false);
-      return;
+      errors.confirmPassword = 'As palavras-passe não coincidem.';
     }
 
     if (!formData.aceitaTermos) {
-      setError('Deve aceitar os Termos e Privacidade.');
+      errors.aceitaTermos = 'Deve aceitar os Termos e Privacidade.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       setIsLoading(false);
       return;
     }
 
     try {
-      // TODO: Implementar registo com Supabase
-      console.log('Registo:', { ...formData, userType });
-      // Simular delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Preparar dados para envio
+      const userData = {
+        email: formData.email,
+        password: formData.password,
+        nome_completo: formData.nome,
+        telefone: formData.telefone,
+        user_type: userType,
+        nif: formData.nif || undefined,
+        tipo_pessoa: formData.tipoPessoa || undefined,
+        aceita_termos: formData.aceitaTermos,
+        aceita_privacidade: formData.aceitaTermos,
+        aceita_marketing: false
+      };
+
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Tratar erros específicos da API
+        if (data.details && Array.isArray(data.details)) {
+          // Erros de validação por campo
+          const apiErrors: Record<string, string> = {};
+          data.details.forEach((detail: { field: string; message: string }) => {
+            apiErrors[detail.field] = detail.message;
+          });
+          setFieldErrors(apiErrors);
+        } else {
+          setError(data.error || 'Erro ao registar');
+        }
+        return;
+      }
+
+      // Sucesso - mostrar modal de confirmação
+      setShowSuccessModal(true);
     } catch (err) {
+      console.error('Erro no registo:', err);
       setError('Ocorreu um erro no registo. Por favor, tente novamente.');
     } finally {
       setIsLoading(false);
@@ -195,9 +233,13 @@ export default function RegisterPage() {
                   value={formData.nome}
                   onChange={(e) => handleInputChange('nome', e.target.value)}
                   required
-                  className="h-11"
+                  className={`h-11 ${fieldErrors.nome ? 'border-red-500' : ''}`}
                 />
-                <p className="text-xs text-gray-500">Mínimo 2 palavras com 2 caracteres cada</p>
+                {fieldErrors.nome ? (
+                  <p className="text-sm text-red-600">{fieldErrors.nome}</p>
+                ) : (
+                  <p className="text-xs text-gray-500">Mínimo 2 palavras com 2 caracteres cada</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -209,9 +251,13 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   required
-                  className="h-11"
+                  className={`h-11 ${fieldErrors.email ? 'border-red-500' : ''}`}
                 />
-                <p className="text-xs text-gray-500">Formato: nome@dominio.com</p>
+                {fieldErrors.email ? (
+                  <p className="text-sm text-red-600">{fieldErrors.email}</p>
+                ) : (
+                  <p className="text-xs text-gray-500">Formato: nome@dominio.com</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -366,6 +412,35 @@ export default function RegisterPage() {
           </Link>
         </div>
       </div>
+
+      {/* Modal de Sucesso */}
+      <Modal
+        isOpen={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          window.location.href = '/auth/login';
+        }}
+        title="Registo Realizado com Sucesso!"
+        message="Por favor, verifique o seu email e clique no link de confirmação para ativar a sua conta. Depois de confirmar, pode fazer login normalmente."
+        type="success"
+      />
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            A carregar...
+          </h2>
+        </div>
+      </div>
+    }>
+      <RegisterContent />
+    </Suspense>
   );
 }

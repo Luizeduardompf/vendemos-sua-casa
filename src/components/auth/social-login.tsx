@@ -15,16 +15,37 @@ export function SocialLogin({ mode, userType = 'proprietario' }: SocialLoginProp
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
+    console.log('🔵 Iniciando login com Google...');
+    console.log('🔵 Modo:', mode);
+    console.log('🔵 User Type:', userType);
+    console.log('🔵 Redirect URL:', `${window.location.origin}/auth/callback`);
+    
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-      if (error) throw error;
+      
+      console.log('🔵 Resposta do Supabase OAuth:');
+      console.log('🔵 Data:', data);
+      console.log('🔵 Error:', error);
+      
+      if (error) {
+        console.error('❌ Erro no OAuth do Supabase:', error);
+        console.error('❌ Error code:', error.code);
+        console.error('❌ Error message:', error.message);
+        console.error('❌ Error details:', (error as Error).message);
+        throw error;
+      }
+      
+      console.log('✅ OAuth iniciado com sucesso');
     } catch (error) {
-      console.error('Erro no login com Google:', error);
+      console.error('❌ Erro no login com Google:', error);
+      console.error('❌ Error type:', typeof error);
+      console.error('❌ Error constructor:', error?.constructor?.name);
+      console.error('❌ Full error object:', JSON.stringify(error, null, 2));
     } finally {
       setIsLoading(false);
     }

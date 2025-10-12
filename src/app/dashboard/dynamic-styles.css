@@ -1,0 +1,451 @@
+/* ========================================
+   SISTEMA CSS DINÂMICO PARA CONFIGURAÇÕES
+   ======================================== */
+
+/* Variáveis CSS para cores do tema */
+:root {
+  --theme-color-primary: #3b82f6; /* azul padrão */
+  --theme-color-secondary: #1e40af;
+  --theme-color-accent: #dbeafe;
+  --font-size-base: 16px;
+  --spacing-base: 1rem;
+  --animation-duration: 0.3s;
+}
+
+/* Classes removidas - agora aplicadas diretamente via body */
+
+/* Aplicação das variáveis */
+.dashboard-container {
+  font-size: var(--font-size-base);
+}
+
+/* Aplicar tamanho de fonte a todos os elementos */
+.dashboard-container * {
+  font-size: inherit;
+}
+
+.dashboard-container h1 { font-size: calc(var(--font-size-base) * 1.5); }
+.dashboard-container h2 { font-size: calc(var(--font-size-base) * 1.25); }
+.dashboard-container h3 { font-size: calc(var(--font-size-base) * 1.125); }
+.dashboard-container p { font-size: var(--font-size-base); }
+.dashboard-container span { font-size: var(--font-size-base); }
+.dashboard-container button { font-size: var(--font-size-base); }
+.dashboard-container input { font-size: var(--font-size-base); }
+.dashboard-container select { font-size: var(--font-size-base); }
+.dashboard-container label { font-size: var(--font-size-base); }
+
+.dashboard-container .bg-primary {
+  background-color: var(--theme-color-primary) !important;
+}
+
+.dashboard-container .text-primary {
+  color: var(--theme-color-primary) !important;
+}
+
+.dashboard-container .border-primary {
+  border-color: var(--theme-color-primary) !important;
+}
+
+.dashboard-container .ring-primary {
+  --tw-ring-color: var(--theme-color-primary) !important;
+}
+
+/* Botões com tema */
+.dashboard-container .btn-primary {
+  background-color: var(--theme-color-primary) !important;
+  border-color: var(--theme-color-primary) !important;
+  color: white !important;
+}
+
+.dashboard-container .btn-primary:hover {
+  background-color: var(--theme-color-secondary) !important;
+  border-color: var(--theme-color-secondary) !important;
+}
+
+.dashboard-container .btn-outline-primary {
+  border-color: var(--theme-color-primary) !important;
+  color: var(--theme-color-primary) !important;
+}
+
+.dashboard-container .btn-outline-primary:hover {
+  background-color: var(--theme-color-primary) !important;
+  color: white !important;
+}
+
+/* Links com tema */
+.dashboard-container .link-primary {
+  color: var(--theme-color-primary) !important;
+}
+
+.dashboard-container .link-primary:hover {
+  color: var(--theme-color-secondary) !important;
+}
+
+/* Badges com tema */
+.dashboard-container .badge-primary {
+  background-color: var(--theme-color-accent) !important;
+  color: var(--theme-color-secondary) !important;
+}
+
+/* Cards com tema */
+.dashboard-container .card-primary {
+  border-left: 4px solid var(--theme-color-primary) !important;
+}
+
+/* Sidebar com tema */
+.dashboard-container .sidebar-primary {
+  background: linear-gradient(135deg, var(--theme-color-primary), var(--theme-color-secondary)) !important;
+}
+
+/* Header com tema */
+.dashboard-container .header-primary {
+  border-bottom: 2px solid var(--theme-color-primary) !important;
+}
+
+/* Aplicação automática baseada nas classes do body */
+body.theme-azul .dashboard-container {
+  --theme-color-primary: #3b82f6;
+  --theme-color-secondary: #1e40af;
+  --theme-color-accent: #dbeafe;
+}
+
+body.theme-verde .dashboard-container {
+  --theme-color-primary: #10b981;
+  --theme-color-secondary: #047857;
+  --theme-color-accent: #d1fae5;
+}
+
+body.theme-roxo .dashboard-container {
+  --theme-color-primary: #8b5cf6;
+  --theme-color-secondary: #6d28d9;
+  --theme-color-accent: #ede9fe;
+}
+
+body.theme-laranja .dashboard-container {
+  --theme-color-primary: #f59e0b;
+  --theme-color-secondary: #d97706;
+  --theme-color-accent: #fef3c7;
+}
+
+body.theme-vermelho .dashboard-container {
+  --theme-color-primary: #ef4444;
+  --theme-color-secondary: #dc2626;
+  --theme-color-accent: #fecaca;
+}
+
+body.font-pequeno .dashboard-container {
+  font-size: 12px !important;
+}
+
+body.font-pequeno .dashboard-container * {
+  font-size: 12px !important;
+}
+
+body.font-pequeno .dashboard-container h1 { font-size: 18px !important; }
+body.font-pequeno .dashboard-container h2 { font-size: 15px !important; }
+body.font-pequeno .dashboard-container h3 { font-size: 13.5px !important; }
+
+body.font-medio .dashboard-container {
+  font-size: 14px !important;
+}
+
+body.font-medio .dashboard-container * {
+  font-size: 14px !important;
+}
+
+body.font-medio .dashboard-container h1 { font-size: 21px !important; }
+body.font-medio .dashboard-container h2 { font-size: 17.5px !important; }
+body.font-medio .dashboard-container h3 { font-size: 15.75px !important; }
+
+body.font-grande .dashboard-container {
+  font-size: 16px !important;
+}
+
+body.font-grande .dashboard-container * {
+  font-size: 16px !important;
+}
+
+body.font-grande .dashboard-container h1 { font-size: 24px !important; }
+body.font-grande .dashboard-container h2 { font-size: 20px !important; }
+body.font-grande .dashboard-container h3 { font-size: 18px !important; }
+
+/* Modo compacto MUITO mais compacto */
+body.compacto .dashboard-container .p-4 { 
+  padding: 0.5rem !important; 
+}
+
+body.compacto .dashboard-container .p-6 { 
+  padding: 0.75rem !important; 
+}
+
+body.compacto .dashboard-container .p-8 { 
+  padding: 1rem !important; 
+}
+
+body.compacto .dashboard-container .px-4 { 
+  padding-left: 0.5rem !important; 
+  padding-right: 0.5rem !important; 
+}
+
+body.compacto .dashboard-container .px-6 { 
+  padding-left: 0.75rem !important; 
+  padding-right: 0.75rem !important; 
+}
+
+body.compacto .dashboard-container .py-4 { 
+  padding-top: 0.5rem !important; 
+  padding-bottom: 0.5rem !important; 
+}
+
+body.compacto .dashboard-container .py-6 { 
+  padding-top: 0.75rem !important; 
+  padding-bottom: 0.75rem !important; 
+}
+
+body.compacto .dashboard-container .space-y-2 > * + * { 
+  margin-top: 0.25rem !important; 
+}
+
+body.compacto .dashboard-container .space-y-4 > * + * { 
+  margin-top: 0.5rem !important; 
+}
+
+body.compacto .dashboard-container .space-y-6 > * + * { 
+  margin-top: 0.75rem !important; 
+}
+
+body.compacto .dashboard-container .space-y-8 > * + * { 
+  margin-top: 1rem !important; 
+}
+
+body.compacto .dashboard-container .gap-2 { 
+  gap: 0.25rem !important; 
+}
+
+body.compacto .dashboard-container .gap-4 { 
+  gap: 0.5rem !important; 
+}
+
+body.compacto .dashboard-container .gap-6 { 
+  gap: 0.75rem !important; 
+}
+
+body.compacto .dashboard-container .gap-8 { 
+  gap: 1rem !important; 
+}
+
+/* Reduzir altura de elementos */
+body.compacto .dashboard-container .h-12 { 
+  height: 2rem !important; 
+}
+
+body.compacto .dashboard-container .h-16 { 
+  height: 2.5rem !important; 
+}
+
+body.compacto .dashboard-container .min-h-screen { 
+  min-height: 100vh !important; 
+}
+
+/* Reduzir espaçamento entre seções */
+body.compacto .dashboard-container .mb-4 { 
+  margin-bottom: 0.5rem !important; 
+}
+
+body.compacto .dashboard-container .mb-6 { 
+  margin-bottom: 0.75rem !important; 
+}
+
+body.compacto .dashboard-container .mb-8 { 
+  margin-bottom: 1rem !important; 
+}
+
+body.compacto .dashboard-container .mt-4 { 
+  margin-top: 0.5rem !important; 
+}
+
+body.compacto .dashboard-container .mt-6 { 
+  margin-top: 0.75rem !important; 
+}
+
+body.compacto .dashboard-container .mt-8 { 
+  margin-top: 1rem !important; 
+}
+
+/* Sidebar compacto */
+body.compacto .dashboard-container .sidebar {
+  padding: 0.5rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .p-2 {
+  padding: 0.25rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .p-4 {
+  padding: 0.5rem !important;
+}
+
+/* Reduzir padding vertical dos links no modo compacto */
+body.compacto .dashboard-container .sidebar a {
+  padding-top: 0.125rem !important;
+  padding-bottom: 0.125rem !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+}
+
+/* Reduzir altura dos elementos no modo compacto */
+body.compacto .dashboard-container .sidebar .h-6 {
+  height: 1rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .h-8 {
+  height: 1.25rem !important;
+}
+
+/* Reduzir tamanho dos ícones no modo compacto */
+body.compacto .dashboard-container .sidebar .w-3 {
+  width: 0.75rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .h-3 {
+  height: 0.75rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .w-4 {
+  width: 1rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .h-4 {
+  height: 1rem !important;
+}
+
+/* Reduzir espaçamentos no modo compacto */
+body.compacto .dashboard-container .sidebar .space-y-0\.5 > * + * {
+  margin-top: 0.125rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .space-y-1 > * + * {
+  margin-top: 0.25rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .space-x-2 > * + * {
+  margin-left: 0.25rem !important;
+}
+
+body.compacto .dashboard-container .sidebar .space-x-3 > * + * {
+  margin-left: 0.375rem !important;
+}
+
+/* Formulário de cadastrar imóvel compacto */
+body.compacto .dashboard-container .space-y-4 > * + * {
+  margin-top: 0.5rem !important;
+}
+
+body.compacto .dashboard-container .space-y-6 > * + * {
+  margin-top: 0.75rem !important;
+}
+
+body.compacto .dashboard-container .gap-3 {
+  gap: 0.5rem !important;
+}
+
+body.compacto .dashboard-container .gap-4 {
+  gap: 0.75rem !important;
+}
+
+/* Reduzir altura dos inputs no modo compacto */
+body.compacto .dashboard-container input,
+body.compacto .dashboard-container select,
+body.compacto .dashboard-container textarea {
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+
+/* Reduzir altura dos botões no modo compacto */
+body.compacto .dashboard-container button {
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+
+body.animacoes-desabilitadas .dashboard-container * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Modo escuro específico para dashboard */
+body.dark .dashboard-container {
+  background-color: #1a1a1a !important;
+  color: #e5e5e5 !important;
+}
+
+body.dark .dashboard-container .bg-white {
+  background-color: #2d2d2d !important;
+  color: #e5e5e5 !important;
+}
+
+body.dark .dashboard-container .bg-gray-50 {
+  background-color: #1f1f1f !important;
+  color: #e5e5e5 !important;
+}
+
+body.dark .dashboard-container .bg-gray-100 {
+  background-color: #2a2a2a !important;
+  color: #e5e5e5 !important;
+}
+
+body.dark .dashboard-container .text-gray-900 {
+  color: #e5e5e5 !important;
+}
+
+body.dark .dashboard-container .text-gray-700 {
+  color: #d1d5db !important;
+}
+
+body.dark .dashboard-container .text-gray-600 {
+  color: #9ca3af !important;
+}
+
+body.dark .dashboard-container .border-gray-200 {
+  border-color: #4b5563 !important;
+}
+
+body.dark .dashboard-container .border-gray-300 {
+  border-color: #6b7280 !important;
+}
+
+body.dark .dashboard-container input {
+  background-color: #2d2d2d !important;
+  color: #e5e5e5 !important;
+  border-color: #4b5563 !important;
+}
+
+body.dark .dashboard-container select {
+  background-color: #2d2d2d !important;
+  color: #e5e5e5 !important;
+  border-color: #4b5563 !important;
+}
+
+body.dark .dashboard-container button {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+body.dark .dashboard-container .bg-blue-600 {
+  background-color: #3b82f6 !important;
+}
+
+body.dark .dashboard-container .bg-green-600 {
+  background-color: #10b981 !important;
+}
+
+body.dark .dashboard-container .bg-red-600 {
+  background-color: #ef4444 !important;
+}
+
+body.animacoes-habilitadas .dashboard-container * {
+  transition: all 0.3s ease !important;
+}

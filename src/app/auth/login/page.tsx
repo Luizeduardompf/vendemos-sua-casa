@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,13 +10,15 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { SocialLogin } from '@/components/auth/social-login';
 
-export default function LoginPage() {
+function LoginContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [userType, setUserType] = useState<string>('proprietario');
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     const type = searchParams.get('type');
@@ -37,14 +39,56 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    
     try {
-      // TODO: Implementar autenticação com Supabase
-      console.log('Login:', { email, password, userType });
-      // Simular delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Verificar se é erro de confirmação de email
+        if (data.code === 'EMAIL_NOT_CONFIRMED' && data.needsConfirmation) {
+          setError(`📧 ${data.error}\n\nPor favor, verifique a sua caixa de correio e clique no link de confirmação antes de fazer login.`);
+          return;
+        }
+        
+        throw new Error(data.error || 'Erro ao fazer login');
+      }
+
+      // Sucesso - redirecionar para dashboard simples primeiro
+      console.log('✅ Login bem-sucedido!');
+      console.log('🔵 User data:', data.user);
+      console.log('🔵 User type:', data.user.user_type);
+      console.log('🔵 Session data:', data.session);
+      
+      // Salvar token no localStorage
+      if (data.session?.access_token) {
+        localStorage.setItem('access_token', data.session.access_token);
+        console.log('🔵 Token salvo no localStorage');
+      }
+      
+      // Mostrar mensagem de sucesso
+      setError(null);
+      setSuccess('✅ Login realizado com sucesso! Redirecionando...');
+      setIsLoading(false);
+      
+      // Redirecionar para dashboard do proprietário
+      const dashboardUrl = '/dashboard/proprietario';
+      console.log('🔵 Redirecionando para dashboard:', dashboardUrl);
+      
+      // Redirecionamento imediato
+      setTimeout(() => {
+        console.log('🔵 Executando redirecionamento...');
+        window.location.href = dashboardUrl;
+      }, 1000);
     } catch (err) {
-      setError('Erro ao fazer login. Verifique as suas credenciais.');
-    } finally {
+      setError(err instanceof Error ? err.message : 'Erro ao fazer login. Verifique as suas credenciais.');
       setIsLoading(false);
     }
   };
@@ -96,7 +140,17 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertDescription className="whitespace-pre-line">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {success && (
+                <Alert className="border-green-200 bg-green-50 text-green-800">
+                  <AlertDescription className="whitespace-pre-line">
+                    {success}
+                  </AlertDescription>
                 </Alert>
               )}
 
@@ -180,5 +234,22 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            A carregar...
+          </h2>
+        </div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

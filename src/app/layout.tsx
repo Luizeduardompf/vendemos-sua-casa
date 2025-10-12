@@ -4,8 +4,9 @@ import './globals.css';  // Tailwind + shadcn styles
 import { ThemeProvider } from '@/components/providers/theme-provider';  // Client wrapper
 import { cn } from '@/lib/utils';  // shadcn cn helper
 import { SpeedInsightsComponent } from '@/components/insights/speed-insights';  // Novo: Speed Insights
-import { Header } from '@/components/header';
+import { ConditionalHeader } from '@/components/conditional-header';
 import { Footer } from '@/components/footer';
+import { ThemeEnforcer } from '@/components/theme-enforcer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -34,12 +35,13 @@ export default function RootLayout({
       )}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          enableSystem={false}
           disableTransitionOnChange
         >
+          <ThemeEnforcer />
           <div className="min-h-screen flex flex-col">
-            <Header />
+            <ConditionalHeader />
             <main className="flex-1">
               {children}
             </main>

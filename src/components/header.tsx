@@ -1,12 +1,77 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
 
+interface User {
+  id: string;
+  email: string;
+  nome_completo: string;
+  user_type: string;
+}
+
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await fetch('/api/auth/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+        } else {
+          localStorage.removeItem('access_token');
+        }
+      } catch (error) {
+        console.error('Erro ao verificar autenticação:', error);
+        localStorage.removeItem('access_token');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      localStorage.removeItem('access_token');
+      setUser(null);
+      router.push('/');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+  };
+
+  const handleVenderClick = () => {
+    if (user) {
+      // Se estiver logado, ir para cadastro de imóvel
+      router.push('/dashboard/proprietario?action=cadastrar-imovel');
+    } else {
+      // Se não estiver logado, ir para registo
+      router.push('/auth/register?type=proprietario');
+    }
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -37,30 +102,86 @@ export function Header() {
 
           {/* CTA Buttons - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/auth/select-type">
-              <Button variant="outline" size="sm">
-                Entrar
-              </Button>
-            </Link>
-            <Link href="/auth/register?type=proprietario">
-              <Button size="sm" className="bg-primary hover:bg-primary/90">
-                VENDER
-              </Button>
-            </Link>
+            {isLoading ? (
+              <div className="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
+            ) : user ? (
+              <>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-700">
+                    Olá, {user.nome_completo.split(' ')[0]}
+                  </span>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => router.push('/dashboard/proprietario')}
+                  >
+                    Dashboard
+                  </Button>
+                </div>
+                <Button 
+                  size="sm" 
+                  className="bg-primary hover:bg-primary/90"
+                  onClick={handleVenderClick}
+                >
+                  Cadastrar Imóvel
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/select-type">
+                  <Button variant="outline" size="sm">
+                    Entrar
+                  </Button>
+                </Link>
+                <Button 
+                  size="sm" 
+                  className="bg-primary hover:bg-primary/90"
+                  onClick={handleVenderClick}
+                >
+                  VENDER
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile buttons - sempre visíveis */}
           <div className="md:hidden flex items-center space-x-2">
-            <Link href="/auth/select-type">
-              <Button variant="outline" size="sm" className="text-xs px-2">
-                Entrar
-              </Button>
-            </Link>
-            <Link href="/auth/register?type=proprietario">
-              <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs px-2">
-                VENDER
-              </Button>
-            </Link>
+            {isLoading ? (
+              <div className="w-16 h-6 bg-gray-200 animate-pulse rounded"></div>
+            ) : user ? (
+              <>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs px-2"
+                  onClick={() => router.push('/dashboard/proprietario')}
+                >
+                  Dashboard
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="bg-primary hover:bg-primary/90 text-xs px-2"
+                  onClick={handleVenderClick}
+                >
+                  Cadastrar
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/select-type">
+                  <Button variant="outline" size="sm" className="text-xs px-2">
+                    Entrar
+                  </Button>
+                </Link>
+                <Button 
+                  size="sm" 
+                  className="bg-primary hover:bg-primary/90 text-xs px-2"
+                  onClick={handleVenderClick}
+                >
+                  VENDER
+                </Button>
+              </>
+            )}
             <Button 
               variant="ghost" 
               size="sm" 

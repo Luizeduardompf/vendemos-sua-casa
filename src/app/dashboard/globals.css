@@ -1,0 +1,199 @@
+/* CSS específico para o dashboard */
+.dashboard-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 50 !important;
+  background-color: white !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  transition: all 0.3s ease !important;
+}
+
+.dashboard-content {
+  /* Removido padding-top pois o header não é mais fixo */
+}
+
+/* Modo Dark para Dashboard */
+.dark .dashboard-header {
+  background-color: #1f2937 !important; /* gray-800 */
+  border-bottom-color: #374151 !important; /* gray-700 */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark .dashboard-content {
+  background-color: #111827 !important; /* gray-900 */
+}
+
+/* Sidebar Dark Mode */
+.dark .sidebar-container {
+  background-color: #1f2937 !important; /* gray-800 */
+  border-right-color: #374151 !important; /* gray-700 */
+}
+
+.dark .sidebar-user-info {
+  background-color: #374151 !important; /* gray-700 */
+  border-color: #4b5563 !important; /* gray-600 */
+}
+
+.dark .sidebar-menu-item {
+  color: #d1d5db !important; /* gray-300 */
+}
+
+.dark .sidebar-menu-item:hover {
+  background-color: #374151 !important; /* gray-700 */
+  color: #f9fafb !important; /* gray-50 */
+}
+
+.dark .sidebar-menu-item.active {
+  background-color: #3b82f6 !important; /* blue-500 */
+  color: #ffffff !important;
+}
+
+.dark .sidebar-menu-item.active:hover {
+  background-color: #2563eb !important; /* blue-600 */
+}
+
+/* Cards Dark Mode */
+.dark .dashboard-card {
+  background-color: #1f2937 !important; /* gray-800 */
+  border-color: #374151 !important; /* gray-700 */
+  color: #f9fafb !important; /* gray-50 */
+}
+
+.dark .dashboard-card-header {
+  border-bottom-color: #374151 !important; /* gray-700 */
+}
+
+/* Text Colors Dark Mode */
+.dark .dashboard-title {
+  color: #f9fafb !important; /* gray-50 */
+}
+
+.dark .dashboard-subtitle {
+  color: #d1d5db !important; /* gray-300 */
+}
+
+.dark .dashboard-text {
+  color: #e5e7eb !important; /* gray-200 */
+}
+
+.dark .dashboard-text-muted {
+  color: #9ca3af !important; /* gray-400 */
+}
+
+/* Buttons Dark Mode */
+.dark .dashboard-button-primary {
+  background-color: #3b82f6 !important; /* blue-500 */
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.dark .dashboard-button-primary:hover {
+  background-color: #2563eb !important; /* blue-600 */
+  border-color: #2563eb !important;
+}
+
+.dark .dashboard-button-secondary {
+  background-color: #374151 !important; /* gray-700 */
+  color: #f9fafb !important; /* gray-50 */
+  border-color: #4b5563 !important; /* gray-600 */
+}
+
+.dark .dashboard-button-secondary:hover {
+  background-color: #4b5563 !important; /* gray-600 */
+  border-color: #6b7280 !important; /* gray-500 */
+}
+
+/* Inputs Dark Mode */
+.dark .dashboard-input {
+  background-color: #374151 !important; /* gray-700 */
+  border-color: #4b5563 !important; /* gray-600 */
+  color: #f9fafb !important; /* gray-50 */
+}
+
+.dark .dashboard-input:focus {
+  border-color: #3b82f6 !important; /* blue-500 */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.dark .dashboard-input::placeholder {
+  color: #9ca3af !important; /* gray-400 */
+}
+
+/* Alerts Dark Mode */
+.dark .dashboard-alert-success {
+  background-color: #064e3b !important; /* emerald-900 */
+  border-color: #065f46 !important; /* emerald-800 */
+  color: #a7f3d0 !important; /* emerald-200 */
+}
+
+.dark .dashboard-alert-error {
+  background-color: #7f1d1d !important; /* red-900 */
+  border-color: #991b1b !important; /* red-800 */
+  color: #fecaca !important; /* red-200 */
+}
+
+.dark .dashboard-alert-warning {
+  background-color: #78350f !important; /* amber-900 */
+  border-color: #92400e !important; /* amber-800 */
+  color: #fde68a !important; /* amber-200 */
+}
+
+/* Badges Dark Mode */
+.dark .dashboard-badge {
+  background-color: #374151 !important; /* gray-700 */
+  color: #f9fafb !important; /* gray-50 */
+}
+
+.dark .dashboard-badge-primary {
+  background-color: #1e40af !important; /* blue-800 */
+  color: #dbeafe !important; /* blue-100 */
+}
+
+.dark .dashboard-badge-success {
+  background-color: #065f46 !important; /* emerald-800 */
+  color: #a7f3d0 !important; /* emerald-200 */
+}
+
+.dark .dashboard-badge-warning {
+  background-color: #92400e !important; /* amber-800 */
+  color: #fde68a !important; /* amber-200 */
+}
+
+.dark .dashboard-badge-error {
+  background-color: #991b1b !important; /* red-800 */
+  color: #fecaca !important; /* red-200 */
+}
+
+/* Tables Dark Mode */
+.dark .dashboard-table {
+  background-color: #1f2937 !important; /* gray-800 */
+  border-color: #374151 !important; /* gray-700 */
+}
+
+.dark .dashboard-table th {
+  background-color: #374151 !important; /* gray-700 */
+  color: #f9fafb !important; /* gray-50 */
+  border-color: #4b5563 !important; /* gray-600 */
+}
+
+.dark .dashboard-table td {
+  color: #e5e7eb !important; /* gray-200 */
+  border-color: #374151 !important; /* gray-700 */
+}
+
+.dark .dashboard-table tr:hover {
+  background-color: #374151 !important; /* gray-700 */
+}
+
+/* Notifications Dark Mode */
+.dark .dashboard-notification {
+  background-color: #1f2937 !important; /* gray-800 */
+  border-color: #374151 !important; /* gray-700 */
+  color: #f9fafb !important; /* gray-50 */
+}
+
+.dark .dashboard-notification-badge {
+  background-color: #dc2626 !important; /* red-600 */
+  color: #ffffff !important;
+}
