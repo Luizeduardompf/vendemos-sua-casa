@@ -7,14 +7,14 @@ echo "🧹 Limpando arquivos SQL desnecessários..."
 
 # Arquivos essenciais que DEVEM ser mantidos
 ESSENTIAL_FILES=(
-    "supabase_complete_setup.sql"
-    "supabase_users_schema.sql"
-    "social_login_integration.sql"
-    "create_user_settings_complete.sql"
-    "supabase_auth_config.sql"
-    "disable_rls_completely.sql"
-    "rls_policies_corrected.sql"
-    "fix_user_settings_rls.sql"
+    "database/sql/setup/supabase_complete_setup.sql"
+    "database/sql/setup/supabase_users_schema.sql"
+    "database/sql/setup/social_login_integration.sql"
+    "database/sql/settings/create_user_settings_complete.sql"
+    "database/sql/config/supabase_auth_config.sql"
+    "database/sql/development/disable_rls_completely.sql"
+    "database/sql/config/rls_policies_corrected.sql"
+    "database/sql/settings/fix_user_settings_rls.sql"
 )
 
 # Arquivos que podem ser removidos

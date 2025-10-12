@@ -3,22 +3,22 @@
 ## 🟢 **ARQUIVOS ESSENCIAIS** (MANTER)
 
 ### Setup Inicial do Banco
-- **`supabase_complete_setup.sql`** - Setup completo e final do banco
-- **`supabase_users_schema.sql`** - Schema da tabela users
-- **`social_login_integration.sql`** - Integração com login social
+- **`database/sql/setup/supabase_complete_setup.sql`** - Setup completo e final do banco
+- **`database/sql/setup/supabase_users_schema.sql`** - Schema da tabela users
+- **`database/sql/setup/social_login_integration.sql`** - Integração com login social
 
 ### Configurações de Usuário
-- **`create_user_settings_complete.sql`** - Tabela de configurações do usuário (FINAL)
+- **`database/sql/settings/create_user_settings_complete.sql`** - Tabela de configurações do usuário (FINAL)
 
 ## 🟡 **ARQUIVOS DE CONFIGURAÇÃO** (MANTER PARA REFERÊNCIA)
 
 ### Configurações do Supabase
-- **`supabase_auth_config.sql`** - Configurações de autenticação
-- **`disable_rls_completely.sql`** - Para desenvolvimento (desabilitar RLS)
+- **`database/sql/config/supabase_auth_config.sql`** - Configurações de autenticação
+- **`database/sql/development/disable_rls_completely.sql`** - Para desenvolvimento (desabilitar RLS)
 
 ### RLS Policies
-- **`rls_policies_corrected.sql`** - Políticas RLS corrigidas
-- **`fix_user_settings_rls.sql`** - Correção específica para user_settings
+- **`database/sql/config/rls_policies_corrected.sql`** - Políticas RLS corrigidas
+- **`database/sql/settings/fix_user_settings_rls.sql`** - Correção específica para user_settings
 
 ## 🔴 **ARQUIVOS TEMPORÁRIOS** (PODEM SER REMOVIDOS)
 
