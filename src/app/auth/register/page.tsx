@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SocialLogin } from '@/components/auth/social-login';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -64,16 +65,16 @@ export default function RegisterPage() {
         <div className="text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Criar conta de proprietário</h2>
           <p className="mt-2 text-xs sm:text-sm text-gray-600">
-            Cadastre-se para angariar seus imóveis
+            Registe-se para angariar os seus imóveis
           </p>
         </div>
 
         {/* Formulário de Registro */}
         <Card className="shadow-lg">
           <CardHeader className="space-y-1 px-4 sm:px-6 pt-4 sm:pt-6">
-            <CardTitle className="text-xl sm:text-2xl text-center">Cadastro</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl text-center">Registo</CardTitle>
             <CardDescription className="text-center text-sm">
-              Preencha os dados para criar sua conta
+              Preencha os dados para criar a sua conta
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
@@ -89,7 +90,7 @@ export default function RegisterPage() {
                 <Input
                   id="nome"
                   type="text"
-                  placeholder="Seu nome completo"
+                  placeholder="O seu nome completo"
                   value={formData.nome}
                   onChange={(e) => handleInputChange('nome', e.target.value)}
                   required
@@ -102,7 +103,7 @@ export default function RegisterPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="seu@email.com"
+                  placeholder="o.seu@email.com"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   required
@@ -152,7 +153,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Senha *</Label>
+                <Label htmlFor="password">Palavra-passe *</Label>
                 <Input
                   id="password"
                   type="password"
@@ -166,11 +167,11 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirmar Senha *</Label>
+                <Label htmlFor="confirmPassword">Confirmar Palavra-passe *</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="Confirme sua senha"
+                  placeholder="Confirme a sua palavra-passe"
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                   required
@@ -189,7 +190,7 @@ export default function RegisterPage() {
                 <Label htmlFor="aceitaTermos" className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                   Aceito os{' '}
                   <Link href="/termos" className="text-primary hover:text-primary/80 underline">
-                    Termos de Uso
+                    Termos de Utilização
                   </Link>{' '}
                   e{' '}
                   <Link href="/privacidade" className="text-primary hover:text-primary/80 underline">
@@ -203,9 +204,11 @@ export default function RegisterPage() {
                 className="w-full h-11 bg-primary hover:bg-primary/90"
                 disabled={isLoading}
               >
-                {isLoading ? 'Criando conta...' : 'Criar Conta'}
+                {isLoading ? 'A criar conta...' : 'Criar Conta'}
               </Button>
             </form>
+
+            <SocialLogin mode="register" />
 
             <div className="mt-4 sm:mt-6 text-center">
               <p className="text-xs sm:text-sm text-gray-600">

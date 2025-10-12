@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { SocialLogin } from '@/components/auth/social-login';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -38,7 +39,7 @@ export default function LoginPage() {
         <div className="text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Entrar na sua conta</h2>
           <p className="mt-2 text-xs sm:text-sm text-gray-600">
-            Acesse o portal de angariação de propriedades
+            Aceda ao portal de angariação de propriedades
           </p>
         </div>
 
@@ -47,7 +48,7 @@ export default function LoginPage() {
           <CardHeader className="space-y-1 px-4 sm:px-6 pt-4 sm:pt-6">
             <CardTitle className="text-xl sm:text-2xl text-center">Login</CardTitle>
             <CardDescription className="text-center text-sm">
-              Digite seu email e senha para acessar
+              Digite o seu email e palavra-passe para aceder
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
@@ -63,7 +64,7 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="seu@email.com"
+                  placeholder="o.seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -72,11 +73,11 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
+                <Label htmlFor="password">Palavra-passe</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Sua senha"
+                  placeholder="A sua palavra-passe"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -100,7 +101,7 @@ export default function LoginPage() {
                   href="/auth/forgot-password"
                   className="text-xs sm:text-sm text-primary hover:text-primary/80 text-center sm:text-right"
                 >
-                  Esqueceu a senha?
+                  Esqueceu-se da palavra-passe?
                 </Link>
               </div>
 
@@ -113,15 +114,7 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Ou</span>
-                </div>
-              </div>
+            <SocialLogin mode="login" />
 
             <div className="mt-4 sm:mt-6 text-center">
               <p className="text-xs sm:text-sm text-gray-600">
@@ -130,10 +123,9 @@ export default function LoginPage() {
                   href="/auth/register"
                   className="font-medium text-primary hover:text-primary/80"
                 >
-                  Cadastre-se aqui
+                  Registe-se aqui
                 </Link>
               </p>
-            </div>
             </div>
           </CardContent>
         </Card>

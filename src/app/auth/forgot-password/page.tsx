@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
             </CardHeader>
             <CardContent className="space-y-4 px-4 sm:px-6 pb-4 sm:pb-6">
               <p className="text-xs sm:text-sm text-gray-600 text-center">
-                Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.
+                Verifique a sua caixa de entrada e siga as instruções para redefinir a sua palavra-passe.
               </p>
               <div className="space-y-2">
                 <Button
@@ -84,18 +84,18 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Esqueceu sua senha?</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Esqueceu-se da palavra-passe?</h2>
           <p className="mt-2 text-xs sm:text-sm text-gray-600">
-            Digite seu email para receber um link de recuperação
+            Digite o seu email para receber uma ligação de recuperação
           </p>
         </div>
 
         {/* Formulário de Recuperação */}
         <Card className="shadow-lg">
           <CardHeader className="space-y-1 px-4 sm:px-6 pt-4 sm:pt-6">
-            <CardTitle className="text-xl sm:text-2xl text-center">Recuperar Senha</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl text-center">Recuperar Palavra-passe</CardTitle>
             <CardDescription className="text-center text-sm">
-              Enviaremos um link para redefinir sua senha
+              Enviaremos uma ligação para redefinir a sua palavra-passe
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
@@ -124,13 +124,13 @@ export default function ForgotPasswordPage() {
                 className="w-full h-11 bg-primary hover:bg-primary/90"
                 disabled={isLoading}
               >
-                {isLoading ? 'Enviando...' : 'Enviar Link de Recuperação'}
+                {isLoading ? 'A enviar...' : 'Enviar Ligação de Recuperação'}
               </Button>
             </form>
 
             <div className="mt-4 sm:mt-6 text-center">
               <p className="text-xs sm:text-sm text-gray-600">
-                Lembrou da senha?{' '}
+                Lembrou-se da palavra-passe?{' '}
                 <Link
                   href="/auth/login"
                   className="font-medium text-primary hover:text-primary/80"
