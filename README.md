@@ -1,16 +1,30 @@
-# VendemosSuaCasa 🏠
+# VENDEMOSSUACASA.PT 🏠
 
-Plataforma completa para venda de imóveis construída com **Next.js 15**, **Supabase**, **Tailwind CSS** + **shadcn/ui** e **Docker**. Sistema moderno e escalável para conectar vendedores e compradores de imóveis.
+Portal/Aplicativo focado na angariação de propriedades, servindo como ponte entre proprietários (pessoas singulares e construtores) e agentes vendedores. Sistema completo para gestão de imóveis, agendamentos, propostas e formalização de vendas.
 
 ## 🎯 **Funcionalidades Principais**
 
-- **Catálogo de Imóveis**: Visualização completa de propriedades com fotos, descrições e localização
-- **Sistema de Busca**: Filtros avançados por preço, localização, tipo de imóvel e características
-- **Perfis de Usuários**: Cadastro e gerenciamento de vendedores e compradores
-- **Chat Integrado**: Comunicação direta entre interessados
-- **Dashboard Administrativo**: Gestão completa de imóveis e usuários
-- **Sistema de Favoritos**: Lista personalizada de imóveis de interesse
-- **Notificações**: Alertas sobre novos imóveis e mensagens
+### **Para Proprietários:**
+- **Cadastro de Imóveis**: Sistema completo para angariação e cadastro de propriedades
+- **Estudo de Mercado**: Análise automática com indicação de valor baseada no tempo de venda
+- **Gestão de Documentação**: Armazenamento seguro de todos os documentos necessários
+- **Agendamento de Visitas**: Sistema de marcação com aprovação do proprietário
+- **Relatórios Detalhados**: Acompanhamento de divulgação e visitas realizadas
+- **Gestão de Propostas**: Recebimento e análise de propostas de compra
+- **Processo CPCV**: Geração automática de contratos de promessa de compra e venda
+
+### **Para Agentes Imobiliários:**
+- **Acesso a Imóveis**: Catálogo completo de propriedades disponíveis
+- **Sistema de Agendamento**: Marcação de visitas com clientes qualificados
+- **Material de Divulgação**: Brochuras e formulários de avaliação
+- **Gestão de Propostas**: Criação e acompanhamento de propostas
+- **Sistema de Comissões**: Acompanhamento de comissões de até 70%
+- **Leads Distribuídos**: Recebimento automático de leads qualificados
+
+### **Sistema de Comissões:**
+- **Imóveis Particulares**: 5% (+IVA) - 30% VENDEMOSSUACASA.PT / 70% Agente
+- **Empreendimentos**: 3% (+IVA) - 30% VENDEMOSSUACASA.PT / 70% Agente/Construtor
+- **Venda Direta**: 1,5% do valor do imóvel
 
 ## ✨ Features Atuais
 
@@ -60,69 +74,184 @@ cp env.example .env.local
 
 ### 3. Configure o Banco de Dados no Supabase
 ```sql
--- Tabela de usuários
-CREATE TABLE users (
+-- Tabela de proprietários
+CREATE TABLE proprietarios (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  phone TEXT,
-  avatar_url TEXT,
-  role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin', 'realtor')),
+  nome TEXT NOT NULL,
+  telefone TEXT,
+  nif TEXT UNIQUE,
+  morada TEXT,
+  tipo_pessoa TEXT CHECK (tipo_pessoa IN ('singular', 'construtor')),
+  contrato_assinado BOOLEAN DEFAULT FALSE,
+  contrato_data TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de agências imobiliárias
+CREATE TABLE agencias (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  nome TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  telefone TEXT,
+  nif TEXT UNIQUE,
+  ami TEXT UNIQUE NOT NULL, -- Número AMI obrigatório
+  morada TEXT,
+  contrato_assinado BOOLEAN DEFAULT FALSE,
+  contrato_data TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de agentes imobiliários
+CREATE TABLE agentes (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  nome TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  telefone TEXT,
+  cc TEXT UNIQUE,
+  agencia_id UUID REFERENCES agencias(id) ON DELETE CASCADE,
+  ativo BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Tabela de imóveis
-CREATE TABLE properties (
+CREATE TABLE imoveis (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  title TEXT NOT NULL,
-  description TEXT,
-  price DECIMAL(12,2) NOT NULL,
-  property_type TEXT NOT NULL CHECK (property_type IN ('casa', 'apartamento', 'terreno', 'comercial')),
-  bedrooms INTEGER,
-  bathrooms INTEGER,
+  titulo TEXT NOT NULL,
+  descricao TEXT,
+  preco DECIMAL(12,2) NOT NULL,
+  tipo_imovel TEXT NOT NULL CHECK (tipo_imovel IN ('casa', 'apartamento', 'terreno', 'comercial', 'empreendimento')),
+  quartos INTEGER,
+  casas_banho INTEGER,
   area DECIMAL(8,2),
-  address TEXT NOT NULL,
-  city TEXT NOT NULL,
-  state TEXT NOT NULL,
-  zip_code TEXT,
+  morada TEXT NOT NULL,
+  cidade TEXT NOT NULL,
+  distrito TEXT NOT NULL,
+  codigo_postal TEXT,
   latitude DECIMAL(10,8),
   longitude DECIMAL(11,8),
-  images TEXT[],
-  features TEXT[],
-  status TEXT DEFAULT 'available' CHECK (status IN ('available', 'sold', 'rented', 'pending')),
-  owner_id UUID REFERENCES users(id),
+  fotos TEXT[],
+  video_url TEXT,
+  tour_3d_url TEXT,
+  caracteristicas TEXT[],
+  privacidade BOOLEAN DEFAULT FALSE, -- TRUE = não divulgar em portais
+  status TEXT DEFAULT 'disponivel' CHECK (status IN ('disponivel', 'reservado', 'vendido', 'cancelado')),
+  proprietario_id UUID REFERENCES proprietarios(id) ON DELETE CASCADE,
+  estudo_mercado JSONB, -- Dados do estudo de mercado
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tabela de favoritos
-CREATE TABLE favorites (
+-- Tabela de documentos
+CREATE TABLE documentos (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(user_id, property_id)
+  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
+  tipo_documento TEXT NOT NULL CHECK (tipo_documento IN ('caderneta_predial', 'certificado_energetico', 'licenca_utilizacao', 'certidao_permanente', 'cc_proprietario', 'planta', 'outros')),
+  nome_arquivo TEXT NOT NULL,
+  url_arquivo TEXT NOT NULL,
+  uploaded_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tabela de mensagens
-CREATE TABLE messages (
+-- Tabela de agendamentos
+CREATE TABLE agendamentos (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  sender_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  receiver_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
-  content TEXT NOT NULL,
-  read_at TIMESTAMPTZ,
+  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
+  agente_id UUID REFERENCES agentes(id) ON DELETE CASCADE,
+  cliente_nome TEXT NOT NULL,
+  cliente_cc TEXT NOT NULL,
+  data_visita TIMESTAMPTZ NOT NULL,
+  status TEXT DEFAULT 'pendente' CHECK (status IN ('pendente', 'aceite', 'rejeitado', 'realizado', 'cancelado')),
+  proprietario_resposta TIMESTAMPTZ,
+  proprietario_observacoes TEXT,
+  reagendamento_data1 TIMESTAMPTZ,
+  reagendamento_data2 TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de avaliações de visitas
+CREATE TABLE avaliacoes_visitas (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  agendamento_id UUID REFERENCES agendamentos(id) ON DELETE CASCADE,
+  pontos_fortes TEXT,
+  pontos_fracos TEXT,
+  comentarios TEXT,
+  avaliacao_geral INTEGER CHECK (avaliacao_geral >= 1 AND avaliacao_geral <= 5),
+  submitted_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de propostas
+CREATE TABLE propostas (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
+  agente_id UUID REFERENCES agentes(id) ON DELETE CASCADE,
+  valor_proposta DECIMAL(12,2) NOT NULL,
+  condicoes TEXT,
+  prazo_escritura INTEGER, -- dias
+  financiamento BOOLEAN DEFAULT FALSE,
+  valor_entrada DECIMAL(12,2),
+  status TEXT DEFAULT 'pendente' CHECK (status IN ('pendente', 'aceite', 'rejeitada', 'expirada')),
+  documento_proposta TEXT, -- URL do documento assinado
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de CPCV
+CREATE TABLE cpcv (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  proposta_id UUID REFERENCES propostas(id) ON DELETE CASCADE,
+  numero_cpcv TEXT UNIQUE,
+  valor_sinal DECIMAL(12,2),
+  data_assinatura TIMESTAMPTZ,
+  data_escritura TIMESTAMPTZ,
+  status TEXT DEFAULT 'rascunho' CHECK (status IN ('rascunho', 'assinado', 'executado', 'cancelado')),
+  documento_cpcv TEXT, -- URL do documento
+  advogada_aprovacao BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de comissões
+CREATE TABLE comissoes (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
+  agente_id UUID REFERENCES agentes(id) ON DELETE CASCADE,
+  valor_imovel DECIMAL(12,2) NOT NULL,
+  percentagem_comissao DECIMAL(5,2) NOT NULL, -- 5% ou 3%
+  valor_comissao DECIMAL(12,2) NOT NULL,
+  percentagem_agencia DECIMAL(5,2) NOT NULL, -- 70%
+  valor_agencia DECIMAL(12,2) NOT NULL,
+  percentagem_vendemos DECIMAL(5,2) NOT NULL, -- 30%
+  valor_vendemos DECIMAL(12,2) NOT NULL,
+  status_pagamento TEXT DEFAULT 'pendente' CHECK (status_pagamento IN ('pendente', 'parcial', 'pago')),
+  data_pagamento_parcial TIMESTAMPTZ,
+  data_pagamento_final TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de leads distribuídos
+CREATE TABLE leads_distribuidos (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  imovel_id UUID REFERENCES imoveis(id) ON DELETE CASCADE,
+  agente_id UUID REFERENCES agentes(id) ON DELETE CASCADE,
+  cliente_nome TEXT NOT NULL,
+  cliente_telefone TEXT,
+  cliente_email TEXT,
+  status TEXT DEFAULT 'disponivel' CHECK (status IN ('disponivel', 'aceite', 'rejeitado', 'convertido')),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Índices para performance
-CREATE INDEX idx_properties_city ON properties(city);
-CREATE INDEX idx_properties_price ON properties(price);
-CREATE INDEX idx_properties_type ON properties(property_type);
-CREATE INDEX idx_properties_status ON properties(status);
-CREATE INDEX idx_messages_sender ON messages(sender_id);
-CREATE INDEX idx_messages_receiver ON messages(receiver_id);
+CREATE INDEX idx_imoveis_cidade ON imoveis(cidade);
+CREATE INDEX idx_imoveis_preco ON imoveis(preco);
+CREATE INDEX idx_imoveis_tipo ON imoveis(tipo_imovel);
+CREATE INDEX idx_imoveis_status ON imoveis(status);
+CREATE INDEX idx_agendamentos_data ON agendamentos(data_visita);
+CREATE INDEX idx_propostas_status ON propostas(status);
+CREATE INDEX idx_cpcv_status ON cpcv(status);
 ```
 
 ## 🏃‍♂️ Desenvolvimento

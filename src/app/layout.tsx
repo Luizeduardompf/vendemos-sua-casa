@@ -8,8 +8,8 @@ import { SpeedInsightsComponent } from '@/components/insights/speed-insights';  
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'VendemosSuaCasa - Plataforma de Venda de Imóveis',
-  description: 'Plataforma completa para venda de imóveis. Conecte vendedores e compradores de forma segura e eficiente.',
+  title: 'VENDEMOSSUACASA.PT - Portal de Angariação de Propriedades',
+  description: 'Portal focado na angariação de propriedades. Ponte entre proprietários e agentes imobiliários. Sistema completo de agendamentos, propostas, CPCV e formalização.',
 };
 
 export default function RootLayout({
