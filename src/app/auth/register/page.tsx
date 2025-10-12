@@ -324,11 +324,11 @@ export default function RegisterPage() {
                 <Label htmlFor="aceitaTermos" className="text-xs sm:text-sm text-gray-600">
                   Aceito os{' '}
                   <Link href="/termos" className="text-primary hover:text-primary/80 underline">
-                    Termos
+                    Termos de Uso
                   </Link>{' '}
                   e{' '}
                   <Link href="/privacidade" className="text-primary hover:text-primary/80 underline">
-                    Privacidade
+                    Privacidade.
                   </Link>
                 </Label>
               </div>

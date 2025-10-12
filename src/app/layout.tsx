@@ -12,6 +12,13 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Vendemos Sua Casa - Portal de Angariação de Propriedades',
   description: 'Portal focado na angariação de propriedades. Ponte entre proprietários e agentes imobiliários. Sistema completo de agendamentos, propostas, CPCV e formalização.',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    apple: { url: '/favicon.svg', type: 'image/svg+xml' }
+  }
 };
 
 export default function RootLayout({

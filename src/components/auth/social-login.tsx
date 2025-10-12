@@ -72,7 +72,7 @@ export function SocialLogin({ mode, userType = 'proprietario' }: SocialLoginProp
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="px-4 bg-white text-gray-500 font-medium">
-            Ou continue com
+            Com mais facilidade
           </span>
         </div>
       </div>
