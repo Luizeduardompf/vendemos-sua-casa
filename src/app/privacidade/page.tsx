@@ -7,7 +7,7 @@ export default function PrivacidadePage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-center text-gray-900">
-              Política de Privacidade - VENDEMOSSUACASA.PT
+              Política de Privacidade - Vendemos Sua Casa
             </CardTitle>
             <p className="text-center text-gray-600 mt-2">
               Última atualização: {new Date().toLocaleDateString('pt-PT')}

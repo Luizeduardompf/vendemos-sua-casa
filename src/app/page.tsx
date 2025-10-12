@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-8 sm:py-16 px-3 sm:px-4 space-y-6 sm:space-y-8">
       <div className="text-center space-y-3 sm:space-y-4">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary">🏠 VENDEMOSSUACASA.PT</h1>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary">🏠 Vendemos Sua Casa</h1>
         <p className="text-lg sm:text-xl text-muted-foreground">Portal de Angariação de Propriedades</p>
         <p className="text-base sm:text-lg">Ponte entre proprietários, compradores e agentes imobiliários</p>
         <p className="text-xs sm:text-sm text-muted-foreground">Sistema completo: agendamentos, propostas, CPCV e formalização</p>
@@ -104,7 +104,7 @@ export default function Home() {
 
       <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle>🚀 VENDEMOSSUACASA.PT - Status</CardTitle>
+          <CardTitle>🚀 Vendemos Sua Casa - Status</CardTitle>
           <CardDescription>Sistema de angariação de propriedades funcionando</CardDescription>
         </CardHeader>
         <CardContent>

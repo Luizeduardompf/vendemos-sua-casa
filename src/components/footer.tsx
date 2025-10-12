@@ -7,11 +7,21 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Logo e Descrição */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm sm:text-lg">V</span>
+            <div className="flex items-center space-x-2 sm:space-x-3 mb-4">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center relative overflow-hidden">
+                {/* Casa estilizada com V */}
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {/* Telhado da casa */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"></div>
+                  {/* Corpo da casa */}
+                  <div className="w-4 h-3 bg-white rounded-sm"></div>
+                  {/* V estilizado */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-primary font-bold text-xs sm:text-sm">V</span>
+                  </div>
+                </div>
               </div>
-              <span className="text-lg sm:text-xl font-bold">VENDEMOSSUACASA.PT</span>
+              <span className="text-lg sm:text-xl font-bold">Vendemos Sua Casa</span>
             </div>
             <p className="text-gray-300 mb-4 text-sm sm:text-base max-w-md">
               Portal de angariação de propriedades. Ponte entre proprietários, compradores e agentes imobiliários. 
@@ -93,7 +103,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
           <p className="text-gray-400 text-xs sm:text-sm text-center sm:text-left">
-            © 2024 VENDEMOSSUACASA.PT. Todos os direitos reservados.
+            © 2024 Vendemos Sua Casa. Todos os direitos reservados.
           </p>
           <div className="flex flex-wrap justify-center sm:justify-end space-x-4 sm:space-x-6">
             <Link href="/privacidade" className="text-gray-400 hover:text-white text-xs sm:text-sm transition-colors">

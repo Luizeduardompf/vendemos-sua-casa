@@ -14,12 +14,21 @@ export function Header() {
         <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-1 sm:space-x-2">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm sm:text-lg">V</span>
+            <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center relative overflow-hidden">
+                {/* Casa estilizada com V */}
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {/* Telhado da casa */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"></div>
+                  {/* Corpo da casa */}
+                  <div className="w-4 h-3 bg-white rounded-sm"></div>
+                  {/* V estilizado */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-primary font-bold text-xs sm:text-sm">V</span>
+                  </div>
+                </div>
               </div>
-              <span className="text-sm sm:text-xl font-bold text-gray-900 hidden xs:block">VENDEMOSSUACASA.PT</span>
-              <span className="text-sm sm:text-xl font-bold text-gray-900 xs:hidden">VSC</span>
+              <span className="text-sm sm:text-lg lg:text-xl font-bold text-gray-900">Vendemos Sua Casa</span>
             </Link>
           </div>
 
@@ -53,8 +62,18 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden ml-2">
+          {/* Mobile buttons - sempre visíveis */}
+          <div className="flex items-center space-x-2">
+            <Link href="/auth/login">
+              <Button variant="outline" size="sm" className="text-xs px-2 sm:px-3">
+                Entrar
+              </Button>
+            </Link>
+            <Link href="/auth/register">
+              <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs px-2 sm:px-3">
+                VENDER
+              </Button>
+            </Link>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -106,21 +125,6 @@ export function Header() {
                 Contacto
               </Link>
               
-              {/* Mobile CTA Buttons */}
-              <div className="pt-4 pb-3 border-t border-gray-200">
-                <div className="space-y-2">
-                  <Link href="/auth/login" className="block">
-                    <Button variant="outline" className="w-full">
-                      Entrar
-                    </Button>
-                  </Link>
-                  <Link href="/auth/register" className="block">
-                    <Button className="w-full bg-primary hover:bg-primary/90">
-                      VENDER
-                    </Button>
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
         )}

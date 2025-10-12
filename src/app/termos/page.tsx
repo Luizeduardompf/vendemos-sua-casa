@@ -7,7 +7,7 @@ export default function TermosPage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-center text-gray-900">
-              Termos de Uso - VENDEMOSSUACASA.PT
+              Termos de Uso - Vendemos Sua Casa
             </CardTitle>
             <p className="text-center text-gray-600 mt-2">
               Última atualização: {new Date().toLocaleDateString('pt-PT')}
@@ -18,14 +18,14 @@ export default function TermosPage() {
               <section>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Aceitação dos Termos</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  Ao acessar e utilizar o portal VENDEMOSSUACASA.PT, você concorda em cumprir e estar vinculado aos seguintes termos e condições de uso. Se você não concordar com qualquer parte destes termos, não deve utilizar o nosso serviço.
+                  Ao aceder e utilizar o portal Vendemos Sua Casa, concorda em cumprir e estar vinculado aos seguintes termos e condições de utilização. Se não concordar com qualquer parte destes termos, não deve utilizar o nosso serviço.
                 </p>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">2. Descrição do Serviço</h2>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  O VENDEMOSSUACASA.PT é uma plataforma digital que conecta proprietários de imóveis, compradores interessados e agentes imobiliários, facilitando o processo de venda de propriedades através de:
+                  O Vendemos Sua Casa é uma plataforma digital que conecta proprietários de imóveis, compradores interessados e agentes imobiliários, facilitando o processo de venda de propriedades através de:
                 </p>
                 <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
                   <li>Cadastro e divulgação de imóveis</li>

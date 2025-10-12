@@ -10,7 +10,7 @@ import { Footer } from '@/components/footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'VENDEMOSSUACASA.PT - Portal de Angariação de Propriedades',
+  title: 'Vendemos Sua Casa - Portal de Angariação de Propriedades',
   description: 'Portal focado na angariação de propriedades. Ponte entre proprietários e agentes imobiliários. Sistema completo de agendamentos, propostas, CPCV e formalização.',
 };
 
