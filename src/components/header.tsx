@@ -35,12 +35,16 @@ export function Header() {
 
           {/* CTA Buttons */}
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm">
-              Entrar
-            </Button>
-            <Button size="sm" className="bg-primary hover:bg-primary/90">
-              Cadastrar Imóvel
-            </Button>
+            <Link href="/auth/login">
+              <Button variant="outline" size="sm">
+                Entrar
+              </Button>
+            </Link>
+            <Link href="/auth/register">
+              <Button size="sm" className="bg-primary hover:bg-primary/90">
+                Cadastrar Imóvel
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
