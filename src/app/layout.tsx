@@ -8,8 +8,8 @@ import { SpeedInsightsComponent } from '@/components/insights/speed-insights';  
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Next.js + Supabase Template',
-  description: 'Template base para aplicações full-stack com Next.js, Supabase e shadcn/ui',
+  title: 'VendemosSuaCasa - Plataforma de Venda de Imóveis',
+  description: 'Plataforma completa para venda de imóveis. Conecte vendedores e compradores de forma segura e eficiente.',
 };
 
 export default function RootLayout({

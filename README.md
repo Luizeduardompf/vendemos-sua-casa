@@ -1,16 +1,16 @@
-# Next.js + Supabase Template 🚀
+# VendemosSuaCasa 🏠
 
-Template base para aplicações full-stack modernas com **Next.js 15**, **Supabase**, **Tailwind CSS** + **shadcn/ui** e **Docker**. Perfeito para iniciar novos projetos rapidamente com todas as configurações prontas.
+Plataforma completa para venda de imóveis construída com **Next.js 15**, **Supabase**, **Tailwind CSS** + **shadcn/ui** e **Docker**. Sistema moderno e escalável para conectar vendedores e compradores de imóveis.
 
-## 🎯 **Como Usar Este Template**
+## 🎯 **Funcionalidades Principais**
 
-1. **Clone este repositório** para seu novo projeto
-2. **Renomeie** a pasta para o nome do seu projeto
-3. **Configure** as variáveis de ambiente do Supabase
-4. **Execute** `docker-compose up --build`
-5. **Comece** a desenvolver!
-
-> 📖 **Guia Detalhado**: Veja [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md) para instruções completas de personalização.
+- **Catálogo de Imóveis**: Visualização completa de propriedades com fotos, descrições e localização
+- **Sistema de Busca**: Filtros avançados por preço, localização, tipo de imóvel e características
+- **Perfis de Usuários**: Cadastro e gerenciamento de vendedores e compradores
+- **Chat Integrado**: Comunicação direta entre interessados
+- **Dashboard Administrativo**: Gestão completa de imóveis e usuários
+- **Sistema de Favoritos**: Lista personalizada de imóveis de interesse
+- **Notificações**: Alertas sobre novos imóveis e mensagens
 
 ## ✨ Features Atuais
 
@@ -41,39 +41,88 @@ Template base para aplicações full-stack modernas com **Next.js 15**, **Supaba
 
 ### 1. Clone e Setup
 ```bash
-# Clone este template diretamente com o nome do seu projeto
-git clone https://github.com/seu-usuario/nextjs-supabase-template.git meu-projeto
-cd meu-projeto
+# Clone o repositório
+git clone https://github.com/seu-usuario/vendemos-sua-casa.git
+cd vendemos-sua-casa
 
-# Atualize o nome no package.json
-npm pkg set name="meu-projeto"
-
-# Atualize o título no layout.tsx
-# Edite: src/app/layout.tsx -> title: 'Meu Projeto'
+# Instale as dependências
+npm install
 ```
 
 ### 2. Configure Supabase
 ```bash
 # Copie o arquivo de exemplo
-cp .env.example .env.local
+cp env.example .env.local
 
 # Edite .env.local com suas credenciais do Supabase
+# Obtenha as chaves em: https://supabase.com/dashboard
 ```
 
-### 3. Crie tabela de teste no Supabase
+### 3. Configure o Banco de Dados no Supabase
 ```sql
--- Tabela de exemplo (substitua por suas necessidades)
-CREATE TABLE users_test (
-  id SERIAL PRIMARY KEY,
-  name TEXT,
-  email TEXT,
+-- Tabela de usuários
+CREATE TABLE users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  phone TEXT,
+  avatar_url TEXT,
+  role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin', 'realtor')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de imóveis
+CREATE TABLE properties (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  price DECIMAL(12,2) NOT NULL,
+  property_type TEXT NOT NULL CHECK (property_type IN ('casa', 'apartamento', 'terreno', 'comercial')),
+  bedrooms INTEGER,
+  bathrooms INTEGER,
+  area DECIMAL(8,2),
+  address TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  zip_code TEXT,
+  latitude DECIMAL(10,8),
+  longitude DECIMAL(11,8),
+  images TEXT[],
+  features TEXT[],
+  status TEXT DEFAULT 'available' CHECK (status IN ('available', 'sold', 'rented', 'pending')),
+  owner_id UUID REFERENCES users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela de favoritos
+CREATE TABLE favorites (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, property_id)
+);
+
+-- Tabela de mensagens
+CREATE TABLE messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  sender_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  receiver_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  read_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Insira dados de teste
-INSERT INTO users_test (name, email) VALUES 
-  ('João Silva', 'joao@exemplo.com'),
-  ('Maria Santos', 'maria@exemplo.com');
+-- Índices para performance
+CREATE INDEX idx_properties_city ON properties(city);
+CREATE INDEX idx_properties_price ON properties(price);
+CREATE INDEX idx_properties_type ON properties(property_type);
+CREATE INDEX idx_properties_status ON properties(status);
+CREATE INDEX idx_messages_sender ON messages(sender_id);
+CREATE INDEX idx_messages_receiver ON messages(receiver_id);
 ```
 
 ## 🏃‍♂️ Desenvolvimento

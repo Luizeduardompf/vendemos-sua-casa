@@ -4,13 +4,13 @@ services:
       context: .
       dockerfile: Dockerfile
       target: dev
-    image: nextjs-supabase-template:1.0
-    container_name: nextjs-template-app
+    image: vendemos-sua-casa:1.0
+    container_name: vendemos-sua-casa-app
     working_dir: /app
     ports:
       - "3000:3000"
     volumes:
-      - nextjs-template-volume:/app/.next
+      - vendemos-sua-casa-volume:/app/.next
       - ./src:/app/src
       - ./package*.json:/app/package*.json
       - /app/node_modules
@@ -29,4 +29,4 @@ services:
       start_period: 40s
 
 volumes:
-  nextjs-template-volume:
+  vendemos-sua-casa-volume:

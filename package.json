@@ -1,7 +1,8 @@
 {
-  "name": "nextjs-supabase-template",
-  "version": "0.1.0",
+  "name": "vendemos-sua-casa",
+  "version": "1.0.0",
   "private": true,
+  "description": "Plataforma para venda de imóveis - VendemosSuaCasa",
   "scripts": {
     "dev": "node ./node_modules/next/dist/bin/next dev --turbopack",
     "build": "next build",
