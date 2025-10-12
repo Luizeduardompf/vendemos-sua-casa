@@ -36,14 +36,8 @@ export default function ForgotPasswordPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <Link href="/" className="flex items-center justify-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">V</span>
-              </div>
-              <span className="text-2xl font-bold text-gray-900">VENDEMOSSUACASA.PT</span>
-            </Link>
-          </div>
+        <div className="text-center">
+        </div>
 
           <Card className="shadow-lg">
             <CardHeader className="text-center">
@@ -90,12 +84,6 @@ export default function ForgotPasswordPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <Link href="/" className="flex items-center justify-center space-x-2 mb-6">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">V</span>
-            </div>
-            <span className="text-2xl font-bold text-gray-900">VENDEMOSSUACASA.PT</span>
-          </Link>
           <h2 className="text-3xl font-bold text-gray-900">Esqueceu sua senha?</h2>
           <p className="mt-2 text-sm text-gray-600">
             Digite seu email para receber um link de recuperação
