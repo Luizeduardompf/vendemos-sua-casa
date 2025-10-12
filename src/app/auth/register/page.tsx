@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -19,40 +20,55 @@ export default function RegisterPage() {
     tipoPessoa: '',
     password: '',
     confirmPassword: '',
-    aceitaTermos: false
+    aceitaTermos: false,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [userType, setUserType] = useState<string>('proprietario');
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const type = searchParams.get('type');
+    if (type && ['proprietario', 'agente', 'imobiliaria'].includes(type)) {
+      setUserType(type);
+    }
+  }, [searchParams]);
+
+  const getUserTypeLabel = (type: string) => {
+    switch (type) {
+      case 'agente': return 'Agente';
+      case 'imobiliaria': return 'Imobiliária';
+      default: return 'Proprietário';
+    }
+  };
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError(null);
 
-    // Validações
     if (formData.password !== formData.confirmPassword) {
-      setError('As senhas não coincidem.');
+      setError('As palavras-passe não coincidem.');
       setIsLoading(false);
       return;
     }
-
     if (!formData.aceitaTermos) {
-      setError('Você deve aceitar os termos de uso.');
+      setError('Deve aceitar os Termos de Utilização e a Política de Privacidade.');
       setIsLoading(false);
       return;
     }
 
     try {
-      // TODO: Implementar registro com Supabase
-      console.log('Registro:', formData);
+      // TODO: Implementar registo com Supabase
+      console.log('Registo:', { ...formData, userType });
       // Simular delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
     } catch (err) {
-      setError('Erro ao criar conta. Tente novamente.');
+      setError('Ocorreu um erro no registo. Por favor, tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -63,10 +79,20 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Criar conta de proprietário</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            Criar conta de {getUserTypeLabel(userType).toLowerCase()}
+          </h2>
           <p className="mt-2 text-xs sm:text-sm text-gray-600">
-            Registe-se para angariar os seus imóveis
+            Registe-se para aceder ao portal
           </p>
+          <div className="mt-2">
+            <Link
+              href="/auth/select-type"
+              className="text-xs text-primary hover:text-primary/80 underline"
+            >
+              ← Alterar tipo de utilizador
+            </Link>
+          </div>
         </div>
 
         {/* Formulário de Registro */}
@@ -78,6 +104,20 @@ export default function RegisterPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+            {/* Social Login primeiro */}
+            <SocialLogin mode="register" userType={userType} />
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500 font-medium">
+                  Ou continue com email
+                </span>
+              </div>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
@@ -136,21 +176,49 @@ export default function RegisterPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="tipoPessoa">Tipo de Pessoa *</Label>
-                <Select
-                  value={formData.tipoPessoa}
-                  onValueChange={(value) => handleInputChange('tipoPessoa', value)}
-                >
-                  <SelectTrigger className="h-11">
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="singular">Pessoa Singular</SelectItem>
-                    <SelectItem value="construtor">Construtor</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {userType === 'proprietario' && (
+                <div className="space-y-2">
+                  <Label htmlFor="tipoPessoa">Tipo de Pessoa *</Label>
+                  <Select
+                    value={formData.tipoPessoa}
+                    onValueChange={(value) => handleInputChange('tipoPessoa', value)}
+                  >
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="singular">Pessoa Singular</SelectItem>
+                      <SelectItem value="construtor">Construtor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {userType === 'agente' && (
+                <div className="space-y-2">
+                  <Label htmlFor="ami">Número AMI *</Label>
+                  <Input
+                    id="ami"
+                    type="text"
+                    placeholder="12345"
+                    className="h-11"
+                    required
+                  />
+                </div>
+              )}
+
+              {userType === 'imobiliaria' && (
+                <div className="space-y-2">
+                  <Label htmlFor="nomeEmpresa">Nome da Empresa *</Label>
+                  <Input
+                    id="nomeEmpresa"
+                    type="text"
+                    placeholder="Nome da sua imobiliária"
+                    className="h-11"
+                    required
+                  />
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="password">Palavra-passe *</Label>
@@ -208,13 +276,11 @@ export default function RegisterPage() {
               </Button>
             </form>
 
-            <SocialLogin mode="register" />
-
             <div className="mt-4 sm:mt-6 text-center">
               <p className="text-xs sm:text-sm text-gray-600">
                 Já tem uma conta?{' '}
                 <Link
-                  href="/auth/login"
+                  href={`/auth/login?type=${userType}`}
                   className="font-medium text-primary hover:text-primary/80"
                 >
                   Faça login aqui

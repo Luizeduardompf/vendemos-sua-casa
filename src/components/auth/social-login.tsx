@@ -6,9 +6,10 @@ import { useState } from 'react';
 
 interface SocialLoginProps {
   mode: 'login' | 'register';
+  userType?: string;
 }
 
-export function SocialLogin({ mode }: SocialLoginProps) {
+export function SocialLogin({ mode, userType = 'proprietario' }: SocialLoginProps) {
   const [isLoading, setIsLoading] = useState(false);
   const supabase = createClientComponentClient();
 

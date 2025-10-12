@@ -50,12 +50,12 @@ export function Header() {
 
           {/* CTA Buttons - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/auth/login">
+            <Link href="/auth/select-type">
               <Button variant="outline" size="sm">
                 Entrar
               </Button>
             </Link>
-            <Link href="/auth/register">
+            <Link href="/auth/select-type">
               <Button size="sm" className="bg-primary hover:bg-primary/90">
                 VENDER
               </Button>
@@ -63,21 +63,21 @@ export function Header() {
           </div>
 
           {/* Mobile buttons - sempre visíveis */}
-          <div className="flex items-center space-x-2">
-            <Link href="/auth/login">
-              <Button variant="outline" size="sm" className="text-xs px-2 sm:px-3">
+          <div className="md:hidden flex items-center space-x-2">
+            <Link href="/auth/select-type">
+              <Button variant="outline" size="sm" className="text-xs px-2">
                 Entrar
               </Button>
             </Link>
-            <Link href="/auth/register">
-              <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs px-2 sm:px-3">
+            <Link href="/auth/select-type">
+              <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs px-2">
                 VENDER
               </Button>
             </Link>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="p-1"
+              className="p-1 bg-gray-100 hover:bg-gray-200 border border-gray-300"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
