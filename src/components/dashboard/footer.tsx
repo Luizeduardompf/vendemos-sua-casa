@@ -24,7 +24,7 @@ export default function DashboardFooter() {
 
         {/* Copyright */}
         <div className="flex items-center space-x-2">
-          <span>© 2025 Vendemos Sua Casa</span>
+          <span>© 2025 Vendemos Sua Casa | </span>
           <span className="flex items-center space-x-1">
             <span>Feito com</span>
             <Heart className="h-3 w-3 text-red-500" />
