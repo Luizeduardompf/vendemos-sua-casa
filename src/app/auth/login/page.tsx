@@ -80,7 +80,7 @@ function LoginContent() {
         
         // Verificar se é erro de conta vinculada a provedor social
         if (data.suggestion === 'social_login') {
-          setError(`🔗 ${data.error}\n\nUse o botão "Continue with ${data.provider}" acima para fazer login.`);
+          setError(`🔗 ${data.error}\n\nUse o botão "Continue with ${data.provider}" acima para fazer login.\n\n💡 Dica: Se quiser usar email e senha, faça login social primeiro e defina uma senha nas configurações.`);
           return;
         }
         

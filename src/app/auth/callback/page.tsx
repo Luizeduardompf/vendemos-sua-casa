@@ -181,16 +181,31 @@ function AuthCallbackContent() {
         clearTimeout(timeoutId);
         
         // Redirecionar
-        console.log('🔵 Redirecionando para dashboard...');
-        console.log('🔵 Token salvo:', localStorage.getItem('access_token') ? 'Sim' : 'Não');
-        console.log('🔵 User ID salvo:', localStorage.getItem('user_id'));
-        console.log('🔵 User Email salvo:', localStorage.getItem('user_email'));
+        // Verificar se é usuário novo (primeira vez) para sugerir definir senha
+        const isNewUser = !userData;
         
-        // Pequena pausa antes do redirecionamento
-        setTimeout(() => {
-          console.log('🔵 Executando redirecionamento...');
-          window.location.href = '/dashboard/proprietario';
-        }, 1000);
+        if (isNewUser) {
+          console.log('🔵 Usuário novo, redirecionando para definir senha...');
+          console.log('🔵 Token salvo:', localStorage.getItem('access_token') ? 'Sim' : 'Não');
+          console.log('🔵 User ID salvo:', localStorage.getItem('user_id'));
+          console.log('🔵 User Email salvo:', localStorage.getItem('user_email'));
+          
+          setTimeout(() => {
+            const redirectUrl = `/auth/set-password?email=${encodeURIComponent(session.user.email || '')}`;
+            console.log('🔵 Executando redirecionamento para definir senha...');
+            window.location.href = redirectUrl;
+          }, 1000);
+        } else {
+          console.log('🔵 Usuário existente, redirecionando para dashboard...');
+          console.log('🔵 Token salvo:', localStorage.getItem('access_token') ? 'Sim' : 'Não');
+          console.log('🔵 User ID salvo:', localStorage.getItem('user_id'));
+          console.log('🔵 User Email salvo:', localStorage.getItem('user_email'));
+          
+          setTimeout(() => {
+            console.log('🔵 Executando redirecionamento para dashboard...');
+            window.location.href = '/dashboard/proprietario';
+          }, 1000);
+        }
 
       } catch (error) {
         console.error('❌ Erro no callback:', error);
