@@ -66,6 +66,9 @@ export default function MeusDadosPage() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('🔍 Dados recebidos da API:', data);
+        console.log('🔍 Foto do perfil:', data.user?.foto_perfil);
+        console.log('🔍 Provedor:', data.user?.provedor);
         setUserData(data.user);
         setFormData({
           nome_completo: data.user.nome_completo || '',
@@ -332,7 +335,9 @@ export default function MeusDadosPage() {
                         src={userData.foto_perfil} 
                         alt="Foto de perfil"
                         className="w-full h-full object-cover"
+                        onLoad={() => console.log('✅ Foto carregada com sucesso:', userData.foto_perfil)}
                         onError={(e) => {
+                          console.log('❌ Erro ao carregar foto:', userData.foto_perfil);
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
                           const parent = target.parentElement;

@@ -184,6 +184,8 @@ export default function DashboardLayout({
         }
         
         if (userData) {
+          console.log('🔍 Dashboard Layout - Dados do usuário:', userData);
+          console.log('🔍 Dashboard Layout - Foto do perfil:', userData.foto_perfil);
           setUser({
             id: userData.id,
             email: userData.email,
