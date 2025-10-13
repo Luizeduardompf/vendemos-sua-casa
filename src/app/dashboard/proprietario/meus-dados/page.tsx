@@ -169,6 +169,11 @@ export default function MeusDadosPage() {
             setMessage({ type: 'success', text: 'Foto atualizada com sucesso!' });
             // Recarregar dados do usuário
             await fetchUserData();
+            
+            // Notificar o sidebar para atualizar a foto
+            window.dispatchEvent(new CustomEvent('userPhotoUpdated', { 
+              detail: { photoUrl: base64 } 
+            }));
           } else {
             setMessage({ type: 'error', text: result.error || 'Erro ao atualizar foto' });
           }

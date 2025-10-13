@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -254,9 +254,28 @@ interface SidebarProps {
 
 export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [currentPhoto, setCurrentPhoto] = useState(userPhoto);
   const pathname = usePathname();
   
   const items = menuItems[userType as keyof typeof menuItems] || menuItems.proprietario;
+
+  // Escutar evento de atualização de foto
+  useEffect(() => {
+    const handlePhotoUpdate = (event: CustomEvent) => {
+      setCurrentPhoto(event.detail.photoUrl);
+    };
+
+    window.addEventListener('userPhotoUpdated', handlePhotoUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('userPhotoUpdated', handlePhotoUpdate as EventListener);
+    };
+  }, []);
+
+  // Atualizar foto quando userPhoto mudar
+  useEffect(() => {
+    setCurrentPhoto(userPhoto);
+  }, [userPhoto]);
 
   return (
     <div className={cn(
@@ -289,9 +308,9 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
         <div className="p-2 sm:p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2 sm:space-x-3">
             <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden flex items-center justify-center">
-              {userPhoto ? (
+              {currentPhoto ? (
                 <img 
-                  src={userPhoto} 
+                  src={currentPhoto} 
                   alt={userName}
                   className="w-full h-full object-cover"
                   onError={(e) => {
