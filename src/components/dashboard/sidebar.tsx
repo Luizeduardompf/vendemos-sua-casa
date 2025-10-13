@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Logo } from '@/components/logo';
 
 interface SidebarProps {
   userType: string;
@@ -290,8 +289,10 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
       {/* Header da Sidebar */}
       <div className="px-6 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between min-h-[48px] h-12">
         {!isCollapsed && (
-          <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-              <Logo size="md" />
+          <Link href="/" className="hover:opacity-80 transition-opacity">
+            <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Vendemos Sua Casa
+            </span>
           </Link>
         )}
         <Button
