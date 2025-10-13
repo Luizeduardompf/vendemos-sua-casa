@@ -40,20 +40,6 @@ function LoginContent() {
     }
   };
 
-  const handleClearSession = async () => {
-    try {
-      console.log('🔵 Limpando sessão existente...');
-      await supabase.auth.signOut();
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user_id');
-      localStorage.removeItem('user_email');
-      console.log('✅ Sessão limpa com sucesso');
-      setSuccess('Sessão limpa! Agora pode escolher uma conta diferente.');
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (error) {
-      console.error('Erro ao limpar sessão:', error);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,18 +137,6 @@ function LoginContent() {
           <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
             {/* Social Login primeiro */}
             <SocialLogin mode="login" userType={userType} />
-
-            <div className="text-center">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleClearSession}
-                className="text-xs text-gray-500 hover:text-gray-700"
-              >
-                Limpar Sessão Google
-              </Button>
-            </div>
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
