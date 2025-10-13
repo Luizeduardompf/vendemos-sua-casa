@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider';  // Clien
 import { cn } from '@/lib/utils';  // shadcn cn helper
 import { SpeedInsightsComponent } from '@/components/insights/speed-insights';  // Novo: Speed Insights
 import { ConditionalHeader } from '@/components/conditional-header';
-import { Footer } from '@/components/footer';
+import { ConditionalFooter } from '@/components/conditional-footer';
 import { ThemeEnforcer } from '@/components/theme-enforcer';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -45,7 +45,7 @@ export default function RootLayout({
             <main className="flex-1">
               {children}
             </main>
-            <Footer />
+            <ConditionalFooter />
           </div>
           <SpeedInsightsComponent />
         </ThemeProvider>
