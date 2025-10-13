@@ -50,6 +50,10 @@ function AuthCallbackContent() {
           .single();
 
         console.log('🔵 Usuário existe?', userData ? 'Sim' : 'Não');
+        console.log('🔵 Google metadata:', session.user.user_metadata);
+        console.log('🔵 Avatar URL:', session.user.user_metadata?.avatar_url);
+        console.log('🔵 Picture:', session.user.user_metadata?.picture);
+        console.log('🔵 Full name:', session.user.user_metadata?.full_name);
 
         // Se não existe, criar básico
         if (!userData) {
@@ -86,6 +90,9 @@ function AuthCallbackContent() {
           };
           
           console.log('🔵 Dados para criar usuário:', userDataToCreate);
+          console.log('🔵 Foto capturada:', userDataToCreate.foto_perfil);
+          console.log('🔵 Avatar URL direto:', session.user.user_metadata?.avatar_url);
+          console.log('🔵 Picture direto:', session.user.user_metadata?.picture);
           
           const { error: insertError } = await supabase
             .from('users')
@@ -121,6 +128,9 @@ function AuthCallbackContent() {
               raw_data: session.user.user_metadata
             }
           };
+          
+          console.log('🔵 Dados para atualizar usuário:', updateData);
+          console.log('🔵 Foto para atualizar:', updateData.foto_perfil);
           
           const { error: updateError } = await supabase
             .from('users')

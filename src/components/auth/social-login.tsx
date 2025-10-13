@@ -36,7 +36,8 @@ export function SocialLogin({ mode, userType = 'proprietario' }: SocialLoginProp
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
             access_type: 'offline',
-            prompt: 'select_account'
+            prompt: 'select_account',
+            scope: 'openid email profile'
           }
         },
       });
