@@ -150,8 +150,8 @@ export async function PUT(request: NextRequest) {
       'provedor_id',
       'localizacao',
       'email_verificado',
-      'dados_sociais'
-      // 'foto_manual' - temporariamente removido até coluna ser criada
+      'dados_sociais',
+      'foto_manual'
     ];
     
     // Filtrar apenas campos permitidos

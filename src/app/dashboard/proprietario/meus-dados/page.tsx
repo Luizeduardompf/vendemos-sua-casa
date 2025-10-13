@@ -159,7 +159,8 @@ export default function MeusDadosPage() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ 
-              foto_perfil: base64
+              foto_perfil: base64,
+              foto_manual: true
             }),
           });
 
