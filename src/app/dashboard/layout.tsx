@@ -10,6 +10,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { createBrowserClient } from '@supabase/ssr';
 import AccountStatusModal from '@/components/ui/account-status-modal';
+import DashboardFooter from '@/components/dashboard/footer';
 import './globals.css';
 import './dynamic-styles.css';
 
@@ -395,11 +396,14 @@ export default function DashboardLayout({
             </header>
             
             {/* Page Content */}
-            <main className="flex-1 overflow-auto p-6">
+            <main className="flex-1 overflow-auto p-6 pb-16">
               {children}
             </main>
           </div>
         </div>
+
+        {/* Footer Fixo */}
+        <DashboardFooter />
 
         {/* Modal de Status da Conta */}
         <AccountStatusModal

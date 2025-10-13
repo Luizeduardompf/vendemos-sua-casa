@@ -28,6 +28,9 @@ interface UserData {
   provedor?: string;
   localizacao?: string;
   email_verificado?: boolean;
+  telefone_verificado?: boolean;
+  conta_analisada?: boolean;
+  status_analise?: 'pending' | 'approved' | 'rejected' | 'under_review';
   dados_sociais?: any;
   foto_manual?: boolean;
 }
@@ -308,10 +311,37 @@ export default function MeusDadosPage() {
                   Estado da Conta
                 </Label>
                 <div className="flex items-center space-x-2 mt-2">
-                  <div className={`w-2 h-2 rounded-full ${userData?.is_verified ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-                  <span className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
-                    {userData?.is_verified ? 'Verificado' : 'Pendente'}
-                  </span>
+                  {(() => {
+                    // Lógica baseada nos novos campos de verificação
+                    if (userData?.status_analise === 'approved') {
+                      return (
+                        <>
+                          <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                          <span className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                            Aprovada
+                          </span>
+                        </>
+                      );
+                    } else if (userData?.status_analise === 'rejected') {
+                      return (
+                        <>
+                          <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                          <span className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                            Rejeitada
+                          </span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <>
+                          <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                          <span className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                            Análise Pendente
+                          </span>
+                        </>
+                      );
+                    }
+                  })()}
                 </div>
               </div>
 
