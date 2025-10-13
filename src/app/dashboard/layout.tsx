@@ -8,7 +8,7 @@ import { Sidebar } from '@/components/dashboard/sidebar';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { useTheme } from '@/hooks/use-theme';
 import { createBrowserClient } from '@supabase/ssr';
-import { UserProvider, useUser } from '@/contexts/UserContext';
+// import { UserProvider, useUser } from '@/contexts/UserContext';
 import './globals.css';
 import './dynamic-styles.css';
 
@@ -30,8 +30,12 @@ interface User {
   foto_manual?: boolean;
 }
 
-function DashboardContent({ children }: { children: React.ReactNode }) {
-  const { user, setUser } = useUser();
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [configuracoes, setConfiguracoes] = useState({
     modo_escuro: false,
