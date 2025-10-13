@@ -78,6 +78,12 @@ function LoginContent() {
           return;
         }
         
+        // Verificar se é erro de conta vinculada a provedor social
+        if (data.suggestion === 'social_login') {
+          setError(`🔗 ${data.error}\n\nUse o botão "Continue with ${data.provider}" acima para fazer login.`);
+          return;
+        }
+        
         throw new Error(data.error || 'Erro ao fazer login');
       }
 

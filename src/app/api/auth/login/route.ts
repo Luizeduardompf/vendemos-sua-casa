@@ -31,6 +31,24 @@ export async function POST(request: NextRequest) {
     if (authError) {
       console.error('Erro no login:', authError);
       
+      // Verificar se existe conta com este email mas com provedor social
+      const { data: existingUser, error: userError } = await supabase
+        .from('users')
+        .select('email, provedor, user_type')
+        .eq('email', validatedData.email)
+        .maybeSingle();
+
+      if (!userError && existingUser && existingUser.provedor !== 'email') {
+        return NextResponse.json(
+          { 
+            error: `Esta conta está vinculada ao ${existingUser.provedor}. Use o login social.`,
+            suggestion: 'social_login',
+            provider: existingUser.provedor
+          },
+          { status: 400 }
+        );
+      }
+      
       // Mapear erros específicos do Supabase
       if (authError.message.includes('Invalid login credentials')) {
         return NextResponse.json(
