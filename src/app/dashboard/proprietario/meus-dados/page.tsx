@@ -28,6 +28,7 @@ interface UserData {
   localizacao?: string;
   email_verificado?: boolean;
   dados_sociais?: any;
+  foto_manual?: boolean;
 }
 
 export default function MeusDadosPage() {
@@ -150,14 +151,17 @@ export default function MeusDadosPage() {
             return;
           }
 
-          // Atualizar foto no perfil
+          // Atualizar foto no perfil (marcar como manual)
           const response = await fetch('/api/auth/profile', {
             method: 'PUT',
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ foto_perfil: base64 }),
+            body: JSON.stringify({ 
+              foto_perfil: base64,
+              foto_manual: true 
+            }),
           });
 
           const result = await response.json();

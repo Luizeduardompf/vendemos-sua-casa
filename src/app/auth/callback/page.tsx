@@ -102,6 +102,7 @@ function AuthCallbackContent() {
             provedor_id: session.user.user_metadata?.sub || session.user.id,
             localizacao: session.user.user_metadata?.locale,
             email_verificado: session.user.email_confirmed_at ? true : false,
+            foto_manual: false, // Foto do Google, não manual
             dados_sociais: {
               google_id: session.user.user_metadata?.sub || session.user.id,
               avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
@@ -141,8 +142,13 @@ function AuthCallbackContent() {
           
           // Atualizar dados do usuário existente com informações do Google
           console.log('🔵 Atualizando dados do utilizador existente...');
+          
+          // Verificar se a foto foi alterada manualmente
+          const shouldUpdatePhoto = !userData.foto_manual;
+          console.log('🔵 Foto manual:', userData.foto_manual);
+          console.log('🔵 Deve atualizar foto:', shouldUpdatePhoto);
+          
           const updateData = {
-            foto_perfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
             primeiro_nome: session.user.user_metadata?.given_name || session.user.user_metadata?.first_name,
             ultimo_nome: session.user.user_metadata?.family_name || session.user.user_metadata?.last_name,
             nome_exibicao: session.user.user_metadata?.name || session.user.user_metadata?.display_name,
@@ -158,6 +164,14 @@ function AuthCallbackContent() {
               raw_data: session.user.user_metadata
             }
           };
+          
+          // Só atualizar foto se não foi alterada manualmente
+          if (shouldUpdatePhoto) {
+            updateData.foto_perfil = session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture;
+            console.log('🔵 Atualizando foto do Google:', updateData.foto_perfil);
+          } else {
+            console.log('🔵 Preservando foto manual do usuário');
+          }
           
           console.log('🔵 Dados para atualizar utilizador:', updateData);
           

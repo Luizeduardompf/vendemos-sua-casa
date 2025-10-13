@@ -26,6 +26,7 @@ interface User {
   localizacao?: string;
   email_verificado?: boolean;
   dados_sociais?: any;
+  foto_manual?: boolean;
 }
 
 export default function DashboardLayout({
@@ -200,7 +201,8 @@ export default function DashboardLayout({
             provedor: userData.provedor,
             localizacao: userData.localizacao,
             email_verificado: userData.email_verificado,
-            dados_sociais: userData.dados_sociais
+            dados_sociais: userData.dados_sociais,
+            foto_manual: userData.foto_manual
           });
         }
         
