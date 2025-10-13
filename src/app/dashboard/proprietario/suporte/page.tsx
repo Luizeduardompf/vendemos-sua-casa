@@ -2,7 +2,7 @@
 
 import { PageLayout } from '@/components/dashboard/page-layout';
 import { Message } from '@/components/ui/message';
-import { Construction, Clock, Info, HelpCircle } from 'lucide-react';
+import { Clock, Info, HelpCircle } from 'lucide-react';
 
 export default function SuportePage() {
   return (

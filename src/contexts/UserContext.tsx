@@ -16,7 +16,7 @@ interface User {
   provedor?: string;
   localizacao?: string;
   email_verificado?: boolean;
-  dados_sociais?: any;
+  dados_sociais?: Record<string, unknown>;
   foto_manual?: boolean;
 }
 

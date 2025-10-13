@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface PageLayoutProps {
   title: string;
@@ -11,7 +11,7 @@ interface PageLayoutProps {
   message?: ReactNode;
 }
 
-export default function PageLayout({ 
+export function PageLayout({ 
   title, 
   description, 
   children, 
@@ -90,3 +90,5 @@ export function TwoColumnGrid({ left, right, className = '' }: TwoColumnGridProp
     </div>
   );
 }
+
+export default PageLayout;

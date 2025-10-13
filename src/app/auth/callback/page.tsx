@@ -138,7 +138,7 @@ function AuthCallbackContent() {
           console.log('🔵 Foto manual atual:', userData.foto_manual);
           
           // Atualizar dados do usuário existente
-          const updateData: any = {
+          const updateData: Record<string, unknown> = {
             email: session.user.email,
             nome_completo: session.user.user_metadata?.full_name || session.user.email,
             telefone: session.user.user_metadata?.phone_number || session.user.phone,

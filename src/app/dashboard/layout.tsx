@@ -34,7 +34,7 @@ interface User {
   data_verificacao_email?: string;
   data_verificacao_telefone?: string;
   data_analise_conta?: string;
-  dados_sociais?: any;
+  dados_sociais?: Record<string, unknown>;
   foto_manual?: boolean;
 }
 
@@ -87,7 +87,7 @@ export default function DashboardLayout({
   };
 
   // Função para aplicar estilos dinâmicos
-  const applyStyles = (config: any) => {
+  const applyStyles = (config: Record<string, unknown>) => {
     const body = document.body;
     const dashboardContainer = document.querySelector('.dashboard-container');
     

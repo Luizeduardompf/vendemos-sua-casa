@@ -32,7 +32,7 @@ interface UserData {
   telefone_verificado?: boolean;
   conta_analisada?: boolean;
   status_analise?: 'pending' | 'approved' | 'rejected' | 'under_review';
-  dados_sociais?: any;
+  dados_sociais?: Record<string, unknown>;
   foto_manual?: boolean;
 }
 

@@ -128,7 +128,7 @@ export default function ConfiguracoesPage() {
     setMessage({ type: 'info', text: 'Alterações canceladas' });
   };
 
-  const handleConfigChange = (key: string, value: any) => {
+  const handleConfigChange = (key: string, value: unknown) => {
     setConfiguracoes(prev => ({
       ...prev,
       [key]: value
