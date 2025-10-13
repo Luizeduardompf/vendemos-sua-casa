@@ -55,82 +55,25 @@ function AuthCallbackContent() {
         if (!userData) {
           console.log('🔵 Criando usuário básico...');
           
-          const userDataToCreate = {
-            auth_user_id: session.user.id,
-            email: session.user.email,
-            nome_completo: session.user.user_metadata?.full_name || session.user.email,
-            telefone: session.user.user_metadata?.phone_number || session.user.phone,
-            user_type: 'proprietario',
-            is_verified: true,
-            is_active: true,
-            aceita_termos: true,
-            aceita_privacidade: true,
-            aceita_marketing: false,
-            // Dados completos do Google
-            foto_perfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
-            primeiro_nome: session.user.user_metadata?.given_name || session.user.user_metadata?.first_name,
-            ultimo_nome: session.user.user_metadata?.family_name || session.user.user_metadata?.last_name,
-            nome_exibicao: session.user.user_metadata?.name || session.user.user_metadata?.display_name,
-            provedor: 'google',
-            provedor_id: session.user.user_metadata?.sub || session.user.id,
-            localizacao: session.user.user_metadata?.locale,
-            email_verificado: session.user.email_confirmed_at ? true : false,
-            foto_manual: false,
-            dados_sociais: {
-              google_id: session.user.user_metadata?.sub || session.user.id,
-              avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
-              locale: session.user.user_metadata?.locale,
-              verified_email: session.user.user_metadata?.email_verified || false,
-              raw_data: session.user.user_metadata
-            }
-          };
-          
-          console.log('🔵 Dados para criar usuário:', userDataToCreate);
-          
           const { error: insertError } = await supabase
             .from('users')
-            .insert(userDataToCreate);
+            .insert({
+              auth_user_id: session.user.id,
+              email: session.user.email,
+              nome_completo: session.user.user_metadata?.full_name || session.user.email,
+              user_type: 'proprietario',
+              is_verified: true,
+              is_active: true,
+              foto_perfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
+              provedor: 'google',
+              provedor_id: session.user.user_metadata?.sub || session.user.id
+            });
           
           if (insertError) {
             console.error('❌ Erro ao criar usuário:', insertError);
             // Continuar mesmo com erro
           } else {
             console.log('✅ Usuário criado');
-          }
-        } else {
-          console.log('🔵 Usuário já existe, atualizando dados...');
-          
-          // Atualizar dados do usuário existente
-          const updateData = {
-            email: session.user.email,
-            nome_completo: session.user.user_metadata?.full_name || session.user.email,
-            telefone: session.user.user_metadata?.phone_number || session.user.phone,
-            foto_perfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
-            primeiro_nome: session.user.user_metadata?.given_name || session.user.user_metadata?.first_name,
-            ultimo_nome: session.user.user_metadata?.family_name || session.user.user_metadata?.last_name,
-            nome_exibicao: session.user.user_metadata?.name || session.user.user_metadata?.display_name,
-            provedor: 'google',
-            provedor_id: session.user.user_metadata?.sub || session.user.id,
-            localizacao: session.user.user_metadata?.locale,
-            email_verificado: session.user.email_confirmed_at ? true : false,
-            dados_sociais: {
-              google_id: session.user.user_metadata?.sub || session.user.id,
-              avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
-              locale: session.user.user_metadata?.locale,
-              verified_email: session.user.user_metadata?.email_verified || false,
-              raw_data: session.user.user_metadata
-            }
-          };
-          
-          const { error: updateError } = await supabase
-            .from('users')
-            .update(updateData)
-            .eq('auth_user_id', session.user.id);
-          
-          if (updateError) {
-            console.error('❌ Erro ao atualizar usuário:', updateError);
-          } else {
-            console.log('✅ Usuário atualizado');
           }
         }
 
