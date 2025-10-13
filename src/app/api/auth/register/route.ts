@@ -21,7 +21,18 @@ const registerSchema = z.object({
   distrito: z.string().optional(),
   aceita_termos: z.boolean().refine(val => val === true, 'Deve aceitar os termos'),
   aceita_privacidade: z.boolean().refine(val => val === true, 'Deve aceitar a política de privacidade'),
-  aceita_marketing: z.boolean().optional().default(false)
+  aceita_marketing: z.boolean().optional().default(false),
+  // Novos campos do Google
+  foto_perfil: z.string().optional(),
+  primeiro_nome: z.string().optional(),
+  ultimo_nome: z.string().optional(),
+  nome_exibicao: z.string().optional(),
+  provedor: z.string().optional(),
+  provedor_id: z.string().optional(),
+  localizacao: z.string().optional(),
+  email_verificado: z.boolean().optional(),
+  foto_manual: z.boolean().optional(),
+  dados_sociais: z.any().optional()
 });
 
 export async function POST(request: NextRequest) {
@@ -187,17 +198,45 @@ export async function POST(request: NextRequest) {
         aceita_privacidade: validatedData.aceita_privacidade,
         aceita_marketing: validatedData.aceita_marketing,
         is_verified: false, // Pendente de verificação
-        is_active: true
+        is_active: true,
+        // Novos campos do Google
+        foto_perfil: validatedData.foto_perfil,
+        primeiro_nome: validatedData.primeiro_nome,
+        ultimo_nome: validatedData.ultimo_nome,
+        nome_exibicao: validatedData.nome_exibicao,
+        provedor: validatedData.provedor,
+        provedor_id: validatedData.provedor_id,
+        localizacao: validatedData.localizacao,
+        email_verificado: validatedData.email_verificado,
+        foto_manual: validatedData.foto_manual,
+        dados_sociais: validatedData.dados_sociais
       })
       .select()
       .single();
     
     if (profileError) {
-      console.error('Erro ao criar perfil:', profileError);
+      console.error('❌ Erro ao criar perfil:', profileError);
+      console.error('❌ Detalhes do erro:', {
+        message: profileError.message,
+        details: profileError.details,
+        hint: profileError.hint,
+        code: profileError.code
+      });
+      
       // Tentar remover o utilizador do Auth se falhou a criar o perfil
-      await supabase.auth.admin.deleteUser(authData.user.id);
+      try {
+        await supabase.auth.admin.deleteUser(authData.user.id);
+        console.log('✅ Utilizador removido do Auth após erro');
+      } catch (deleteError) {
+        console.error('❌ Erro ao remover utilizador do Auth:', deleteError);
+      }
+      
       return NextResponse.json(
-        { error: 'Erro ao criar perfil do utilizador' },
+        { 
+          error: 'Erro ao criar perfil do utilizador',
+          details: profileError.message,
+          code: profileError.code
+        },
         { status: 500 }
       );
     }
