@@ -288,10 +288,10 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
       isCollapsed ? "w-16" : "w-64"
     )}>
       {/* Header da Sidebar */}
-      <div className="px-6 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between h-12">
+      <div className="px-6 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between min-h-[48px] h-12">
         {!isCollapsed && (
           <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <Logo size="sm" />
+              <Logo size="md" />
           </Link>
         )}
         <Button
