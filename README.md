@@ -279,13 +279,17 @@ npm run build
 npm run lint
 ```
 
-## 📚 **Documentação Adicional**
+## 📚 **Documentação**
 
-- **[Guia de Boas Práticas Git](GIT_BEST_PRACTICES.md)**
-- **[Setup Git Rápido](SETUP_GIT.md)**
-- **[Guia de Testes](GUIA_TESTE.md)**
-- **[Documentação das APIs](API_CONFIGURACOES.md)**
-- **[Análise dos Arquivos SQL](SQL_FILES_ANALYSIS.md)**
+Toda a documentação técnica está organizada na pasta [`docs/`](docs/):
+
+- **[Índice da Documentação](docs/README.md)** - Navegação completa
+- **[Guia de Boas Práticas Git](docs/GIT_BEST_PRACTICES.md)**
+- **[Setup Git Rápido](docs/SETUP_GIT.md)**
+- **[Guia de Testes](docs/GUIA_TESTE.md)**
+- **[Documentação das APIs](docs/API_CONFIGURACOES.md)**
+- **[Changelog](docs/CHANGELOG.md)** - Histórico de versões
+- **[Guia de Releases](docs/RELEASE_GUIDE.md)**
 
 ## 🤝 **Contribuição**
 

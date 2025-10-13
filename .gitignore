@@ -146,6 +146,11 @@ temp/
 config.local.js
 config.local.json
 
+# Documentação temporária
+docs/temp/
+docs/draft/
+docs/*.tmp
+
 # Chaves e certificados
 *.key
 *.pem
