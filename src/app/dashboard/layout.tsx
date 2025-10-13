@@ -324,8 +324,8 @@ export default function DashboardLayout({
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dashboard-container">
-        <div className="flex h-screen">
+      <div className="h-screen bg-gray-50 dark:bg-gray-900 dashboard-container overflow-hidden">
+        <div className="flex h-full">
           {/* Sidebar */}
           <Sidebar 
             userPhoto={user.foto_perfil}
@@ -335,9 +335,9 @@ export default function DashboardLayout({
           />
           
           {/* Main Content */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
             {/* Header */}
-            <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+            <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex-shrink-0">
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -396,7 +396,7 @@ export default function DashboardLayout({
             </header>
             
             {/* Page Content */}
-            <main className="flex-1 overflow-auto p-6 pb-16">
+            <main className="flex-1 overflow-y-auto p-6 pb-16">
               {children}
             </main>
           </div>
