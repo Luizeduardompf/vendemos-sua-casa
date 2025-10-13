@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import PageLayout, { Section, TwoColumnGrid } from '@/components/dashboard/page-layout';
 import Message from '@/components/ui/message';
 import PasswordModal from '@/components/auth/password-modal';
+import { createBrowserClient } from '@supabase/ssr';
 
 interface UserData {
   id: string;
@@ -62,33 +63,47 @@ export default function MeusDadosPage() {
 
   const fetchUserData = async () => {
     try {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        setMessage({ type: 'error', text: 'Token de acesso não encontrado' });
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      // Obter sessão atual
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session?.user) {
+        setMessage({ type: 'error', text: 'Sessão inválida. Por favor, faça login novamente.' });
         setIsLoading(false);
         return;
       }
 
-      const response = await fetch('/api/auth/profile', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      // Buscar dados do usuário na tabela users
+      const { data: userProfile, error: profileError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('auth_user_id', session.user.id)
+        .maybeSingle();
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setUserData(data.user);
-        setFormData({
-          nome_completo: data.user.nome_completo || '',
-          telefone: data.user.telefone || '',
-          nif: data.user.nif || '',
-          tipo_pessoa: data.user.tipo_pessoa || 'singular'
-        });
-      } else {
-        setMessage({ type: 'error', text: data.error || 'Erro ao carregar dados' });
+      if (profileError) {
+        console.error('Erro ao buscar perfil:', profileError);
+        setMessage({ type: 'error', text: 'Erro ao carregar dados do usuário' });
+        setIsLoading(false);
+        return;
       }
+
+      if (!userProfile) {
+        setMessage({ type: 'error', text: 'Perfil do usuário não encontrado' });
+        setIsLoading(false);
+        return;
+      }
+
+      setUserData(userProfile);
+      setFormData({
+        nome_completo: userProfile.nome_completo || '',
+        telefone: userProfile.telefone || '',
+        nif: userProfile.nif || '',
+        tipo_pessoa: userProfile.tipo_pessoa || 'singular'
+      });
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
       setMessage({ type: 'error', text: 'Erro ao carregar dados' });

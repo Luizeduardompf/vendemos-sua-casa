@@ -22,14 +22,36 @@ export async function GET(request: NextRequest) {
     
     const supabase = createClient();
     
-    // Verificar se o utilizador está autenticado usando o token
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-    console.log('🔵 API Profile - User:', user ? 'Encontrado' : 'Não encontrado');
-    console.log('🔵 API Profile - User Error:', userError);
+    // Tentar obter a sessão atual primeiro
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    console.log('🔵 API Profile - Session:', session ? 'Encontrada' : 'Não encontrada');
+    console.log('🔵 API Profile - Session Error:', sessionError);
     
-    if (userError || !user) {
+    let authUser = null;
+    
+    if (session?.user) {
+      // Usar sessão atual se disponível
+      authUser = session.user;
+      console.log('🔵 API Profile - Usando sessão atual');
+    } else {
+      // Tentar validar o token fornecido
+      const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+      console.log('🔵 API Profile - User do token:', user ? 'Encontrado' : 'Não encontrado');
+      console.log('🔵 API Profile - User Error:', userError);
+      
+      if (userError || !user) {
+        return NextResponse.json(
+          { error: 'Token inválido ou expirado' },
+          { status: 401 }
+        );
+      }
+      
+      authUser = user;
+    }
+    
+    if (!authUser) {
       return NextResponse.json(
-        { error: 'Token inválido ou expirado' },
+        { error: 'Usuário não autenticado' },
         { status: 401 }
       );
     }
@@ -38,7 +60,7 @@ export async function GET(request: NextRequest) {
     const { data: userProfile, error: profileError } = await supabase
       .from('users')
       .select('*')
-      .eq('auth_user_id', user.id)
+      .eq('auth_user_id', authUser.id)
       .maybeSingle();
     
     if (profileError) {
