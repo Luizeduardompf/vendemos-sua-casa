@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 
 // Schema de validação para definir senha
@@ -19,7 +19,10 @@ export async function POST(request: NextRequest) {
     // Validar dados de entrada
     const validatedData = setPasswordSchema.parse(body);
     
-    const supabase = createClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
     
     // Verificar se usuário existe e é social
     const { data: existingUser, error: userError } = await supabase
@@ -43,39 +46,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se é conta social
-    if (existingUser.provedor === 'email') {
+    // Verificar se já tem senha definida
+    if (existingUser.provedor && existingUser.provedor.includes('email')) {
       return NextResponse.json(
         { error: 'Esta conta já possui senha definida' },
         { status: 400 }
       );
     }
 
-    // Buscar o usuário no Supabase Auth
-    const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-    
-    if (authError) {
-      console.error('Erro ao buscar usuários auth:', authError);
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    // Buscar o usuário no Supabase Auth usando RPC
+    const { data: authUser, error: authError } = await supabase
+      .rpc('get_user_by_email', { user_email: validatedData.email });
 
-    const authUser = authUsers.users.find(user => user.email === validatedData.email);
-    
-    if (!authUser) {
+    if (authError || !authUser) {
+      console.error('Erro ao buscar usuário auth:', authError);
       return NextResponse.json(
         { error: 'Usuário não encontrado no sistema de autenticação' },
         { status: 404 }
       );
     }
 
-    // Atualizar senha do usuário no Supabase Auth
-    const { error: updateError } = await supabase.auth.admin.updateUserById(
-      authUser.id,
-      { password: validatedData.password }
-    );
+    // Atualizar senha usando RPC
+    const { error: updateError } = await supabase
+      .rpc('update_user_password', {
+        user_id: authUser.id,
+        new_password: validatedData.password
+      });
 
     if (updateError) {
       console.error('Erro ao atualizar senha:', updateError);
@@ -86,13 +82,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Atualizar provedor na tabela users para incluir email
+    const newProvedor = existingUser.provedor ? `${existingUser.provedor},email` : 'email';
     const { error: updateUserError } = await supabase
       .from('users')
       .update({
-        provedor: `${existingUser.provedor},email`,
+        provedor: newProvedor,
         dados_sociais: {
           ...existingUser.dados_sociais,
-          linked_providers: [existingUser.provedor, 'email'],
+          linked_providers: existingUser.dados_sociais?.linked_providers 
+            ? [...existingUser.dados_sociais.linked_providers, 'email']
+            : [existingUser.provedor || 'google', 'email'],
           password_set_at: new Date().toISOString()
         }
       })
@@ -112,7 +111,7 @@ export async function POST(request: NextRequest) {
       user: {
         id: existingUser.id,
         email: existingUser.email,
-        provedor: `${existingUser.provedor},email`
+        provedor: newProvedor
       }
     });
 

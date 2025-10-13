@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import PageLayout, { Section, TwoColumnGrid } from '@/components/dashboard/page-layout';
 import Message from '@/components/ui/message';
+import PasswordModal from '@/components/auth/password-modal';
 
 interface UserData {
   id: string;
@@ -48,6 +49,9 @@ export default function MeusDadosPage() {
 
   // Estado para edição de foto
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  
+  // Estado para modal de senha
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   useEffect(() => {
     fetchUserData();
@@ -470,9 +474,47 @@ export default function MeusDadosPage() {
                   {isSaving ? 'A guardar...' : 'Guardar Alterações'}
                 </Button>
               </form>
+
+              {/* Botão para gerenciar senha */}
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="space-y-2">
+                  <Label className="text-gray-700 dark:text-gray-300">
+                    Acesso por Email e Senha
+                  </Label>
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      {userData?.provedor?.includes('email') 
+                        ? '✅ Senha definida - Pode usar email e senha'
+                        : '❌ Apenas login social - Defina uma senha'
+                      }
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsPasswordModalOpen(true)}
+                      className="transition-colors duration-300"
+                    >
+                      {userData?.provedor?.includes('email') ? 'Alterar Senha' : 'Definir Senha'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
           </Section>
         }
+      />
+
+      {/* Modal de senha */}
+      <PasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        userEmail={userData?.email || ''}
+        hasPassword={userData?.provedor?.includes('email') || false}
+        onSuccess={() => {
+          // Recarregar dados do usuário
+          fetchUserData();
+        }}
       />
     </PageLayout>
   );
