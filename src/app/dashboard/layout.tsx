@@ -410,7 +410,7 @@ export default function DashboardLayout({
           isOpen={isStatusModalOpen}
           onClose={() => setIsStatusModalOpen(false)}
           status={user ? getAccountStatus(user) : 'pending'}
-          userType={user?.user_type || 'proprietario'}
+          userType={(user?.user_type as 'proprietario' | 'agente' | 'imobiliaria') || 'proprietario'}
           emailVerificado={user?.email_verificado || false}
           telefoneVerificado={user?.telefone_verificado || false}
         />
