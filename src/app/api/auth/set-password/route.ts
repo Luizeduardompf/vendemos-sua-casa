@@ -54,24 +54,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Buscar o usuário no Supabase Auth usando RPC
-    const { data: authUser, error: authError } = await supabase
-      .rpc('get_user_by_email', { user_email: validatedData.email });
+    // Usar admin API para atualizar senha
+    const { data: authUsers, error: listError } = await supabase.auth.admin.listUsers();
+    
+    if (listError) {
+      console.error('Erro ao listar usuários:', listError);
+      return NextResponse.json(
+        { error: 'Erro ao verificar usuário no sistema de autenticação' },
+        { status: 500 }
+      );
+    }
 
-    if (authError || !authUser) {
-      console.error('Erro ao buscar usuário auth:', authError);
+    const authUser = authUsers.users.find(user => user.email === validatedData.email);
+    
+    if (!authUser) {
       return NextResponse.json(
         { error: 'Usuário não encontrado no sistema de autenticação' },
         { status: 404 }
       );
     }
 
-    // Atualizar senha usando RPC
-    const { error: updateError } = await supabase
-      .rpc('update_user_password', {
-        user_id: authUser.id,
-        new_password: validatedData.password
-      });
+    // Atualizar senha usando admin API
+    const { error: updateError } = await supabase.auth.admin.updateUserById(
+      authUser.id,
+      { password: validatedData.password }
+    );
 
     if (updateError) {
       console.error('Erro ao atualizar senha:', updateError);
