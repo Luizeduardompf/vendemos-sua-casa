@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import PageLayout, { Section } from '@/components/dashboard/page-layout';
 
 export default function CadastrarImovelPage() {
   const router = useRouter();
@@ -59,24 +59,40 @@ export default function CadastrarImovelPage() {
       newErrors.descricao = 'Descrição é obrigatória';
     }
 
-    if (!formData.preco || parseFloat(formData.preco) <= 0) {
-      newErrors.preco = 'Preço deve ser maior que zero';
+    if (!formData.preco.trim()) {
+      newErrors.preco = 'Preço é obrigatório';
+    } else if (isNaN(Number(formData.preco)) || Number(formData.preco) <= 0) {
+      newErrors.preco = 'Preço deve ser um número válido';
     }
 
-    if (!formData.area || parseFloat(formData.area) <= 0) {
-      newErrors.area = 'Área deve ser maior que zero';
+    if (!formData.area.trim()) {
+      newErrors.area = 'Área é obrigatória';
+    } else if (isNaN(Number(formData.area)) || Number(formData.area) <= 0) {
+      newErrors.area = 'Área deve ser um número válido';
     }
 
-    if (!formData.quartos) {
+    if (!formData.quartos.trim()) {
       newErrors.quartos = 'Número de quartos é obrigatório';
+    } else if (isNaN(Number(formData.quartos)) || Number(formData.quartos) < 0) {
+      newErrors.quartos = 'Número de quartos deve ser um número válido';
     }
 
-    if (!formData.casas_banho) {
+    if (!formData.casas_banho.trim()) {
       newErrors.casas_banho = 'Número de casas de banho é obrigatório';
+    } else if (isNaN(Number(formData.casas_banho)) || Number(formData.casas_banho) < 0) {
+      newErrors.casas_banho = 'Número de casas de banho deve ser um número válido';
     }
 
     if (!formData.localizacao.trim()) {
       newErrors.localizacao = 'Localização é obrigatória';
+    }
+
+    if (!formData.tipo_imovel) {
+      newErrors.tipo_imovel = 'Tipo de imóvel é obrigatório';
+    }
+
+    if (!formData.estado) {
+      newErrors.estado = 'Estado é obrigatório';
     }
 
     setErrors(newErrors);
@@ -87,7 +103,6 @@ export default function CadastrarImovelPage() {
     e.preventDefault();
     
     if (!validateForm()) {
-      setMessage({ type: 'error', text: 'Por favor, corrija os erros no formulário.' });
       return;
     }
 
@@ -95,27 +110,25 @@ export default function CadastrarImovelPage() {
     setMessage(null);
 
     try {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        setMessage({ type: 'error', text: 'Token de autenticação não encontrado. Faça login novamente.' });
-        return;
-      }
-
-      // Aqui implementaremos a API para cadastrar imóvel
-      console.log('Dados do imóvel:', formData);
+      // Simular envio para API
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Simular cadastro
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      setMessage({ 
+        type: 'success', 
+        text: 'Imóvel cadastrado com sucesso! Redirecionando...' 
+      });
       
-      setMessage({ type: 'success', text: 'Imóvel cadastrado com sucesso! Redirecionando...' });
-      
-      // Redirecionar para dashboard após 2 segundos
+      // Redirecionar após 2 segundos
       setTimeout(() => {
         router.push('/dashboard/proprietario');
       }, 2000);
-
-    } catch (err) {
-      setMessage({ type: 'error', text: 'Erro ao cadastrar imóvel. Tente novamente.' });
+      
+    } catch (error) {
+      console.error('Erro ao cadastrar imóvel:', error);
+      setMessage({ 
+        type: 'error', 
+        text: 'Erro ao cadastrar imóvel. Tente novamente.' 
+      });
     } finally {
       setIsSaving(false);
     }
@@ -123,206 +136,227 @@ export default function CadastrarImovelPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>A carregar...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            🏠 Cadastrar Novo Imóvel
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Preencha os dados do seu imóvel para começar a receber propostas
-          </p>
-        </div>
+    <PageLayout
+      title="Cadastrar Imóvel"
+      description="Adicione um novo imóvel ao seu portfólio"
+    >
+      {/* Mensagem de feedback */}
+      {message && (
+        <Alert className={message.type === 'error' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'}>
+          <AlertDescription className={message.type === 'error' ? 'text-red-800 dark:text-red-200' : 'text-green-800 dark:text-green-200'}>
+            {message.text}
+          </AlertDescription>
+        </Alert>
+      )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Informações do Imóvel</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {message && (
-                <Alert variant={message.type === 'error' ? 'destructive' : 'default'} className={message.type === 'success' ? 'border-green-200 bg-green-50 text-green-800' : ''}>
-                  <AlertDescription>{message.text}</AlertDescription>
-                </Alert>
-              )}
-
-              {/* Título */}
-              <div className="space-y-2">
-                <Label htmlFor="titulo">Título do Anúncio *</Label>
+      {/* Formulário principal */}
+      <Section title="Informações do Imóvel">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="titulo" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Título *
+                </Label>
                 <Input
                   id="titulo"
+                  type="text"
                   value={formData.titulo}
                   onChange={(e) => handleInputChange('titulo', e.target.value)}
-                  placeholder="Ex: Apartamento T2 com varanda, centro de Lisboa"
+                  className={`transition-colors duration-300 ${errors.titulo ? 'border-red-500 focus:border-red-500' : ''}`}
+                  placeholder="Ex: Apartamento T2 com varanda"
                 />
                 {errors.titulo && (
-                  <p className="text-sm text-red-600">{errors.titulo}</p>
+                  <p className="text-red-500 text-sm mt-1">{errors.titulo}</p>
                 )}
               </div>
 
-              {/* Descrição */}
-              <div className="space-y-2">
-                <Label htmlFor="descricao">Descrição *</Label>
-                <textarea
-                  id="descricao"
-                  value={formData.descricao}
-                  onChange={(e) => handleInputChange('descricao', e.target.value)}
-                  placeholder="Descreva o imóvel, localização, características especiais..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  rows={4}
+              <div>
+                <Label htmlFor="preco" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Preço *
+                </Label>
+                <Input
+                  id="preco"
+                  type="number"
+                  value={formData.preco}
+                  onChange={(e) => handleInputChange('preco', e.target.value)}
+                  className={`transition-colors duration-300 ${errors.preco ? 'border-red-500 focus:border-red-500' : ''}`}
+                  placeholder="250000"
                 />
-                {errors.descricao && (
-                  <p className="text-sm text-red-600">{errors.descricao}</p>
+                {errors.preco && (
+                  <p className="text-red-500 text-sm mt-1">{errors.preco}</p>
                 )}
               </div>
 
-              {/* Preço e Área */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="preco">Preço (€) *</Label>
-                  <Input
-                    id="preco"
-                    type="number"
-                    value={formData.preco}
-                    onChange={(e) => handleInputChange('preco', e.target.value)}
-                    placeholder="250000"
-                  />
-                  {errors.preco && (
-                    <p className="text-sm text-red-600">{errors.preco}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="area">Área (m²) *</Label>
-                  <Input
-                    id="area"
-                    type="number"
-                    value={formData.area}
-                    onChange={(e) => handleInputChange('area', e.target.value)}
-                    placeholder="85"
-                  />
-                  {errors.area && (
-                    <p className="text-sm text-red-600">{errors.area}</p>
-                  )}
-                </div>
+              <div>
+                <Label htmlFor="area" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Área (m²) *
+                </Label>
+                <Input
+                  id="area"
+                  type="number"
+                  value={formData.area}
+                  onChange={(e) => handleInputChange('area', e.target.value)}
+                  className={`transition-colors duration-300 ${errors.area ? 'border-red-500 focus:border-red-500' : ''}`}
+                  placeholder="85"
+                />
+                {errors.area && (
+                  <p className="text-red-500 text-sm mt-1">{errors.area}</p>
+                )}
               </div>
 
-              {/* Quartos e Casas de Banho */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="quartos">Quartos *</Label>
-                  <Select value={formData.quartos} onValueChange={(value) => handleInputChange('quartos', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="T0">T0</SelectItem>
-                      <SelectItem value="T1">T1</SelectItem>
-                      <SelectItem value="T2">T2</SelectItem>
-                      <SelectItem value="T3">T3</SelectItem>
-                      <SelectItem value="T4">T4</SelectItem>
-                      <SelectItem value="T5+">T5+</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.quartos && (
-                    <p className="text-sm text-red-600">{errors.quartos}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="casas_banho">Casas de Banho *</Label>
-                  <Select value={formData.casas_banho} onValueChange={(value) => handleInputChange('casas_banho', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1</SelectItem>
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4+">4+</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.casas_banho && (
-                    <p className="text-sm text-red-600">{errors.casas_banho}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Localização */}
-              <div className="space-y-2">
-                <Label htmlFor="localizacao">Localização *</Label>
+              <div>
+                <Label htmlFor="localizacao" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Localização *
+                </Label>
                 <Input
                   id="localizacao"
+                  type="text"
                   value={formData.localizacao}
                   onChange={(e) => handleInputChange('localizacao', e.target.value)}
-                  placeholder="Ex: Lisboa, Porto, Braga..."
+                  className={`transition-colors duration-300 ${errors.localizacao ? 'border-red-500 focus:border-red-500' : ''}`}
+                  placeholder="Lisboa, Portugal"
                 />
                 {errors.localizacao && (
-                  <p className="text-sm text-red-600">{errors.localizacao}</p>
+                  <p className="text-red-500 text-sm mt-1">{errors.localizacao}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="tipo_imovel" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Tipo de Imóvel *
+                </Label>
+                <Select
+                  value={formData.tipo_imovel}
+                  onValueChange={(value) => handleInputChange('tipo_imovel', value)}
+                >
+                  <SelectTrigger className={`transition-colors duration-300 ${errors.tipo_imovel ? 'border-red-500 focus:border-red-500' : ''}`}>
+                    <SelectValue placeholder="Selecione o tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="apartamento">Apartamento</SelectItem>
+                    <SelectItem value="casa">Casa</SelectItem>
+                    <SelectItem value="moradia">Moradia</SelectItem>
+                    <SelectItem value="villa">Villa</SelectItem>
+                    <SelectItem value="terreno">Terreno</SelectItem>
+                    <SelectItem value="loja">Loja</SelectItem>
+                    <SelectItem value="escritorio">Escritório</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.tipo_imovel && (
+                  <p className="text-red-500 text-sm mt-1">{errors.tipo_imovel}</p>
                 )}
               </div>
 
-              {/* Tipo de Imóvel e Estado */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="tipo_imovel">Tipo de Imóvel *</Label>
-                  <Select value={formData.tipo_imovel} onValueChange={(value) => handleInputChange('tipo_imovel', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="apartamento">Apartamento</SelectItem>
-                      <SelectItem value="casa">Casa</SelectItem>
-                      <SelectItem value="moradia">Moradia</SelectItem>
-                      <SelectItem value="villa">Villa</SelectItem>
-                      <SelectItem value="terreno">Terreno</SelectItem>
-                      <SelectItem value="loja">Loja</SelectItem>
-                      <SelectItem value="escritorio">Escritório</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="estado">Estado do Imóvel *</Label>
-                  <Select value={formData.estado} onValueChange={(value) => handleInputChange('estado', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="excelente">Excelente</SelectItem>
-                      <SelectItem value="bom">Bom</SelectItem>
-                      <SelectItem value="razoavel">Razoável</SelectItem>
-                      <SelectItem value="precisa_obras">Precisa de Obras</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label htmlFor="quartos" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Quartos *
+                </Label>
+                <Input
+                  id="quartos"
+                  type="number"
+                  value={formData.quartos}
+                  onChange={(e) => handleInputChange('quartos', e.target.value)}
+                  className={`transition-colors duration-300 ${errors.quartos ? 'border-red-500 focus:border-red-500' : ''}`}
+                  placeholder="2"
+                />
+                {errors.quartos && (
+                  <p className="text-red-500 text-sm mt-1">{errors.quartos}</p>
+                )}
               </div>
 
-              {/* Botões */}
-              <div className="flex justify-end space-x-4 pt-6">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.push('/dashboard/proprietario')}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isSaving}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  {isSaving ? 'Cadastrando...' : 'Cadastrar Imóvel'}
-                </Button>
+              <div>
+                <Label htmlFor="casas_banho" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Casas de Banho *
+                </Label>
+                <Input
+                  id="casas_banho"
+                  type="number"
+                  value={formData.casas_banho}
+                  onChange={(e) => handleInputChange('casas_banho', e.target.value)}
+                  className={`transition-colors duration-300 ${errors.casas_banho ? 'border-red-500 focus:border-red-500' : ''}`}
+                  placeholder="1"
+                />
+                {errors.casas_banho && (
+                  <p className="text-red-500 text-sm mt-1">{errors.casas_banho}</p>
+                )}
               </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+
+              <div>
+                <Label htmlFor="estado" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Estado *
+                </Label>
+                <Select
+                  value={formData.estado}
+                  onValueChange={(value) => handleInputChange('estado', value)}
+                >
+                  <SelectTrigger className={`transition-colors duration-300 ${errors.estado ? 'border-red-500 focus:border-red-500' : ''}`}>
+                    <SelectValue placeholder="Selecione o estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="excelente">Excelente</SelectItem>
+                    <SelectItem value="bom">Bom</SelectItem>
+                    <SelectItem value="regular">Regular</SelectItem>
+                    <SelectItem value="precisa_renovacao">Precisa Renovação</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.estado && (
+                  <p className="text-red-500 text-sm mt-1">{errors.estado}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="descricao" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+              Descrição *
+            </Label>
+            <textarea
+              id="descricao"
+              value={formData.descricao}
+              onChange={(e) => handleInputChange('descricao', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300 ${
+                errors.descricao ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+              } bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100`}
+              rows={4}
+              placeholder="Descreva o imóvel em detalhes..."
+            />
+            {errors.descricao && (
+              <p className="text-red-500 text-sm mt-1">{errors.descricao}</p>
+            )}
+          </div>
+
+          <div className="flex space-x-4">
+            <Button
+              type="submit"
+              disabled={isSaving}
+              className="flex-1 transition-colors duration-300"
+            >
+              {isSaving ? 'A guardar...' : 'Cadastrar Imóvel'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+              className="flex-1 transition-colors duration-300"
+            >
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      </Section>
+    </PageLayout>
   );
 }

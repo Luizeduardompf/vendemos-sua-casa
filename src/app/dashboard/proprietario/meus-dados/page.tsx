@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import PageLayout, { Section, TwoColumnGrid } from '@/components/dashboard/page-layout';
 
 interface UserData {
   id: string;
@@ -56,7 +56,11 @@ export default function MeusDadosPage() {
   const fetchUserData = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      if (!token) return;
+      if (!token) {
+        setMessage({ type: 'error', text: 'Token de acesso não encontrado' });
+        setIsLoading(false);
+        return;
+      }
 
       const response = await fetch('/api/auth/profile', {
         headers: {
@@ -65,11 +69,9 @@ export default function MeusDadosPage() {
         }
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
-        console.log('🔍 Dados recebidos da API:', data);
-        console.log('🔍 Foto do perfil:', data.user?.foto_perfil);
-        console.log('🔍 Provedor:', data.user?.provedor);
         setUserData(data.user);
         setFormData({
           nome_completo: data.user.nome_completo || '',
@@ -77,46 +79,15 @@ export default function MeusDadosPage() {
           nif: data.user.nif || '',
           tipo_pessoa: data.user.tipo_pessoa || 'singular'
         });
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Erro ao carregar dados' });
       }
     } catch (error) {
-      console.error('Erro ao buscar dados:', error);
-      setMessage({ type: 'error', text: 'Erro ao carregar dados do utilizador' });
+      console.error('Erro ao carregar dados:', error);
+      setMessage({ type: 'error', text: 'Erro ao carregar dados' });
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    // Validar nome completo
-    if (!formData.nome_completo.trim()) {
-      newErrors.nome_completo = 'Nome completo é obrigatório';
-    } else if (formData.nome_completo.trim().length < 2) {
-      newErrors.nome_completo = 'Nome deve ter pelo menos 2 caracteres';
-    }
-
-    // Validar telefone
-    if (!formData.telefone.trim()) {
-      newErrors.telefone = 'Telefone é obrigatório';
-    } else if (!/^\+351\d{9}$/.test(formData.telefone.trim())) {
-      newErrors.telefone = 'Telefone deve estar no formato +351XXXXXXXXX';
-    }
-
-    // Validar NIF
-    if (!formData.nif.trim()) {
-      newErrors.nif = 'NIF é obrigatório';
-    } else if (!/^\d{9}$/.test(formData.nif.trim())) {
-      newErrors.nif = 'NIF deve ter exatamente 9 dígitos';
-    }
-
-    // Validar tipo de pessoa
-    if (!formData.tipo_pessoa) {
-      newErrors.tipo_pessoa = 'Tipo de pessoa é obrigatório';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,6 +165,29 @@ export default function MeusDadosPage() {
     }
   };
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.nome_completo.trim()) {
+      newErrors.nome_completo = 'Nome completo é obrigatório';
+    }
+
+    if (!formData.telefone.trim()) {
+      newErrors.telefone = 'Telefone é obrigatório';
+    }
+
+    if (!formData.nif.trim()) {
+      newErrors.nif = 'NIF é obrigatório';
+    }
+
+    if (!formData.tipo_pessoa) {
+      newErrors.tipo_pessoa = 'Tipo de pessoa é obrigatório';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -261,266 +255,227 @@ export default function MeusDadosPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Meus Dados</h1>
-        <p className="text-gray-600 mt-2">
-          Gerencie as suas informações pessoais e de contacto
-        </p>
-      </div>
-
+    <PageLayout
+      title="Meus Dados"
+      description="Gerencie as suas informações pessoais e de contacto"
+    >
+      {/* Mensagem de feedback */}
       {message && (
-        <Alert className={message.type === 'success' ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}>
-          <AlertDescription className={message.type === 'success' ? 'text-green-800' : 'text-red-800'}>
+        <Alert className={message.type === 'error' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'}>
+          <AlertDescription className={message.type === 'error' ? 'text-red-800 dark:text-red-200' : 'text-green-800 dark:text-green-200'}>
             {message.text}
           </AlertDescription>
         </Alert>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Informações da Conta */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Informações da Conta</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label className="text-sm font-medium text-gray-500">Email</Label>
-              <Input
-                value={userData?.email || ''}
-                disabled
-                className="bg-gray-50"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                O email não pode ser alterado
-              </p>
-            </div>
-            
-            <div>
-              <Label className="text-sm font-medium text-gray-500">Tipo de Utilizador</Label>
-              <Input
-                value={userData?.user_type === 'proprietario' ? 'Proprietário' : 
-                       userData?.user_type === 'agente' ? 'Agente' : 
-                       userData?.user_type === 'imobiliaria' ? 'Imobiliária' : 'Utilizador'}
-                disabled
-                className="bg-gray-50"
-              />
-            </div>
+      {/* Conteúdo principal */}
+      <TwoColumnGrid
+        left={
+          <Section title="Informações da Conta">
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="email" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={userData?.email || ''}
+                  disabled
+                  className="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors duration-300"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors duration-300">
+                  O email não pode ser alterado
+                </p>
+              </div>
 
-            <div>
-              <Label className="text-sm font-medium text-gray-500">Estado da Conta</Label>
-              <div className="flex items-center space-x-2">
-                <div className={`w-2 h-2 rounded-full ${userData?.is_verified ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-                <span className="text-sm">
-                  {userData?.is_verified ? 'Verificado' : 'Pendente de Verificação'}
-                </span>
+              <div>
+                <Label htmlFor="user_type" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Tipo de Utilizador
+                </Label>
+                <Input
+                  id="user_type"
+                  value={userData?.user_type === 'proprietario' ? 'Proprietário' : userData?.user_type || ''}
+                  disabled
+                  className="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors duration-300"
+                />
+              </div>
+
+              <div>
+                <Label className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Estado da Conta
+                </Label>
+                <div className="flex items-center space-x-2 mt-2">
+                  <div className={`w-2 h-2 rounded-full ${userData?.is_verified ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                    {userData?.is_verified ? 'Verificado' : 'Pendente'}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="created_at" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                  Membro desde
+                </Label>
+                <Input
+                  id="created_at"
+                  value={userData?.created_at ? new Date(userData.created_at).toLocaleDateString('pt-PT') : ''}
+                  disabled
+                  className="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors duration-300"
+                />
               </div>
             </div>
-
-            <div>
-              <Label className="text-sm font-medium text-gray-500">Membro desde</Label>
-              <Input
-                value={userData?.created_at ? new Date(userData.created_at).toLocaleDateString('pt-PT') : ''}
-                disabled
-                className="bg-gray-50"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Dados Pessoais */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-lg">Dados Pessoais</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Foto de Perfil */}
-              <div className="flex flex-col items-center space-y-4 pb-6 border-b border-gray-200 dark:border-gray-700">
+          </Section>
+        }
+        right={
+          <Section title="Dados Pessoais">
+            <div className="space-y-4">
+              {/* Foto de perfil */}
+              <div className="flex flex-col items-center space-y-3">
                 <div className="relative group">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary transition-colors duration-200">
+                  <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden transition-colors duration-300">
                     {userData?.foto_perfil ? (
-                      <img 
-                        src={userData.foto_perfil} 
+                      <img
+                        src={userData.foto_perfil}
                         alt="Foto de perfil"
                         className="w-full h-full object-cover"
-                        onLoad={() => console.log('✅ Foto carregada com sucesso:', userData.foto_perfil)}
-                        onError={(e) => {
-                          console.log('❌ Erro ao carregar foto:', userData.foto_perfil);
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const parent = target.parentElement;
-                          if (parent) {
-                            parent.innerHTML = `
-                              <div class="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
-                                <span class="text-2xl font-medium text-primary dark:text-primary-foreground">
-                                  ${userData?.nome_completo?.split(' ').length > 1 
-                                    ? `${userData.nome_completo.split(' ')[0][0]}${userData.nome_completo.split(' ')[userData.nome_completo.split(' ').length - 1][0]}`.toUpperCase()
-                                    : userData?.nome_completo?.[0]?.toUpperCase() || 'U'
-                                  }
-                                </span>
-                              </div>
-                            `;
-                          }
-                        }}
+                        onLoad={() => console.log('🔵 Imagem carregada com sucesso')}
+                        onError={() => console.log('❌ Erro ao carregar imagem')}
                       />
                     ) : (
-                      <div className="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
-                        <span className="text-2xl font-medium text-primary dark:text-primary-foreground">
-                          {userData?.nome_completo?.split(' ').length > 1 
-                            ? `${userData.nome_completo.split(' ')[0][0]}${userData.nome_completo.split(' ')[userData.nome_completo.split(' ').length - 1][0]}`.toUpperCase()
-                            : userData?.nome_completo?.[0]?.toUpperCase() || 'U'
-                          }
-                        </span>
+                      <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-xl">
+                        {userData?.nome_completo?.charAt(0) || 'U'}
                       </div>
                     )}
                   </div>
                   
-                  {/* Overlay de edição */}
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  {/* Overlay para editar foto */}
+                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
                     {isUploadingPhoto ? (
-                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                     ) : (
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     )}
                   </div>
                   
-                  {/* Input de arquivo oculto */}
                   <input
                     type="file"
                     accept="image/*"
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     onChange={handlePhotoChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     disabled={isUploadingPhoto}
                   />
                 </div>
                 
                 <div className="text-center">
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                  <p className="font-medium text-gray-900 dark:text-gray-100 transition-colors duration-300">
                     {userData?.nome_completo || 'Utilizador'}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {userData?.provedor ? `Conectado via ${userData.provedor.charAt(0).toUpperCase() + userData.provedor.slice(1)}` : 'Conta local'}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                    {userData?.provedor === 'google' ? 'Conectado via Google' : 'Conta local'}
                   </p>
                   {userData?.email_verificado && (
-                    <p className="text-xs text-green-600 dark:text-green-400 flex items-center justify-center mt-1">
-                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    <p className="text-xs text-green-600 dark:text-green-400 flex items-center justify-center space-x-1">
+                      <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
-                      Email verificado
+                      <span>Email verificado</span>
                     </p>
                   )}
-                  <p className="text-xs text-gray-400 mt-1">
-                    {isUploadingPhoto ? 'Enviando foto...' : 'Clique na foto para editar'}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Clique na foto para editar
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="nome_completo">Nome Completo *</Label>
+                  <Label htmlFor="nome_completo" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                    Nome Completo *
+                  </Label>
                   <Input
                     id="nome_completo"
+                    type="text"
                     value={formData.nome_completo}
                     onChange={(e) => handleInputChange('nome_completo', e.target.value)}
-                    className={errors.nome_completo ? 'border-red-500' : ''}
-                    placeholder="Ex: João Silva"
+                    className={`transition-colors duration-300 ${errors.nome_completo ? 'border-red-500 focus:border-red-500' : ''}`}
+                    placeholder="Digite o seu nome completo"
                   />
                   {errors.nome_completo && (
-                    <p className="text-sm text-red-600">{errors.nome_completo}</p>
+                    <p className="text-red-500 text-sm mt-1">{errors.nome_completo}</p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor="telefone">Telefone *</Label>
+                  <Label htmlFor="telefone" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                    Telefone *
+                  </Label>
                   <Input
                     id="telefone"
+                    type="tel"
                     value={formData.telefone}
                     onChange={(e) => handleInputChange('telefone', e.target.value)}
-                    className={errors.telefone ? 'border-red-500' : ''}
-                    placeholder="+351XXXXXXXXX"
+                    className={`transition-colors duration-300 ${errors.telefone ? 'border-red-500 focus:border-red-500' : ''}`}
+                    placeholder="+351 XXX XXX XXX"
                   />
                   {errors.telefone && (
-                    <p className="text-sm text-red-600">{errors.telefone}</p>
+                    <p className="text-red-500 text-sm mt-1">{errors.telefone}</p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor="nif">NIF *</Label>
+                  <Label htmlFor="nif" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                    NIF *
+                  </Label>
                   <Input
                     id="nif"
+                    type="text"
                     value={formData.nif}
                     onChange={(e) => handleInputChange('nif', e.target.value)}
-                    className={errors.nif ? 'border-red-500' : ''}
+                    className={`transition-colors duration-300 ${errors.nif ? 'border-red-500 focus:border-red-500' : ''}`}
                     placeholder="123456789"
-                    maxLength={9}
                   />
                   {errors.nif && (
-                    <p className="text-sm text-red-600">{errors.nif}</p>
+                    <p className="text-red-500 text-sm mt-1">{errors.nif}</p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor="tipo_pessoa">Tipo de Pessoa *</Label>
+                  <Label htmlFor="tipo_pessoa" className="text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                    Tipo de Pessoa *
+                  </Label>
                   <Select
                     value={formData.tipo_pessoa}
                     onValueChange={(value) => handleInputChange('tipo_pessoa', value)}
                   >
-                    <SelectTrigger className={errors.tipo_pessoa ? 'border-red-500' : ''}>
-                      <SelectValue placeholder="Selecione o tipo" />
+                    <SelectTrigger className={`transition-colors duration-300 ${errors.tipo_pessoa ? 'border-red-500 focus:border-red-500' : ''}`}>
+                      <SelectValue placeholder="Selecione o tipo de pessoa" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="singular">Pessoa Singular</SelectItem>
                       <SelectItem value="coletiva">Pessoa Coletiva</SelectItem>
-                      <SelectItem value="construtor">Construtor</SelectItem>
                     </SelectContent>
                   </Select>
                   {errors.tipo_pessoa && (
-                    <p className="text-sm text-red-600">{errors.tipo_pessoa}</p>
+                    <p className="text-red-500 text-sm mt-1">{errors.tipo_pessoa}</p>
                   )}
                 </div>
-              </div>
 
-              <div className="flex justify-end space-x-4 pt-6 border-t">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setFormData({
-                      nome_completo: userData?.nome_completo || '',
-                      telefone: userData?.telefone || '',
-                      nif: userData?.nif || '',
-                      tipo_pessoa: userData?.tipo_pessoa || 'singular'
-                    });
-                    setErrors({});
-                    setMessage(null);
-                  }}
-                  disabled={isSaving}
-                >
-                  Cancelar
-                </Button>
                 <Button
                   type="submit"
                   disabled={isSaving}
-                  className="min-w-[120px]"
+                  className="w-full transition-colors duration-300"
                 >
-                  {isSaving ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      A guardar...
-                    </>
-                  ) : (
-                    'Guardar Alterações'
-                  )}
+                  {isSaving ? 'A guardar...' : 'Guardar Alterações'}
                 </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+              </form>
+            </div>
+          </Section>
+        }
+      />
+    </PageLayout>
   );
 }
