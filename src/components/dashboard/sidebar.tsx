@@ -498,9 +498,9 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
       </nav>
 
       {/* Footer da Sidebar */}
-      <div className="p-2 sm:p-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="px-6 py-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
         {!isCollapsed && (
-          <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+          <div className="text-xs text-gray-600 dark:text-gray-400 text-center">
             Vendemos Sua Casa
           </div>
         )}
