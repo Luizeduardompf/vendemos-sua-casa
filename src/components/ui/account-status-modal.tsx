@@ -5,7 +5,7 @@ import { Modal } from '@/components/ui/modal';
 interface AccountStatusModalProps {
   isOpen: boolean;
   onClose: () => void;
-  status: 'pending' | 'approved' | 'rejected' | 'under_review' | 'verified';
+  status: 'pending' | 'approved' | 'rejected' | 'under_review' | 'verified' | 'inactive';
   userType?: 'proprietario' | 'agente' | 'imobiliaria';
   emailVerificado?: boolean;
   telefoneVerificado?: boolean;
@@ -50,6 +50,12 @@ export function AccountStatusModal({
           title: 'Conta Verificada',
           message: 'Sua conta está verificada e ativa. Bem-vindo à plataforma!',
           color: 'green'
+        };
+      case 'inactive':
+        return {
+          title: 'Conta Inativa',
+          message: 'Sua conta está inativa. Entre em contato conosco para reativar.',
+          color: 'red'
         };
       default:
         return {
