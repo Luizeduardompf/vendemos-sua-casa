@@ -89,6 +89,7 @@ function AuthCallbackContent() {
           console.log('🔵 Utilizador não existe na tabela users, verificando Auth...');
           console.log('🔵 User metadata:', session.user.user_metadata);
           console.log('🔵 User email:', session.user.email);
+          console.log('🔵 Session user ID:', session.user.id);
           
           // Verificar se o usuário já existe no Supabase Auth
           const { data: authUser } = await supabase.auth.getUser();
@@ -98,6 +99,53 @@ function AuthCallbackContent() {
             console.log('🔵 Usuário existe no Auth, criando perfil na tabela users...');
           } else {
             console.log('🔵 Usuário não existe no Auth, criando via API...');
+          }
+          
+          // Verificar se já existe um usuário com o mesmo auth_user_id
+          const { data: existingUserByAuthId } = await supabase
+            .from('users')
+            .select('*')
+            .eq('auth_user_id', session.user.id)
+            .single();
+          
+          if (existingUserByAuthId) {
+            console.log('🔵 Usuário já existe com auth_user_id, atualizando dados...');
+            // Atualizar dados do usuário existente
+            const updateData = {
+              email: session.user.email,
+              nome_completo: session.user.user_metadata?.full_name || session.user.email,
+              telefone: session.user.user_metadata?.phone_number || session.user.phone,
+              foto_perfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
+              primeiro_nome: session.user.user_metadata?.given_name || session.user.user_metadata?.first_name,
+              ultimo_nome: session.user.user_metadata?.family_name || session.user.user_metadata?.last_name,
+              nome_exibicao: session.user.user_metadata?.name || session.user.user_metadata?.display_name,
+              provedor: 'google',
+              provedor_id: session.user.user_metadata?.sub || session.user.id,
+              localizacao: session.user.user_metadata?.locale,
+              email_verificado: session.user.email_confirmed_at ? true : false,
+              dados_sociais: {
+                google_id: session.user.user_metadata?.sub || session.user.id,
+                avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
+                locale: session.user.user_metadata?.locale,
+                verified_email: session.user.user_metadata?.email_verified || false,
+                raw_data: session.user.user_metadata
+              }
+            };
+            
+            const { error: updateError } = await supabase
+              .from('users')
+              .update(updateData)
+              .eq('auth_user_id', session.user.id);
+            
+            if (updateError) {
+              console.error('❌ Erro ao atualizar usuário:', updateError);
+              setError('Erro ao atualizar dados do utilizador');
+              return;
+            }
+            
+            console.log('✅ Usuário atualizado com sucesso');
+            // Continuar com o fluxo normal
+            return;
           }
           
           const userDataToCreate = {

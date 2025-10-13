@@ -48,11 +48,16 @@ export async function POST(request: NextRequest) {
     const supabase = createClient();
     
     // Verificar se o email já existe na tabela users
-    const { data: existingUser } = await supabase
+    console.log('🔵 Verificando se email já existe:', validatedData.email);
+    const { data: existingUser, error: existingUserError } = await supabase
       .from('users')
-      .select('id, auth_user_id')
+      .select('id, auth_user_id, email, user_type')
       .eq('email', validatedData.email)
       .single();
+    
+    console.log('🔵 Resultado da verificação de usuário existente:');
+    console.log('🔵 Existing User:', existingUser);
+    console.log('🔵 Existing User Error:', existingUserError);
     
     if (existingUser) {
       console.log('🔵 Usuário já existe na tabela users:', existingUser);
@@ -123,7 +128,11 @@ export async function POST(request: NextRequest) {
     
     // Verificar se o usuário já existe no Supabase Auth
     console.log('🔵 Verificando se usuário existe no Supabase Auth...');
-    const { data: existingAuthUser } = await supabase.auth.getUser();
+    const { data: existingAuthUser, error: authUserError } = await supabase.auth.getUser();
+    
+    console.log('🔵 Auth User Check:');
+    console.log('🔵 Existing Auth User:', existingAuthUser);
+    console.log('🔵 Auth User Error:', authUserError);
     
     let authData, authError;
     
