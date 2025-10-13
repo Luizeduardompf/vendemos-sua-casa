@@ -140,7 +140,8 @@ console.log('5. Verifique os logs do navegador para erros');
 
 console.log('\n📚 DOCUMENTAÇÃO:');
 console.log('- docs/CONFIGURAR_SUPABASE.md');
+console.log('- docs/SUPABASE_OAUTH_SETUP.md');
 console.log('- docs/GUIA_TESTE.md');
-console.log('- database/sql/EXECUTAR_NO_SUPABASE.sql');
+console.log('- database/sql/EXECUTAR_CORRIGIDO.sql');
 
 console.log('\n🔍 Para mais detalhes, verifique os logs do navegador durante o teste.');
