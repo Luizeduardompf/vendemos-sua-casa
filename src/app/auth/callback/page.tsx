@@ -43,13 +43,14 @@ function AuthCallbackContent() {
         }
 
         // Verificar se usuário existe
-        const { data: userData } = await supabase
+        const { data: userData, error: userQueryError } = await supabase
           .from('users')
           .select('*')
           .eq('auth_user_id', session.user.id)
-          .single();
+          .maybeSingle();
 
         console.log('🔵 Usuário existe?', userData ? 'Sim' : 'Não');
+        console.log('🔵 User Query Error:', userQueryError);
         console.log('🔵 Google metadata:', session.user.user_metadata);
         console.log('🔵 Avatar URL:', session.user.user_metadata?.avatar_url);
         console.log('🔵 Picture:', session.user.user_metadata?.picture);
@@ -94,15 +95,17 @@ function AuthCallbackContent() {
           console.log('🔵 Avatar URL direto:', session.user.user_metadata?.avatar_url);
           console.log('🔵 Picture direto:', session.user.user_metadata?.picture);
           
-          const { error: insertError } = await supabase
+          const { data: insertData, error: insertError } = await supabase
             .from('users')
-            .insert(userDataToCreate);
+            .insert(userDataToCreate)
+            .select();
           
           if (insertError) {
             console.error('❌ Erro ao criar usuário:', insertError);
+            console.error('❌ Dados que causaram erro:', userDataToCreate);
             // Continuar mesmo com erro
           } else {
-            console.log('✅ Usuário criado');
+            console.log('✅ Usuário criado com sucesso:', insertData);
           }
         } else {
           console.log('🔵 Usuário já existe, atualizando dados...');

@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       .from('users')
       .select('*')
       .eq('auth_user_id', user.id)
-      .single();
+      .maybeSingle();
     
     if (profileError) {
       console.error('Erro ao buscar perfil:', profileError);
