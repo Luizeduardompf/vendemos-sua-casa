@@ -13,7 +13,7 @@ export default function ConfiguracoesPage() {
   const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   
   // Estados das configurações
   const [configuracoes, setConfiguracoes] = useState({
