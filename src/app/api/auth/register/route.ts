@@ -258,7 +258,6 @@ export async function POST(request: NextRequest) {
         provedor: validatedData.provedor,
         provedor_id: validatedData.provedor_id,
         localizacao: validatedData.localizacao,
-        email_verificado: validatedData.email_verificado,
         foto_manual: validatedData.foto_manual,
         dados_sociais: validatedData.dados_sociais
       };
