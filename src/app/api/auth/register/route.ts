@@ -111,6 +111,11 @@ export async function POST(request: NextRequest) {
     }
     
     // Criar utilizador no Supabase Auth
+    console.log('🔵 Criando utilizador no Supabase Auth...');
+    console.log('🔵 Email:', validatedData.email);
+    console.log('🔵 Password length:', validatedData.password.length);
+    console.log('🔵 User type:', validatedData.user_type);
+    
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: validatedData.email,
       password: validatedData.password,
@@ -122,6 +127,9 @@ export async function POST(request: NextRequest) {
         }
       }
     });
+    
+    console.log('🔵 Auth Data:', authData);
+    console.log('🔵 Auth Error:', authError);
     
     if (authError) {
       console.error('Erro ao criar utilizador no Auth:', authError);
@@ -176,9 +184,12 @@ export async function POST(request: NextRequest) {
     }
     
     // Criar perfil na tabela users
-    const { data: userProfile, error: profileError } = await supabase
-      .from('users')
-      .insert({
+    console.log('🔵 Criando perfil na tabela users...');
+    console.log('🔵 Auth User ID:', authData.user.id);
+    console.log('🔵 Email:', validatedData.email);
+    console.log('🔵 Nome:', validatedData.nome_completo);
+    
+    const insertData = {
         auth_user_id: authData.user.id,
         email: validatedData.email,
         nome_completo: validatedData.nome_completo,
@@ -210,7 +221,13 @@ export async function POST(request: NextRequest) {
         email_verificado: validatedData.email_verificado,
         foto_manual: validatedData.foto_manual,
         dados_sociais: validatedData.dados_sociais
-      })
+      };
+    
+    console.log('🔵 Dados para inserir:', insertData);
+    
+    const { data: userProfile, error: profileError } = await supabase
+      .from('users')
+      .insert(insertData)
       .select()
       .single();
     

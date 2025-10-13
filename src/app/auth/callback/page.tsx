@@ -113,6 +113,7 @@ function AuthCallbackContent() {
           };
           
           console.log('🔵 Dados para criar utilizador:', userDataToCreate);
+          console.log('🔵 JSON stringificado:', JSON.stringify(userDataToCreate, null, 2));
           
           // Usar a API para criar o utilizador
           const response = await fetch('/api/auth/register', {
@@ -126,13 +127,19 @@ function AuthCallbackContent() {
           console.log('🔵 Resposta da API register:');
           console.log('🔵 Status:', response.status);
           console.log('🔵 OK:', response.ok);
+          console.log('🔵 Headers:', Object.fromEntries(response.headers.entries()));
           
           const responseData = await response.json();
           console.log('🔵 Response Data:', responseData);
+          console.log('🔵 Response Data Type:', typeof responseData);
+          console.log('🔵 Response Data Keys:', Object.keys(responseData));
 
           if (!response.ok) {
-            console.error('❌ Erro ao criar utilizador via API:', responseData);
-            setError('Erro ao criar perfil do utilizador');
+            console.error('❌ Erro ao criar utilizador via API:');
+            console.error('❌ Status:', response.status);
+            console.error('❌ Response Data:', responseData);
+            console.error('❌ Response Data String:', JSON.stringify(responseData, null, 2));
+            setError(`Erro ao criar perfil do utilizador: ${responseData.error || 'Erro desconhecido'}`);
             return;
           }
           
