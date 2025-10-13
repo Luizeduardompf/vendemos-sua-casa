@@ -162,9 +162,13 @@ export default function DashboardLayout({
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         console.log('🔵 Dashboard Layout - Sessão:', session ? 'Encontrada' : 'Não encontrada');
         console.log('🔵 Dashboard Layout - Session Error:', sessionError);
+        console.log('🔵 Dashboard Layout - Session User ID:', session?.user?.id);
+        console.log('🔵 Dashboard Layout - Session User Email:', session?.user?.email);
+        console.log('🔵 Dashboard Layout - Token do localStorage:', localStorage.getItem('access_token') ? 'Presente' : 'Ausente');
         
         if (sessionError || !session?.user) {
           console.log('🔵 Dashboard Layout - Sessão inválida, redirecionando para login');
+          console.log('🔵 Dashboard Layout - Motivo:', sessionError ? 'Erro na sessão' : 'Usuário não encontrado');
           router.push('/auth/login');
           return;
         }

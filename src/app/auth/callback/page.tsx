@@ -152,7 +152,15 @@ function AuthCallbackContent() {
         
         // Redirecionar
         console.log('🔵 Redirecionando para dashboard...');
-        window.location.href = '/dashboard/proprietario';
+        console.log('🔵 Token salvo:', localStorage.getItem('access_token') ? 'Sim' : 'Não');
+        console.log('🔵 User ID salvo:', localStorage.getItem('user_id'));
+        console.log('🔵 User Email salvo:', localStorage.getItem('user_email'));
+        
+        // Pequena pausa antes do redirecionamento
+        setTimeout(() => {
+          console.log('🔵 Executando redirecionamento...');
+          window.location.href = '/dashboard/proprietario';
+        }, 1000);
 
       } catch (error) {
         console.error('❌ Erro no callback:', error);
