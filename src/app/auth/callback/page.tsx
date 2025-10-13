@@ -17,6 +17,8 @@ function AuthCallbackContent() {
       try {
         setIsLoading(true);
         console.log('🔵 Callback SIMPLIFICADO iniciado...');
+        console.log('🔵 URL atual:', window.location.href);
+        console.log('🔵 Search params:', window.location.search);
         
         // Timeout de 5 segundos
         const timeoutId = setTimeout(() => {
@@ -25,10 +27,17 @@ function AuthCallbackContent() {
         }, 5000);
         
         // Obter sessão
+        console.log('🔵 Tentando obter sessão do Supabase...');
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        console.log('🔵 Resultado da sessão:');
+        console.log('🔵 Session:', session);
+        console.log('🔵 Session Error:', sessionError);
         
         if (sessionError || !session?.user) {
           console.error('❌ Sem sessão válida');
+          console.error('❌ Session Error:', sessionError);
+          console.error('❌ Session:', session);
           window.location.href = '/auth/login?error=no_session';
           return;
         }
