@@ -6,12 +6,15 @@ import { Button } from '@/components/ui/button';
 
 interface MessageProps {
   type: 'success' | 'error' | 'warning' | 'info';
-  text: string;
+  text?: string;
+  title?: string;
+  description?: string;
+  icon?: React.ReactNode;
   onClose?: () => void;
   className?: string;
 }
 
-export default function Message({ type, text, onClose, className = '' }: MessageProps) {
+export function Message({ type, text, title, description, icon, onClose, className = '' }: MessageProps) {
   const getAlertStyles = () => {
     switch (type) {
       case 'error':
@@ -42,25 +45,46 @@ export default function Message({ type, text, onClose, className = '' }: Message
     }
   };
 
-  if (!text) return null;
+  if (!text && !title && !description) return null;
 
   return (
     <div className={`mb-6 ${className}`}>
       <Alert className={`${getAlertStyles()} transition-all duration-300`}>
-        <AlertDescription className={`${getTextStyles()} flex items-center justify-between`}>
-          <span className="flex-1">{text}</span>
-          {onClose && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="ml-2 h-auto p-1 hover:bg-transparent"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
+        <AlertDescription className={`${getTextStyles()}`}>
+          <div className="flex items-start justify-between">
+            <div className="flex items-start space-x-3 flex-1">
+              {icon && (
+                <div className="flex-shrink-0 mt-0.5">
+                  {icon}
+                </div>
+              )}
+              <div className="flex-1">
+                {title && (
+                  <h3 className="font-medium mb-1">{title}</h3>
+                )}
+                {description && (
+                  <p className="text-sm opacity-90">{description}</p>
+                )}
+                {text && (
+                  <p className="text-sm">{text}</p>
+                )}
+              </div>
+            </div>
+            {onClose && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="ml-2 h-auto p-1 hover:bg-transparent flex-shrink-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </AlertDescription>
       </Alert>
     </div>
   );
 }
+
+export default Message;
