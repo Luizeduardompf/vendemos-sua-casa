@@ -9,7 +9,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { createBrowserClient } from '@supabase/ssr';
-import AccountStatusModal from '@/components/ui/account-status-modal';
+import { AccountStatusModal } from '@/components/ui/account-status-modal';
 import DashboardFooter from '@/components/dashboard/footer';
 import './globals.css';
 import './dynamic-styles.css';
