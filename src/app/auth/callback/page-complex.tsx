@@ -227,7 +227,7 @@ function AuthCallbackContent() {
           console.log('🔵 Foto manual:', userData.foto_manual);
           console.log('🔵 Deve atualizar foto:', shouldUpdatePhoto);
           
-          const updateData = {
+          const updateData: Record<string, unknown> = {
             primeiro_nome: session.user.user_metadata?.given_name || session.user.user_metadata?.first_name,
             ultimo_nome: session.user.user_metadata?.family_name || session.user.user_metadata?.last_name,
             nome_exibicao: session.user.user_metadata?.name || session.user.user_metadata?.display_name,
