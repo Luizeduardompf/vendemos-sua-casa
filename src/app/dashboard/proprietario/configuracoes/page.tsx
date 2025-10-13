@@ -122,24 +122,10 @@ export default function ConfiguracoesPage() {
     }
   };
 
-  const handleReset = () => {
-    setConfiguracoes({
-      modo_escuro: false,
-      tema_cor: 'azul',
-      tamanho_fonte: 'medio',
-      compacto: false,
-      animacoes: true,
-      notificacoes_email: true,
-      notificacoes_push: true,
-      notificacoes_sms: false,
-      som_notificacoes: true,
-      vibracao: true,
-      idioma: 'pt',
-      fuso_horario: 'Europe/Lisbon',
-      privacidade_perfil: 'publico',
-      marketing_emails: false
-    });
-    setMessage({ type: 'success', text: 'Configurações resetadas para o padrão' });
+  const handleCancel = () => {
+    // Recarregar configurações originais do servidor
+    loadConfiguracoes();
+    setMessage({ type: 'info', text: 'Alterações canceladas' });
   };
 
   const handleConfigChange = (key: string, value: any) => {
@@ -434,11 +420,11 @@ export default function ConfiguracoesPage() {
           {isSaving ? 'A guardar...' : 'Guardar Configurações'}
         </Button>
         <Button
-          onClick={handleReset}
+          onClick={handleCancel}
           variant="outline"
           className="flex-1 transition-colors duration-300"
         >
-          Resetar
+          Cancelar
         </Button>
       </div>
     </PageLayout>

@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sidebar } from '@/components/dashboard/sidebar';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { useTheme } from '@/hooks/use-theme';
+import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { createBrowserClient } from '@supabase/ssr';
-// import { UserProvider, useUser } from '@/contexts/UserContext';
 import './globals.css';
 import './dynamic-styles.css';
 
@@ -36,7 +36,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [configuracoes, setConfiguracoes] = useState({
     modo_escuro: false,
     tema_cor: 'azul',
@@ -46,6 +45,7 @@ export default function DashboardLayout({
   });
   const router = useRouter();
   const { theme } = useTheme();
+  const { isLoading: authLoading, isAuthenticated } = useAuthGuard();
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -58,16 +58,19 @@ export default function DashboardLayout({
       if (!token) return;
 
       const response = await fetch('/api/user/settings/bypass', {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.ok) {
         const data = await response.json();
-        setConfiguracoes(data.settings);
-        applyStyles(data.settings);
+        if (data.settings) {
+          setConfiguracoes(data.settings);
+          applyStyles(data.settings);
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar configurações:', error);
@@ -75,7 +78,7 @@ export default function DashboardLayout({
   };
 
   // Função para aplicar estilos dinâmicos
-  const applyStyles = (config: Record<string, unknown>) => {
+  const applyStyles = (config: any) => {
     const body = document.body;
     const dashboardContainer = document.querySelector('.dashboard-container');
     
@@ -155,6 +158,16 @@ export default function DashboardLayout({
 
   useEffect(() => {
     const fetchUser = async () => {
+      // Se ainda está verificando autenticação, aguardar
+      if (authLoading) {
+        return;
+      }
+
+      // Se não está autenticado, o hook já redirecionou
+      if (!isAuthenticated) {
+        return;
+      }
+
       try {
         console.log('🔵 Dashboard Layout - Buscando perfil do utilizador...');
         
@@ -164,12 +177,11 @@ export default function DashboardLayout({
         console.log('🔵 Dashboard Layout - Session Error:', sessionError);
         console.log('🔵 Dashboard Layout - Session User ID:', session?.user?.id);
         console.log('🔵 Dashboard Layout - Session User Email:', session?.user?.email);
-        console.log('🔵 Dashboard Layout - Token do localStorage:', localStorage.getItem('access_token') ? 'Presente' : 'Ausente');
         
         if (sessionError || !session?.user) {
-          console.log('🔵 Dashboard Layout - Sessão inválida, redirecionando para login');
+          console.log('🔵 Dashboard Layout - Sessão inválida, redirecionando para home');
           console.log('🔵 Dashboard Layout - Motivo:', sessionError ? 'Erro na sessão' : 'Usuário não encontrado');
-          router.push('/auth/login');
+          router.push('/');
           return;
         }
         
@@ -178,152 +190,140 @@ export default function DashboardLayout({
           .from('users')
           .select('*')
           .eq('auth_user_id', session.user.id)
-          .single();
-          
-        console.log('🔵 Dashboard Layout - User Data:', userData);
-        console.log('🔵 Dashboard Layout - User Error:', userError);
-        
+          .maybeSingle();
+
         if (userError) {
-          console.log('🔵 Dashboard Layout - Erro ao buscar usuário, redirecionando para login');
-          router.push('/auth/login');
+          console.error('🔵 Dashboard Layout - Erro ao buscar dados do usuário:', userError);
+          router.push('/');
           return;
         }
-        
-        if (userData) {
-          console.log('🔍 Dashboard Layout - Dados do usuário:', userData);
-          console.log('🔍 Dashboard Layout - Foto do perfil:', userData.foto_perfil);
-          setUser({
-            id: userData.id,
-            email: userData.email,
-            nome_completo: userData.nome_completo,
-            user_type: userData.user_type,
-            is_verified: userData.is_verified,
-            is_active: userData.is_active,
-            foto_perfil: userData.foto_perfil,
-            primeiro_nome: userData.primeiro_nome,
-            ultimo_nome: userData.ultimo_nome,
-            nome_exibicao: userData.nome_exibicao,
-            provedor: userData.provedor,
-            localizacao: userData.localizacao,
-            email_verificado: userData.email_verificado,
-            dados_sociais: userData.dados_sociais,
-            foto_manual: userData.foto_manual
-          });
+
+        if (!userData) {
+          console.log('🔵 Dashboard Layout - Usuário não encontrado na tabela users, redirecionando para home');
+          router.push('/');
+          return;
         }
-        
+
+        console.log('🔵 Dashboard Layout - Dados do usuário encontrados:', userData);
+        console.log('🔵 Dashboard Layout - Foto do perfil:', userData.foto_perfil);
+
+        setUser(userData);
+        loadConfiguracoes();
       } catch (error) {
-        console.error('Erro ao buscar perfil:', error);
-        router.push('/auth/login');
-      } finally {
-        // Carregar configurações do usuário
-        await loadConfiguracoes();
-        setIsLoading(false);
+        console.error('🔵 Dashboard Layout - Erro ao buscar dados do usuário:', error);
+        router.push('/');
       }
     };
 
     fetchUser();
-  }, [router, supabase]);
+  }, [authLoading, isAuthenticated, router, supabase]);
+
+  // Aplicar estilos quando configurações mudarem
+  useEffect(() => {
+    if (user) {
+      applyStyles(configuracoes);
+    }
+  }, [configuracoes, user]);
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-      
-      if (response.ok) {
-        localStorage.removeItem('access_token'); // Limpar token do localStorage
-        router.push('/');
-      }
+      await supabase.auth.signOut();
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('user_email');
+      router.push('/');
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
-      // Mesmo com erro, limpar o localStorage e redirecionar
-      localStorage.removeItem('access_token');
-      router.push('/');
     }
   };
 
-  if (isLoading) {
+  // Mostrar loading enquanto verifica autenticação
+  if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>A carregar...</p>
+          <p className="text-gray-600 dark:text-gray-400">A verificar autenticação...</p>
         </div>
       </div>
     );
   }
 
-  if (!user) {
+  // Se não está autenticado, não renderizar nada (já foi redirecionado)
+  if (!isAuthenticated) {
     return null;
   }
 
+  // Mostrar loading enquanto carrega dados do usuário
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">A carregar dados do utilizador...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <ThemeProvider defaultTheme={theme} enableSystem={false}>
-      <div className={`min-h-screen ${theme === 'dark' ? 'dark' : ''}`}>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex transition-colors duration-300 dashboard-container">
-      {/* Sidebar */}
-      <Sidebar 
-        userType={user.user_type} 
-        userName={user.nome_completo} 
-        userPhoto={user.foto_perfil}
-        userEmail={user.email}
-      />
-      
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="dashboard-header">
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-50 transition-colors duration-300">
-                  Dashboard - {user.nome_completo}
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">
-                  {user.user_type === 'proprietario' ? 'Proprietário' : 
-                   user.user_type === 'agente' ? 'Agente' : 
-                   user.user_type === 'imobiliaria' ? 'Imobiliária' : 
-                   'Utilizador'}
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                {!user.is_verified && (
-                  <div className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-3 py-1 rounded-full text-sm transition-colors duration-300">
-                    Pendente de Verificação
-                  </div>
-                )}
-                
-                {/* Indicativo de Notificações */}
-                <div className="relative">
-                  <button className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-50 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-300">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5-5V7a7 7 0 00-14 0v5l-5 5h5m0 0v1a3 3 0 106 0v-1m-6 0H9" />
-                    </svg>
-                    {/* Badge de notificação */}
-                    <span className="absolute -top-1 -right-1 bg-red-500 dark:bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                      5
-                    </span>
-                  </button>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dashboard-container">
+        <div className="flex h-screen">
+          {/* Sidebar */}
+          <Sidebar 
+            userPhoto={user.foto_perfil}
+            userEmail={user.email}
+            userName={user.nome_completo}
+            userType={user.user_type}
+          />
+          
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Header */}
+            <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                    Dashboard - {user.nome_completo}
+                  </h1>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">
+                    {user.user_type}
+                  </p>
                 </div>
                 
-                <Button 
-                  onClick={handleLogout} 
-                  variant="outline"
-                  className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300"
-                >
-                  Sair
-                </Button>
+                <div className="flex items-center space-x-4">
+                  {/* Notificação */}
+                  <div className="relative">
+                    <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-300">
+                      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM15 17h5l-5 5v-5z" />
+                      </svg>
+                    </button>
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                      5
+                    </span>
+                  </div>
+                  
+                  {/* Logout */}
+                  <Button
+                    onClick={handleLogout}
+                    variant="outline"
+                    size="sm"
+                    className="transition-colors duration-300"
+                  >
+                    Sair
+                  </Button>
+                </div>
               </div>
-            </div>
+            </header>
+            
+            {/* Page Content */}
+            <main className="flex-1 overflow-auto p-6">
+              {children}
+            </main>
           </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="dashboard-content flex-1 px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-300">
-          {children}
-        </main>
-      </div>
-    </div>
+        </div>
       </div>
     </ThemeProvider>
   );
