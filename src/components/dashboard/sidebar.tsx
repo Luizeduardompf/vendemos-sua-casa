@@ -288,24 +288,22 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
       isCollapsed ? "w-16" : "w-64"
     )}>
       {/* Header da Sidebar */}
-      <div className="p-2 sm:p-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between">
-          {!isCollapsed && (
-            <Link href="/" className="flex items-center space-x-1 sm:space-x-2 hover:opacity-80 transition-opacity">
-              <Logo size="sm" />
-            </Link>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 h-6 w-6 sm:h-8 sm:w-8"
-          >
-            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </Button>
-        </div>
+      <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        {!isCollapsed && (
+          <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+            <Logo size="sm" />
+          </Link>
+        )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="p-1 h-6 w-6"
+        >
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </Button>
       </div>
 
       {/* User Info */}
