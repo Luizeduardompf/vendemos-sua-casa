@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
         localizacao: userProfile.localizacao,
         email_verificado: userProfile.email_verificado,
         dados_sociais: userProfile.dados_sociais,
-        foto_manual: userProfile.foto_manual
+        foto_manual: userProfile.foto_manual || false
       }
     });
     
@@ -150,8 +150,8 @@ export async function PUT(request: NextRequest) {
       'provedor_id',
       'localizacao',
       'email_verificado',
-      'dados_sociais',
-      'foto_manual'
+      'dados_sociais'
+      // 'foto_manual' - temporariamente removido até coluna ser criada
     ];
     
     // Filtrar apenas campos permitidos

@@ -151,7 +151,7 @@ export default function MeusDadosPage() {
             return;
           }
 
-          // Atualizar foto no perfil (marcar como manual)
+          // Atualizar foto no perfil
           const response = await fetch('/api/auth/profile', {
             method: 'PUT',
             headers: {
@@ -159,8 +159,7 @@ export default function MeusDadosPage() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ 
-              foto_perfil: base64,
-              foto_manual: true 
+              foto_perfil: base64
             }),
           });
 
