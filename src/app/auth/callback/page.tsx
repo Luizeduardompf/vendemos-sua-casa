@@ -91,6 +91,11 @@ function AuthCallbackContent() {
             aceita_termos: true,
             aceita_privacidade: true,
             aceita_marketing: false,
+            // Campos de verificação
+            email_verificado: true, // Google já verificou o email
+            telefone_verificado: false, // Sempre pendente no início
+            conta_analisada: false, // Sempre pendente no início
+            status_analise: 'pending', // Todas as contas iniciam como pendentes
             // Dados completos do Google
             foto_perfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
             primeiro_nome: session.user.user_metadata?.given_name || session.user.user_metadata?.first_name,
@@ -99,7 +104,6 @@ function AuthCallbackContent() {
             provedor: 'google',
             provedor_id: session.user.user_metadata?.sub || session.user.id,
             localizacao: session.user.user_metadata?.locale,
-            email_verificado: session.user.email_confirmed_at ? true : false,
             foto_manual: false,
             dados_sociais: {
               google_id: session.user.user_metadata?.sub || session.user.id,

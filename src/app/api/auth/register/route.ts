@@ -245,6 +245,11 @@ export async function POST(request: NextRequest) {
         aceita_marketing: validatedData.aceita_marketing,
         is_verified: false, // Pendente de verificação
         is_active: true,
+        // Campos de verificação
+        email_verificado: false, // Email sempre pendente no início (precisa confirmar)
+        telefone_verificado: false, // Telefone sempre pendente no início
+        conta_analisada: false, // Conta sempre pendente de análise
+        status_analise: 'pending', // Todas as contas iniciam como pendentes
         // Novos campos do Google
         foto_perfil: validatedData.foto_perfil,
         primeiro_nome: validatedData.primeiro_nome,

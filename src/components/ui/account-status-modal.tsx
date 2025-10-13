@@ -9,13 +9,17 @@ interface AccountStatusModalProps {
   onClose: () => void;
   status: 'pending' | 'verified' | 'rejected' | 'inactive';
   userType: string;
+  emailVerificado?: boolean;
+  telefoneVerificado?: boolean;
 }
 
 const AccountStatusModal: React.FC<AccountStatusModalProps> = ({ 
   isOpen, 
   onClose, 
   status, 
-  userType 
+  userType,
+  emailVerificado = false,
+  telefoneVerificado = false
 }) => {
   const getStatusInfo = () => {
     switch (status) {
@@ -128,6 +132,47 @@ const AccountStatusModal: React.FC<AccountStatusModalProps> = ({
           <p className="text-gray-600 dark:text-gray-400">
             {statusInfo.message}
           </p>
+        </div>
+
+        {/* Verification Status */}
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-3">
+          <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            Status das Verificações:
+          </h4>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Email:</span>
+              <span className={`flex items-center space-x-1 text-sm font-medium ${emailVerificado ? 'text-green-600' : 'text-yellow-600'}`}>
+                {emailVerificado ? (
+                  <>
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Verificado</span>
+                  </>
+                ) : (
+                  <>
+                    <Clock className="h-4 w-4" />
+                    <span>Pendente</span>
+                  </>
+                )}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Telefone:</span>
+              <span className={`flex items-center space-x-1 text-sm font-medium ${telefoneVerificado ? 'text-green-600' : 'text-yellow-600'}`}>
+                {telefoneVerificado ? (
+                  <>
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Verificado</span>
+                  </>
+                ) : (
+                  <>
+                    <Clock className="h-4 w-4" />
+                    <span>Pendente</span>
+                  </>
+                )}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Details */}

@@ -27,6 +27,12 @@ interface User {
   provedor?: string;
   localizacao?: string;
   email_verificado?: boolean;
+  telefone_verificado?: boolean;
+  conta_analisada?: boolean;
+  status_analise?: 'pending' | 'approved' | 'rejected' | 'under_review';
+  data_verificacao_email?: string;
+  data_verificacao_telefone?: string;
+  data_analise_conta?: string;
   dados_sociais?: any;
   foto_manual?: boolean;
 }
@@ -242,7 +248,15 @@ export default function DashboardLayout({
   // Função para determinar o status da conta
   const getAccountStatus = (user: User): 'pending' | 'verified' | 'rejected' | 'inactive' => {
     if (!user.is_active) return 'inactive';
-    if (!user.is_verified) return 'pending';
+    
+    // Verificar status da análise da conta
+    if (user.status_analise === 'rejected') return 'rejected';
+    if (user.status_analise === 'approved') return 'verified';
+    if (user.status_analise === 'under_review') return 'pending';
+    
+    // Se não tem status de análise definido, considerar pendente
+    if (!user.conta_analisada) return 'pending';
+    
     return 'verified';
   };
 
@@ -345,7 +359,7 @@ export default function DashboardLayout({
                         >
                           {getStatusIcon(accountStatus)}
                           <span className="text-sm font-medium">
-                            {accountStatus === 'pending' && 'Conta Pendente'}
+                            {accountStatus === 'pending' && 'Análise Pendente'}
                             {accountStatus === 'rejected' && 'Conta Rejeitada'}
                             {accountStatus === 'inactive' && 'Conta Inativa'}
                           </span>
@@ -359,7 +373,7 @@ export default function DashboardLayout({
                   <div className="relative">
                     <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-300">
                       <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM15 17h5l-5 5v-5z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                       </svg>
                     </button>
                     <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
@@ -393,6 +407,8 @@ export default function DashboardLayout({
           onClose={() => setIsStatusModalOpen(false)}
           status={user ? getAccountStatus(user) : 'pending'}
           userType={user?.user_type || 'proprietario'}
+          emailVerificado={user?.email_verificado || false}
+          telefoneVerificado={user?.telefone_verificado || false}
         />
       </div>
     </ThemeProvider>
