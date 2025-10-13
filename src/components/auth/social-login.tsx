@@ -24,10 +24,20 @@ export function SocialLogin({ mode, userType = 'proprietario' }: SocialLoginProp
     console.log('🔵 Redirect URL:', `${window.location.origin}/auth/callback`);
     
     try {
+      // Fazer logout primeiro para limpar sessão existente
+      console.log('🔵 Fazendo logout para limpar sessão existente...');
+      await supabase.auth.signOut();
+      
+      // Pequena pausa para garantir que o logout foi processado
+      await new Promise(resolve => setTimeout(resolve, 100));
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'select_account'
+          }
         },
       });
       
