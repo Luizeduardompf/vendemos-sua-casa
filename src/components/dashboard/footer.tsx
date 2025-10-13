@@ -4,7 +4,7 @@ import { Heart, Mail, Phone, MapPin } from 'lucide-react';
 
 export default function DashboardFooter() {
   return (
-    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-2">
+    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-2 flex-shrink-0">
       <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
         {/* Informações da empresa */}
         <div className="flex items-center space-x-4">

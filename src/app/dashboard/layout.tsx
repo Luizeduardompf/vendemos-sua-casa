@@ -324,8 +324,8 @@ export default function DashboardLayout({
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <div className="h-screen bg-gray-50 dark:bg-gray-900 dashboard-container flex flex-col overflow-hidden">
-        <div className="flex flex-1 min-h-0">
+      <div className="fixed inset-0 bg-gray-50 dark:bg-gray-900 dashboard-container">
+        <div className="flex h-full">
           {/* Sidebar */}
           <Sidebar 
             userPhoto={user.foto_perfil}
@@ -335,7 +335,7 @@ export default function DashboardLayout({
           />
           
           {/* Main Content */}
-          <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 flex flex-col h-full">
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex-shrink-0">
               <div className="flex items-center justify-between">
@@ -399,12 +399,10 @@ export default function DashboardLayout({
             <main className="flex-1 overflow-y-auto p-6">
               {children}
             </main>
+            
+            {/* Footer */}
+            <DashboardFooter />
           </div>
-        </div>
-
-        {/* Footer Fixo */}
-        <div className="flex-shrink-0">
-          <DashboardFooter />
         </div>
 
         {/* Modal de Status da Conta */}
