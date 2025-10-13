@@ -23,6 +23,12 @@ function AuthCallbackContent() {
         console.log('🔵 Hash:', window.location.hash);
         console.log('🔵 Search params:', window.location.search);
         
+        // Timeout para evitar loops infinitos
+        const timeoutId = setTimeout(() => {
+          console.error('❌ Timeout no callback - redirecionando para login');
+          window.location.href = '/auth/login?error=timeout';
+        }, 10000); // 10 segundos
+        
         // Obter a sessão atual
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
@@ -221,29 +227,42 @@ function AuthCallbackContent() {
         const userType = userData?.user_type || 'proprietario';
         console.log('🔵 Redirecionando para dashboard...');
         console.log('🔵 User Type:', userType);
+        console.log('🔵 User data completo:', userData);
+        
+        // Definir URL de redirecionamento
+        let redirectUrl = '/dashboard/proprietario'; // Default
         
         switch (userType) {
           case 'proprietario':
             console.log('✅ Redirecionando para dashboard do proprietário');
-            router.push('/dashboard/proprietario');
+            redirectUrl = '/dashboard/proprietario';
             break;
           case 'agente':
             console.log('✅ Redirecionando para dashboard do agente');
-            router.push('/dashboard/agente');
+            redirectUrl = '/dashboard/agente';
             break;
           case 'imobiliaria':
             console.log('✅ Redirecionando para dashboard da imobiliária');
-            router.push('/dashboard/imobiliaria');
+            redirectUrl = '/dashboard/imobiliaria';
             break;
           case 'admin':
           case 'super_admin':
             console.log('✅ Redirecionando para dashboard de admin');
-            router.push('/admin/dashboard');
+            redirectUrl = '/admin/dashboard';
             break;
           default:
             console.log('✅ Redirecionando para dashboard padrão (proprietário)');
-            router.push('/dashboard/proprietario');
+            redirectUrl = '/dashboard/proprietario';
         }
+        
+        console.log('🔵 URL de redirecionamento:', redirectUrl);
+        console.log('🔵 Executando redirecionamento...');
+        
+        // Limpar timeout
+        clearTimeout(timeoutId);
+        
+        // Usar window.location.href para forçar redirecionamento
+        window.location.href = redirectUrl;
 
       } catch (error) {
         console.error('❌ Erro inesperado no callback:', error);
@@ -252,6 +271,7 @@ function AuthCallbackContent() {
         console.error('❌ Full error object:', JSON.stringify(error, null, 2));
         setError('Erro inesperado durante a autenticação');
       } finally {
+        clearTimeout(timeoutId);
         setIsLoading(false);
       }
     };
