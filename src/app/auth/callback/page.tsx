@@ -7,12 +7,21 @@ function AuthCallbackContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
+  console.log('🔵 AuthCallbackContent renderizado!');
+  console.log('🔵 isLoading:', isLoading);
+  console.log('🔵 error:', error);
+  
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
   useEffect(() => {
+    console.log('🔵 Callback useEffect executado!');
+    console.log('🔵 URL atual:', window.location.href);
+    console.log('🔵 Pathname:', window.location.pathname);
+    console.log('🔵 Search params:', window.location.search);
+    
     const handleAuthCallback = async () => {
       try {
         setIsLoading(true);
