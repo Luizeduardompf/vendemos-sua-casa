@@ -47,6 +47,15 @@ function AuthCallbackContent() {
         
         console.log('✅ Sessão encontrada:', session.user);
 
+        // Salvar o token no localStorage para o dashboard
+        if (session.access_token) {
+          console.log('🔵 Salvando token no localStorage...');
+          localStorage.setItem('access_token', session.access_token);
+          localStorage.setItem('user_id', session.user.id);
+          localStorage.setItem('user_email', session.user.email || '');
+          console.log('✅ Token salvo no localStorage');
+        }
+
         // Verificar se o utilizador existe na tabela users
         console.log('🔵 Verificando utilizador na tabela users...');
         console.log('🔵 Auth User ID:', session.user.id);

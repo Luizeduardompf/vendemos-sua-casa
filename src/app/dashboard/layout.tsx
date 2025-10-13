@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sidebar } from '@/components/dashboard/sidebar';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { useTheme } from '@/hooks/use-theme';
+import { createBrowserClient } from '@supabase/ssr';
 import './globals.css';
 import './dynamic-styles.css';
 
@@ -35,6 +36,10 @@ export default function DashboardLayout({
   });
   const router = useRouter();
   const { theme } = useTheme();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   // Função para carregar configurações do usuário
   const loadConfiguracoes = async () => {
@@ -143,32 +148,44 @@ export default function DashboardLayout({
       try {
         console.log('🔵 Dashboard Layout - Buscando perfil do utilizador...');
         
-        // Obter token do localStorage (salvo durante o login)
-        const token = localStorage.getItem('access_token');
-        console.log('🔵 Dashboard Layout - Token:', token ? 'Encontrado' : 'Não encontrado');
+        // Verificar sessão atual do Supabase
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        console.log('🔵 Dashboard Layout - Sessão:', session ? 'Encontrada' : 'Não encontrada');
+        console.log('🔵 Dashboard Layout - Session Error:', sessionError);
         
-        if (!token) {
-          console.log('🔵 Dashboard Layout - Token não encontrado, redirecionando para login');
+        if (sessionError || !session?.user) {
+          console.log('🔵 Dashboard Layout - Sessão inválida, redirecionando para login');
           router.push('/auth/login');
           return;
         }
         
-        const response = await fetch('/api/auth/profile', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        console.log('🔵 Dashboard Layout - Status da resposta:', response.status);
-        const data = await response.json();
-        console.log('🔵 Dashboard Layout - Dados recebidos:', data);
+        // Buscar dados do usuário na tabela users
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('auth_user_id', session.user.id)
+          .single();
+          
+        console.log('🔵 Dashboard Layout - User Data:', userData);
+        console.log('🔵 Dashboard Layout - User Error:', userError);
         
-        if (response.ok) {
-          setUser(data.user);
-        } else {
-          console.log('🔵 Dashboard Layout - Erro na resposta, redirecionando para login');
+        if (userError) {
+          console.log('🔵 Dashboard Layout - Erro ao buscar usuário, redirecionando para login');
           router.push('/auth/login');
+          return;
         }
+        
+        if (userData) {
+          setUser({
+            id: userData.id,
+            email: userData.email,
+            nome_completo: userData.nome_completo,
+            user_type: userData.user_type,
+            is_verified: userData.is_verified,
+            is_active: userData.is_active
+          });
+        }
+        
       } catch (error) {
         console.error('Erro ao buscar perfil:', error);
         router.push('/auth/login');
@@ -180,7 +197,7 @@ export default function DashboardLayout({
     };
 
     fetchUser();
-  }, [router]);
+  }, [router, supabase]);
 
   const handleLogout = async () => {
     try {
