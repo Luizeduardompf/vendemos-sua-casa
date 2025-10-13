@@ -45,6 +45,9 @@ export default function MeusDadosPage() {
     tipo_pessoa: 'singular'
   });
 
+  // Estado para edição de foto
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+
   useEffect(() => {
     fetchUserData();
   }, []);
@@ -110,6 +113,73 @@ export default function MeusDadosPage() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validar tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+      setMessage({ type: 'error', text: 'Por favor, selecione apenas arquivos de imagem' });
+      return;
+    }
+
+    // Validar tamanho (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'A imagem deve ter no máximo 5MB' });
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    setMessage(null);
+
+    try {
+      // Converter para base64
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const base64 = event.target?.result as string;
+        
+        try {
+          const token = localStorage.getItem('access_token');
+          if (!token) {
+            setMessage({ type: 'error', text: 'Token de acesso não encontrado' });
+            return;
+          }
+
+          // Atualizar foto no perfil
+          const response = await fetch('/api/auth/profile', {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ foto_perfil: base64 }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            setMessage({ type: 'success', text: 'Foto atualizada com sucesso!' });
+            // Recarregar dados do usuário
+            await fetchUserData();
+          } else {
+            setMessage({ type: 'error', text: result.error || 'Erro ao atualizar foto' });
+          }
+        } catch (error) {
+          console.error('Erro ao atualizar foto:', error);
+          setMessage({ type: 'error', text: 'Erro interno do servidor' });
+        } finally {
+          setIsUploadingPhoto(false);
+        }
+      };
+      
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Erro ao processar arquivo:', error);
+      setMessage({ type: 'error', text: 'Erro ao processar arquivo' });
+      setIsUploadingPhoto(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -255,8 +325,8 @@ export default function MeusDadosPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Foto de Perfil */}
               <div className="flex flex-col items-center space-y-4 pb-6 border-b border-gray-200 dark:border-gray-700">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-700">
+                <div className="relative group">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary transition-colors duration-200">
                     {userData?.foto_perfil ? (
                       <img 
                         src={userData.foto_perfil} 
@@ -291,7 +361,29 @@ export default function MeusDadosPage() {
                       </div>
                     )}
                   </div>
+                  
+                  {/* Overlay de edição */}
+                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    {isUploadingPhoto ? (
+                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    )}
+                  </div>
+                  
+                  {/* Input de arquivo oculto */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={handlePhotoChange}
+                    disabled={isUploadingPhoto}
+                  />
                 </div>
+                
                 <div className="text-center">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     {userData?.nome_completo || 'Utilizador'}
@@ -307,6 +399,9 @@ export default function MeusDadosPage() {
                       Email verificado
                     </p>
                   )}
+                  <p className="text-xs text-gray-400 mt-1">
+                    {isUploadingPhoto ? 'Enviando foto...' : 'Clique na foto para editar'}
+                  </p>
                 </div>
               </div>
 
