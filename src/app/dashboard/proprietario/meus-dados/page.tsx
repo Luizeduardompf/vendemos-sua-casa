@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import PageLayout, { Section, TwoColumnGrid } from '@/components/dashboard/page-layout';
+import Message from '@/components/ui/message';
 
 interface UserData {
   id: string;
@@ -258,16 +258,14 @@ export default function MeusDadosPage() {
     <PageLayout
       title="Meus Dados"
       description="Gerencie as suas informações pessoais e de contacto"
+      message={message ? (
+        <Message
+          type={message.type}
+          text={message.text}
+          onClose={() => setMessage(null)}
+        />
+      ) : undefined}
     >
-      {/* Mensagem de feedback */}
-      {message && (
-        <Alert className={message.type === 'error' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'}>
-          <AlertDescription className={message.type === 'error' ? 'text-red-800 dark:text-red-200' : 'text-green-800 dark:text-green-200'}>
-            {message.text}
-          </AlertDescription>
-        </Alert>
-      )}
-
       {/* Conteúdo principal */}
       <TwoColumnGrid
         left={

@@ -8,13 +8,15 @@ interface PageLayoutProps {
   description?: string;
   children: ReactNode;
   className?: string;
+  message?: ReactNode;
 }
 
 export default function PageLayout({ 
   title, 
   description, 
   children, 
-  className = '' 
+  className = '',
+  message
 }: PageLayoutProps) {
   return (
     <div className={`space-y-6 ${className}`}>
@@ -29,6 +31,9 @@ export default function PageLayout({
           </p>
         )}
       </div>
+
+      {/* Mensagem de feedback */}
+      {message}
 
       {/* Container principal com cartão */}
       <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-colors duration-300">
