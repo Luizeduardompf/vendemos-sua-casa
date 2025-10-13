@@ -100,7 +100,6 @@ function AuthCallbackContent() {
             provedor_id: session.user.user_metadata?.sub || session.user.id,
             localizacao: session.user.user_metadata?.locale,
             email_verificado: session.user.email_confirmed_at ? true : false,
-            foto_manual: false,
             dados_sociais: {
               google_id: session.user.user_metadata?.sub || session.user.id,
               avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
