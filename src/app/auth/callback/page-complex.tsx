@@ -15,6 +15,12 @@ function AuthCallbackContent() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Timeout para evitar loops infinitos
+    const timeoutId = setTimeout(() => {
+      console.error('❌ Timeout no callback - redirecionando para login');
+      window.location.href = '/auth/login?error=timeout';
+    }, 10000); // 10 segundos
+
     const handleAuthCallback = async () => {
       try {
         setIsLoading(true);
@@ -22,12 +28,6 @@ function AuthCallbackContent() {
         console.log('🔵 URL atual:', window.location.href);
         console.log('🔵 Hash:', window.location.hash);
         console.log('🔵 Search params:', window.location.search);
-        
-        // Timeout para evitar loops infinitos
-        const timeoutId = setTimeout(() => {
-          console.error('❌ Timeout no callback - redirecionando para login');
-          window.location.href = '/auth/login?error=timeout';
-        }, 10000); // 10 segundos
         
         // Obter a sessão atual
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
