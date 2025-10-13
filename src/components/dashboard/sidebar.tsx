@@ -259,6 +259,11 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
   
   const items = menuItems[userType as keyof typeof menuItems] || menuItems.proprietario;
 
+  // Debug logs para a foto
+  console.log('🔍 Sidebar - userPhoto recebido:', userPhoto);
+  console.log('🔍 Sidebar - currentPhoto atual:', currentPhoto);
+  console.log('🔍 Sidebar - userName:', userName);
+
   // Escutar evento de atualização de foto
   useEffect(() => {
     const handlePhotoUpdate = (event: CustomEvent) => {
@@ -309,29 +314,34 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
           <div className="flex items-center space-x-2 sm:space-x-3">
             <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden flex items-center justify-center">
               {currentPhoto ? (
-                <img 
-                  src={currentPhoto} 
-                  alt={userName}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Fallback para iniciais se a imagem falhar
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    const parent = target.parentElement;
-                    if (parent) {
-                      parent.innerHTML = `
-                        <div class="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
-                          <span class="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
-                            ${userName.split(' ').length > 1 
-                              ? `${userName.split(' ')[0][0]}${userName.split(' ')[userName.split(' ').length - 1][0]}`.toUpperCase()
-                              : userName[0].toUpperCase()
-                            }
-                          </span>
-                        </div>
-                      `;
-                    }
-                  }}
-                />
+                <>
+                  {console.log('🔍 Sidebar - Renderizando imagem com src:', currentPhoto)}
+                  <img 
+                    src={currentPhoto} 
+                    alt={userName}
+                    className="w-full h-full object-cover"
+                    onLoad={() => console.log('✅ Sidebar - Imagem carregada com sucesso:', currentPhoto)}
+                    onError={(e) => {
+                      console.error('❌ Sidebar - Erro ao carregar imagem:', currentPhoto);
+                      // Fallback para iniciais se a imagem falhar
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `
+                          <div class="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+                            <span class="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
+                              ${userName.split(' ').length > 1 
+                                ? `${userName.split(' ')[0][0]}${userName.split(' ')[userName.split(' ').length - 1][0]}`.toUpperCase()
+                                : userName[0].toUpperCase()
+                              }
+                            </span>
+                          </div>
+                        `;
+                      }
+                    }}
+                  />
+                </>
               ) : (
                 <div className="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
                   <span className="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
