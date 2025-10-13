@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { createBrowserClient } from '@supabase/ssr';
+import AccountStatusModal from '@/components/ui/account-status-modal';
 import './globals.css';
 import './dynamic-styles.css';
 
@@ -43,6 +44,7 @@ export default function DashboardLayout({
     compacto: false,
     animacoes: true
   });
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const router = useRouter();
   const { theme } = useTheme();
   const { isLoading: authLoading, isAuthenticated } = useAuthGuard();
@@ -237,6 +239,45 @@ export default function DashboardLayout({
     }
   };
 
+  // Função para determinar o status da conta
+  const getAccountStatus = (user: User): 'pending' | 'verified' | 'rejected' | 'inactive' => {
+    if (!user.is_active) return 'inactive';
+    if (!user.is_verified) return 'pending';
+    return 'verified';
+  };
+
+  // Função para obter o ícone do status
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return (
+          <svg className="h-5 w-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+          </svg>
+        );
+      case 'verified':
+        return (
+          <svg className="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+          </svg>
+        );
+      case 'rejected':
+        return (
+          <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+          </svg>
+        );
+      case 'inactive':
+        return (
+          <svg className="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
+
   // Mostrar loading enquanto verifica autenticação
   if (authLoading) {
     return (
@@ -293,6 +334,27 @@ export default function DashboardLayout({
                 </div>
                 
                 <div className="flex items-center space-x-4">
+                  {/* Status da Conta */}
+                  {(() => {
+                    const accountStatus = getAccountStatus(user);
+                    if (accountStatus !== 'verified') {
+                      return (
+                        <button
+                          onClick={() => setIsStatusModalOpen(true)}
+                          className="flex items-center space-x-2 px-3 py-2 rounded-lg border transition-colors duration-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                        >
+                          {getStatusIcon(accountStatus)}
+                          <span className="text-sm font-medium">
+                            {accountStatus === 'pending' && 'Conta Pendente'}
+                            {accountStatus === 'rejected' && 'Conta Rejeitada'}
+                            {accountStatus === 'inactive' && 'Conta Inativa'}
+                          </span>
+                        </button>
+                      );
+                    }
+                    return null;
+                  })()}
+
                   {/* Notificação */}
                   <div className="relative">
                     <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-300">
@@ -324,6 +386,14 @@ export default function DashboardLayout({
             </main>
           </div>
         </div>
+
+        {/* Modal de Status da Conta */}
+        <AccountStatusModal
+          isOpen={isStatusModalOpen}
+          onClose={() => setIsStatusModalOpen(false)}
+          status={user ? getAccountStatus(user) : 'pending'}
+          userType={user?.user_type || 'proprietario'}
+        />
       </div>
     </ThemeProvider>
   );
