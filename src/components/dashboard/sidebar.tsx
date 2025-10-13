@@ -13,7 +13,113 @@ interface SidebarProps {
   userEmail?: string;
 }
 
-        const menuItems = {
+// Função para processar URL da imagem do Google
+function processGoogleImageUrl(url: string): string {
+  if (!url) return '';
+  
+  console.log('🔍 processGoogleImageUrl - URL original:', url);
+  
+  // Se é uma URL do Google, adicionar parâmetros para melhor compatibilidade
+  if (url.includes('googleusercontent.com')) {
+    // Remover parâmetros existentes e adicionar novos
+    const baseUrl = url.split('?')[0];
+    const processed = `${baseUrl}?sz=96`;
+    console.log('🔍 processGoogleImageUrl - URL processada (Google):', processed);
+    return processed;
+  }
+  
+  console.log('🔍 processGoogleImageUrl - URL não processada:', url);
+  return url;
+}
+
+// Componente para lidar com imagens de perfil com fallback
+function ProfileImage({ src, alt, fallbackText }: { src: string; alt: string; fallbackText: string }) {
+  const [imageError, setImageError] = useState(false);
+  const [processedSrc, setProcessedSrc] = useState('');
+
+  useEffect(() => {
+    if (src && src.trim()) {
+      const processed = processGoogleImageUrl(src);
+      console.log('🔍 ProfileImage - Processando URL:', src, '→', processed);
+      setProcessedSrc(processed);
+      setImageError(false);
+    } else {
+      console.log('🔍 ProfileImage - Sem src válido, mostrando fallback');
+      setProcessedSrc('');
+      setImageError(false);
+    }
+  }, [src]);
+
+  const handleError = () => {
+    console.log('⚠️ ProfileImage - Imagem falhou ao carregar:', processedSrc);
+    setImageError(true);
+  };
+
+  const handleLoad = () => {
+    console.log('✅ ProfileImage - Imagem carregada com sucesso:', processedSrc);
+  };
+
+  console.log('🔍 ProfileImage - Renderizando:', { src, processedSrc, imageError });
+
+  // Se não tem src válido, mostrar fallback
+  if (!src || !src.trim()) {
+    console.log('🔍 ProfileImage - Sem src, mostrando fallback');
+    return (
+      <div className="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+        <span className="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
+          {fallbackText.split(' ').length > 1 
+            ? `${fallbackText.split(' ')[0][0]}${fallbackText.split(' ')[fallbackText.split(' ').length - 1][0]}`.toUpperCase()
+            : fallbackText[0].toUpperCase()
+          }
+        </span>
+      </div>
+    );
+  }
+
+  // Se houve erro, mostrar fallback
+  if (imageError) {
+    console.log('🔍 ProfileImage - Mostrando fallback por erro');
+    return (
+      <div className="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+        <span className="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
+          {fallbackText.split(' ').length > 1 
+            ? `${fallbackText.split(' ')[0][0]}${fallbackText.split(' ')[fallbackText.split(' ').length - 1][0]}`.toUpperCase()
+            : fallbackText[0].toUpperCase()
+          }
+        </span>
+      </div>
+    );
+  }
+
+  // Se não tem processedSrc, mostrar fallback
+  if (!processedSrc) {
+    console.log('🔍 ProfileImage - Sem processedSrc, mostrando fallback');
+    return (
+      <div className="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+        <span className="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
+          {fallbackText.split(' ').length > 1 
+            ? `${fallbackText.split(' ')[0][0]}${fallbackText.split(' ')[fallbackText.split(' ').length - 1][0]}`.toUpperCase()
+            : fallbackText[0].toUpperCase()
+          }
+        </span>
+      </div>
+    );
+  }
+
+  // Mostrar imagem
+  console.log('🔍 ProfileImage - Mostrando imagem:', processedSrc);
+  return (
+    <img 
+      src={processedSrc} 
+      alt={alt}
+      className="w-full h-full object-cover"
+      onLoad={handleLoad}
+      onError={handleError}
+    />
+  );
+}
+
+const menuItems = {
           proprietario: [
             {
               title: 'Dashboard',
@@ -253,7 +359,7 @@ interface SidebarProps {
 
 export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [currentPhoto, setCurrentPhoto] = useState(userPhoto);
+  const [currentPhoto, setCurrentPhoto] = useState(userPhoto || '');
   const pathname = usePathname();
   
   const items = menuItems[userType as keyof typeof menuItems] || menuItems.proprietario;
@@ -262,10 +368,21 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
   console.log('🔍 Sidebar - userPhoto recebido:', userPhoto);
   console.log('🔍 Sidebar - currentPhoto atual:', currentPhoto);
   console.log('🔍 Sidebar - userName:', userName);
+  console.log('🔍 Sidebar - currentPhoto é truthy?', !!currentPhoto);
+  console.log('🔍 Sidebar - currentPhoto length:', currentPhoto?.length);
+
+  // Atualizar foto quando userPhoto mudar
+  useEffect(() => {
+    console.log('🔍 Sidebar - userPhoto mudou, atualizando currentPhoto:', userPhoto);
+    if (userPhoto) {
+      setCurrentPhoto(userPhoto);
+    }
+  }, [userPhoto]);
 
   // Escutar evento de atualização de foto
   useEffect(() => {
     const handlePhotoUpdate = (event: CustomEvent) => {
+      console.log('🔍 Sidebar - Evento userPhotoUpdated recebido:', event.detail.photoUrl);
       setCurrentPhoto(event.detail.photoUrl);
     };
 
@@ -275,11 +392,6 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
       window.removeEventListener('userPhotoUpdated', handlePhotoUpdate as EventListener);
     };
   }, []);
-
-  // Atualizar foto quando userPhoto mudar
-  useEffect(() => {
-    setCurrentPhoto(userPhoto);
-  }, [userPhoto]);
 
   return (
     <div className={cn(
@@ -312,45 +424,11 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
         <div className="p-2 sm:p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2 sm:space-x-3">
             <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden flex items-center justify-center">
-              {currentPhoto ? (
-                <>
-                  {console.log('🔍 Sidebar - Renderizando imagem com src:', currentPhoto)}
-                  <img 
-                    src={currentPhoto} 
-                    alt={userName}
-                    className="w-full h-full object-cover"
-                    onLoad={() => console.log('✅ Sidebar - Imagem carregada com sucesso:', currentPhoto)}
-                    onError={(e) => {
-                      console.error('❌ Sidebar - Erro ao carregar imagem:', currentPhoto);
-                      // Fallback para iniciais se a imagem falhar
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent) {
-                        parent.innerHTML = `
-                          <div class="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
-                            <span class="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
-                              ${userName.split(' ').length > 1 
-                                ? `${userName.split(' ')[0][0]}${userName.split(' ')[userName.split(' ').length - 1][0]}`.toUpperCase()
-                                : userName[0].toUpperCase()
-                              }
-                            </span>
-                          </div>
-                        `;
-                      }
-                    }}
-                  />
-                </>
-              ) : (
-                <div className="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
-                  <span className="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
-                    {userName.split(' ').length > 1 
-                      ? `${userName.split(' ')[0][0]}${userName.split(' ')[userName.split(' ').length - 1][0]}`.toUpperCase()
-                      : userName[0].toUpperCase()
-                    }
-                  </span>
-                </div>
-              )}
+              <ProfileImage 
+                src={currentPhoto || ''} 
+                alt={userName}
+                fallbackText={userName}
+              />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate">

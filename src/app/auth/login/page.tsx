@@ -47,41 +47,44 @@ function LoginContent() {
     setError(null);
     
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      // Usar Supabase Auth diretamente
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
+      if (authError) {
+        console.error('Erro no login:', authError);
+        
         // Verificar se é erro de confirmação de email
-        if (data.code === 'EMAIL_NOT_CONFIRMED' && data.needsConfirmation) {
-          setError(`📧 ${data.error}\n\nPor favor, verifique a sua caixa de correio e clique no link de confirmação antes de fazer login.`);
+        if (authError.message.includes('Email not confirmed') || authError.code === 'email_not_confirmed') {
+          setError(`📧 Email não confirmado.\n\nPor favor, verifique a sua caixa de correio e clique no link de confirmação antes de fazer login.`);
+          setIsLoading(false);
           return;
         }
         
-        // Verificar se é erro de conta vinculada a provedor social
-        if (data.suggestion === 'social_login') {
-          setError(`🔗 ${data.error}\n\nUse o botão "Continue with ${data.provider}" acima para fazer login.\n\n💡 Dica: Se quiser usar email e senha, faça login social primeiro e defina uma senha nas configurações.`);
+        // Verificar se é erro de credenciais inválidas
+        if (authError.message.includes('Invalid login credentials')) {
+          setError('Email ou password incorretos');
+          setIsLoading(false);
           return;
         }
         
-        throw new Error(data.error || 'Erro ao fazer login');
+        throw new Error(authError.message || 'Erro ao fazer login');
       }
 
-      // Sucesso - redirecionar para dashboard simples primeiro
+      if (!authData.user) {
+        throw new Error('Falha no login');
+      }
+
+      // Sucesso - verificar se o perfil existe
       console.log('✅ Login bem-sucedido!');
-      console.log('🔵 User data:', data.user);
-      console.log('🔵 User type:', data.user.user_type);
-      console.log('🔵 Session data:', data.session);
+      console.log('🔵 User ID:', authData.user.id);
+      console.log('🔵 Session:', authData.session ? 'Válida' : 'Inválida');
       
       // Salvar token no localStorage
-      if (data.session?.access_token) {
-        localStorage.setItem('access_token', data.session.access_token);
+      if (authData.session?.access_token) {
+        localStorage.setItem('access_token', authData.session.access_token);
         console.log('🔵 Token salvo no localStorage');
       }
       

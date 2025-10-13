@@ -164,10 +164,12 @@ export default function MeusDadosPage() {
             // Recarregar dados do usuário
             await fetchUserData();
             
-            // Notificar o sidebar para atualizar a foto
-            window.dispatchEvent(new CustomEvent('userPhotoUpdated', { 
-              detail: { photoUrl: base64 } 
-            }));
+            // Notificar o sidebar para atualizar a foto após recarregar os dados
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent('userPhotoUpdated', { 
+                detail: { photoUrl: base64 } 
+              }));
+            }, 100);
           } else {
             setMessage({ type: 'error', text: result.error || 'Erro ao atualizar foto' });
           }
@@ -391,7 +393,11 @@ export default function MeusDadosPage() {
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-xl">
-                        {userData?.nome_completo?.charAt(0) || 'U'}
+                        {userData?.nome_completo ? (
+                          userData.nome_completo.split(' ').length > 1 
+                            ? `${userData.nome_completo.split(' ')[0][0]}${userData.nome_completo.split(' ')[userData.nome_completo.split(' ').length - 1][0]}`.toUpperCase()
+                            : userData.nome_completo[0].toUpperCase()
+                        ) : 'U'}
                       </div>
                     )}
                   </div>

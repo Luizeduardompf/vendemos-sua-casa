@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { createBrowserClient } from '@supabase/ssr';
 
 function SetPasswordContent() {
   const [password, setPassword] = useState('');
@@ -17,6 +18,11 @@ function SetPasswordContent() {
   const [email, setEmail] = useState('');
   const searchParams = useSearchParams();
   const router = useRouter();
+  
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     const emailParam = searchParams.get('email');
@@ -63,10 +69,26 @@ function SetPasswordContent() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess('Senha definida com sucesso! Agora pode usar email e senha para fazer login.');
-        setTimeout(() => {
-          router.push('/auth/login');
-        }, 2000);
+        setSuccess('Senha definida com sucesso! Redirecionando para o dashboard...');
+        
+        // Verificar se ainda temos uma sessão válida
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError || !session) {
+          console.log('⚠️ Sessão perdida após definir senha, redirecionando para login');
+          setTimeout(() => {
+            router.push('/auth/login?message=password_set_success');
+          }, 2000);
+        } else {
+          console.log('✅ Sessão mantida, redirecionando para dashboard');
+          // Garantir que o token está salvo
+          if (session.access_token) {
+            localStorage.setItem('access_token', session.access_token);
+          }
+          setTimeout(() => {
+            router.push('/dashboard/proprietario');
+          }, 2000);
+        }
       } else {
         setError(data.error || 'Erro ao definir senha');
       }
@@ -78,8 +100,21 @@ function SetPasswordContent() {
     }
   };
 
-  const handleSkip = () => {
-    router.push('/dashboard/proprietario');
+  const handleSkip = async () => {
+    // Verificar se temos uma sessão válida antes de pular
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !session) {
+      console.log('⚠️ Sem sessão válida, redirecionando para login');
+      router.push('/auth/login?error=no_session');
+    } else {
+      console.log('✅ Sessão válida, redirecionando para dashboard');
+      // Garantir que o token está salvo
+      if (session.access_token) {
+        localStorage.setItem('access_token', session.access_token);
+      }
+      router.push('/dashboard/proprietario');
+    }
   };
 
   return (

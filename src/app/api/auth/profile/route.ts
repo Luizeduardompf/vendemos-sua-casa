@@ -5,21 +5,6 @@ export async function GET(request: NextRequest) {
   try {
     console.log('🔵 API Profile - Iniciando...');
     
-    // Obter o token de autorização do header
-    const authHeader = request.headers.get('authorization');
-    console.log('🔵 API Profile - Auth Header:', authHeader ? 'Presente' : 'Ausente');
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('🔵 API Profile - Token não encontrado no header');
-      return NextResponse.json(
-        { error: 'Token de autorização não encontrado' },
-        { status: 401 }
-      );
-    }
-    
-    const token = authHeader.split(' ')[1];
-    console.log('🔵 API Profile - Token extraído:', token ? 'Sim' : 'Não');
-    
     const supabase = createClient();
     
     // Tentar obter a sessão atual primeiro
@@ -34,19 +19,23 @@ export async function GET(request: NextRequest) {
       authUser = session.user;
       console.log('🔵 API Profile - Usando sessão atual');
     } else {
-      // Tentar validar o token fornecido
-      const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-      console.log('🔵 API Profile - User do token:', user ? 'Encontrado' : 'Não encontrado');
-      console.log('🔵 API Profile - User Error:', userError);
+      // Tentar obter o token de autorização do header
+      const authHeader = request.headers.get('authorization');
+      console.log('🔵 API Profile - Auth Header:', authHeader ? 'Presente' : 'Ausente');
       
-      if (userError || !user) {
-        return NextResponse.json(
-          { error: 'Token inválido ou expirado' },
-          { status: 401 }
-        );
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1];
+        console.log('🔵 API Profile - Token extraído:', token ? 'Sim' : 'Não');
+        
+        // Tentar validar o token fornecido
+        const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+        console.log('🔵 API Profile - User do token:', user ? 'Encontrado' : 'Não encontrado');
+        console.log('🔵 API Profile - User Error:', userError);
+        
+        if (!userError && user) {
+          authUser = user;
+        }
       }
-      
-      authUser = user;
     }
     
     if (!authUser) {
