@@ -51,10 +51,12 @@ function AuthCallbackContent() {
 
         console.log('🔵 Usuário existe?', userData ? 'Sim' : 'Não');
         console.log('🔵 User Query Error:', userQueryError);
+        console.log('🔵 User Data encontrado:', userData);
         console.log('🔵 Google metadata:', session.user.user_metadata);
         console.log('🔵 Avatar URL:', session.user.user_metadata?.avatar_url);
         console.log('🔵 Picture:', session.user.user_metadata?.picture);
         console.log('🔵 Full name:', session.user.user_metadata?.full_name);
+        console.log('🔵 Auth User ID:', session.user.id);
 
         // Se não existe, criar básico
         if (!userData) {
@@ -103,9 +105,11 @@ function AuthCallbackContent() {
           if (insertError) {
             console.error('❌ Erro ao criar usuário:', insertError);
             console.error('❌ Dados que causaram erro:', userDataToCreate);
+            console.error('❌ Detalhes do erro:', JSON.stringify(insertError, null, 2));
             // Continuar mesmo com erro
           } else {
             console.log('✅ Usuário criado com sucesso:', insertData);
+            console.log('✅ Usuário criado com ID:', insertData?.[0]?.id);
           }
         } else {
           console.log('🔵 Usuário já existe, atualizando dados...');
