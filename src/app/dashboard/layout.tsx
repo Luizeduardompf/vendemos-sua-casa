@@ -396,14 +396,16 @@ export default function DashboardLayout({
             </header>
             
             {/* Page Content */}
-            <main className="flex-1 overflow-y-auto p-6 pb-16">
+            <main className="flex-1 overflow-y-auto p-6 pb-20">
               {children}
             </main>
           </div>
         </div>
 
         {/* Footer Fixo */}
-        <DashboardFooter />
+        <div className="absolute bottom-0 left-0 right-0 z-10">
+          <DashboardFooter />
+        </div>
 
         {/* Modal de Status da Conta */}
         <AccountStatusModal
