@@ -82,7 +82,17 @@ export async function GET(request: NextRequest) {
         aceita_marketing: userProfile.aceita_marketing,
         created_at: userProfile.created_at,
         updated_at: userProfile.updated_at,
-        last_login: userProfile.last_login
+        last_login: userProfile.last_login,
+        // Novos campos do Google
+        foto_perfil: userProfile.foto_perfil,
+        primeiro_nome: userProfile.primeiro_nome,
+        ultimo_nome: userProfile.ultimo_nome,
+        nome_exibicao: userProfile.nome_exibicao,
+        provedor: userProfile.provedor,
+        provedor_id: userProfile.provedor_id,
+        localizacao: userProfile.localizacao,
+        email_verificado: userProfile.email_verificado,
+        dados_sociais: userProfile.dados_sociais
       }
     });
     
@@ -129,7 +139,17 @@ export async function PUT(request: NextRequest) {
       'codigo_postal',
       'localidade',
       'distrito',
-      'aceita_marketing'
+      'aceita_marketing',
+      // Novos campos do Google
+      'foto_perfil',
+      'primeiro_nome',
+      'ultimo_nome',
+      'nome_exibicao',
+      'provedor',
+      'provedor_id',
+      'localizacao',
+      'email_verificado',
+      'dados_sociais'
     ];
     
     // Filtrar apenas campos permitidos

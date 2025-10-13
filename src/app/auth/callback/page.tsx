@@ -88,11 +88,27 @@ function AuthCallbackContent() {
             email: session.user.email,
             password: 'social_login_temp_password', // Password temporária
             nome_completo: session.user.user_metadata?.full_name || session.user.email,
-            telefone: session.user.user_metadata?.phone_number,
+            telefone: session.user.user_metadata?.phone_number || session.user.phone,
             user_type: 'proprietario', // Default para social login
             aceita_termos: true,
             aceita_privacidade: true,
-            aceita_marketing: false
+            aceita_marketing: false,
+            // Dados adicionais do Google
+            foto_perfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
+            primeiro_nome: session.user.user_metadata?.given_name || session.user.user_metadata?.first_name,
+            ultimo_nome: session.user.user_metadata?.family_name || session.user.user_metadata?.last_name,
+            nome_exibicao: session.user.user_metadata?.name || session.user.user_metadata?.display_name,
+            provedor: 'google',
+            provedor_id: session.user.user_metadata?.sub || session.user.id,
+            localizacao: session.user.user_metadata?.locale,
+            email_verificado: session.user.email_confirmed_at ? true : false,
+            dados_sociais: {
+              google_id: session.user.user_metadata?.sub || session.user.id,
+              avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
+              locale: session.user.user_metadata?.locale,
+              verified_email: session.user.user_metadata?.email_verified || false,
+              raw_data: session.user.user_metadata
+            }
           };
           
           console.log('🔵 Dados para criar utilizador:', userDataToCreate);
@@ -122,6 +138,44 @@ function AuthCallbackContent() {
           console.log('✅ Utilizador criado com sucesso via API');
         } else {
           console.log('✅ Utilizador já existe na tabela users');
+          
+          // Atualizar dados do usuário existente com informações do Google
+          console.log('🔵 Atualizando dados do utilizador existente...');
+          const updateData = {
+            foto_perfil: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
+            primeiro_nome: session.user.user_metadata?.given_name || session.user.user_metadata?.first_name,
+            ultimo_nome: session.user.user_metadata?.family_name || session.user.user_metadata?.last_name,
+            nome_exibicao: session.user.user_metadata?.name || session.user.user_metadata?.display_name,
+            provedor: 'google',
+            provedor_id: session.user.user_metadata?.sub || session.user.id,
+            localizacao: session.user.user_metadata?.locale,
+            email_verificado: session.user.email_confirmed_at ? true : false,
+            dados_sociais: {
+              google_id: session.user.user_metadata?.sub || session.user.id,
+              avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
+              locale: session.user.user_metadata?.locale,
+              verified_email: session.user.user_metadata?.email_verified || false,
+              raw_data: session.user.user_metadata
+            }
+          };
+          
+          console.log('🔵 Dados para atualizar utilizador:', updateData);
+          
+          // Atualizar usuário existente
+          const updateResponse = await fetch('/api/auth/profile', {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData),
+          });
+          
+          if (updateResponse.ok) {
+            console.log('✅ Dados do utilizador atualizados com sucesso');
+          } else {
+            console.log('⚠️ Erro ao atualizar dados do utilizador, mas continuando...');
+          }
         }
 
         // Redirecionar baseado no tipo de utilizador

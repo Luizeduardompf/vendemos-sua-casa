@@ -19,6 +19,15 @@ interface UserData {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
+  // Novos campos do Google
+  foto_perfil?: string;
+  primeiro_nome?: string;
+  ultimo_nome?: string;
+  nome_exibicao?: string;
+  provedor?: string;
+  localizacao?: string;
+  email_verificado?: boolean;
+  dados_sociais?: any;
 }
 
 export default function MeusDadosPage() {
@@ -244,6 +253,63 @@ export default function MeusDadosPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Foto de Perfil */}
+              <div className="flex flex-col items-center space-y-4 pb-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-700">
+                    {userData?.foto_perfil ? (
+                      <img 
+                        src={userData.foto_perfil} 
+                        alt="Foto de perfil"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const parent = target.parentElement;
+                          if (parent) {
+                            parent.innerHTML = `
+                              <div class="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+                                <span class="text-2xl font-medium text-primary dark:text-primary-foreground">
+                                  ${userData?.nome_completo?.split(' ').length > 1 
+                                    ? `${userData.nome_completo.split(' ')[0][0]}${userData.nome_completo.split(' ')[userData.nome_completo.split(' ').length - 1][0]}`.toUpperCase()
+                                    : userData?.nome_completo?.[0]?.toUpperCase() || 'U'
+                                  }
+                                </span>
+                              </div>
+                            `;
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+                        <span className="text-2xl font-medium text-primary dark:text-primary-foreground">
+                          {userData?.nome_completo?.split(' ').length > 1 
+                            ? `${userData.nome_completo.split(' ')[0][0]}${userData.nome_completo.split(' ')[userData.nome_completo.split(' ').length - 1][0]}`.toUpperCase()
+                            : userData?.nome_completo?.[0]?.toUpperCase() || 'U'
+                          }
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {userData?.nome_completo || 'Utilizador'}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {userData?.provedor ? `Conectado via ${userData.provedor.charAt(0).toUpperCase() + userData.provedor.slice(1)}` : 'Conta local'}
+                  </p>
+                  {userData?.email_verificado && (
+                    <p className="text-xs text-green-600 dark:text-green-400 flex items-center justify-center mt-1">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Email verificado
+                    </p>
+                  )}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="nome_completo">Nome Completo *</Label>

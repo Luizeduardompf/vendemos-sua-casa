@@ -18,6 +18,14 @@ interface User {
   user_type: string;
   is_verified: boolean;
   is_active: boolean;
+  foto_perfil?: string;
+  primeiro_nome?: string;
+  ultimo_nome?: string;
+  nome_exibicao?: string;
+  provedor?: string;
+  localizacao?: string;
+  email_verificado?: boolean;
+  dados_sociais?: any;
 }
 
 export default function DashboardLayout({
@@ -182,7 +190,15 @@ export default function DashboardLayout({
             nome_completo: userData.nome_completo,
             user_type: userData.user_type,
             is_verified: userData.is_verified,
-            is_active: userData.is_active
+            is_active: userData.is_active,
+            foto_perfil: userData.foto_perfil,
+            primeiro_nome: userData.primeiro_nome,
+            ultimo_nome: userData.ultimo_nome,
+            nome_exibicao: userData.nome_exibicao,
+            provedor: userData.provedor,
+            localizacao: userData.localizacao,
+            email_verificado: userData.email_verificado,
+            dados_sociais: userData.dados_sociais
           });
         }
         
@@ -237,7 +253,12 @@ export default function DashboardLayout({
       <div className={`min-h-screen ${theme === 'dark' ? 'dark' : ''}`}>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex transition-colors duration-300 dashboard-container">
       {/* Sidebar */}
-      <Sidebar userType={user.user_type} userName={user.nome_completo} />
+      <Sidebar 
+        userType={user.user_type} 
+        userName={user.nome_completo} 
+        userPhoto={user.foto_perfil}
+        userEmail={user.email}
+      />
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">

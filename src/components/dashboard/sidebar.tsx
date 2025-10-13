@@ -10,6 +10,8 @@ import { Logo } from '@/components/logo';
 interface SidebarProps {
   userType: string;
   userName: string;
+  userPhoto?: string;
+  userEmail?: string;
 }
 
         const menuItems = {
@@ -250,7 +252,7 @@ interface SidebarProps {
           ]
 };
 
-export function Sidebar({ userType, userName }: SidebarProps) {
+export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   
@@ -286,13 +288,41 @@ export function Sidebar({ userType, userName }: SidebarProps) {
       {!isCollapsed && (
         <div className="p-2 sm:p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
-              <span className="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
-                {userName.split(' ').length > 1 
-                  ? `${userName.split(' ')[0][0]}${userName.split(' ')[userName.split(' ').length - 1][0]}`.toUpperCase()
-                  : userName[0].toUpperCase()
-                }
-              </span>
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden flex items-center justify-center">
+              {userPhoto ? (
+                <img 
+                  src={userPhoto} 
+                  alt={userName}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback para iniciais se a imagem falhar
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `
+                        <div class="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+                          <span class="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
+                            ${userName.split(' ').length > 1 
+                              ? `${userName.split(' ')[0][0]}${userName.split(' ')[userName.split(' ').length - 1][0]}`.toUpperCase()
+                              : userName[0].toUpperCase()
+                            }
+                          </span>
+                        </div>
+                      `;
+                    }
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
+                  <span className="text-xs sm:text-sm font-medium text-primary dark:text-primary-foreground">
+                    {userName.split(' ').length > 1 
+                      ? `${userName.split(' ')[0][0]}${userName.split(' ')[userName.split(' ').length - 1][0]}`.toUpperCase()
+                      : userName[0].toUpperCase()
+                    }
+                  </span>
+                </div>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
