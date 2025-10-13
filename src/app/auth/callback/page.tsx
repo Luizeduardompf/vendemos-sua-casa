@@ -78,11 +78,21 @@ function AuthCallbackContent() {
           return;
         }
 
-        // Se o utilizador não existe, criar com dados do social login
+        // Se o utilizador não existe, verificar se já existe no Supabase Auth
         if (!userData) {
-          console.log('🔵 Utilizador não existe, criando via API...');
+          console.log('🔵 Utilizador não existe na tabela users, verificando Auth...');
           console.log('🔵 User metadata:', session.user.user_metadata);
           console.log('🔵 User email:', session.user.email);
+          
+          // Verificar se o usuário já existe no Supabase Auth
+          const { data: authUser } = await supabase.auth.getUser();
+          console.log('🔵 Auth User:', authUser);
+          
+          if (authUser.user && authUser.user.email === session.user.email) {
+            console.log('🔵 Usuário existe no Auth, criando perfil na tabela users...');
+          } else {
+            console.log('🔵 Usuário não existe no Auth, criando via API...');
+          }
           
           const userDataToCreate = {
             email: session.user.email,
@@ -139,6 +149,14 @@ function AuthCallbackContent() {
             console.error('❌ Status:', response.status);
             console.error('❌ Response Data:', responseData);
             console.error('❌ Response Data String:', JSON.stringify(responseData, null, 2));
+            
+            // Se o email já está registado, continuar com o fluxo normal
+            if (responseData.error && responseData.error.includes('já está registado')) {
+              console.log('🔵 Email já registado, continuando com fluxo normal...');
+              // Continuar com o fluxo normal - o usuário já existe
+              return;
+            }
+            
             setError(`Erro ao criar perfil do utilizador: ${responseData.error || 'Erro desconhecido'}`);
             return;
           }

@@ -47,17 +47,28 @@ export async function POST(request: NextRequest) {
     
     const supabase = createClient();
     
-    // Verificar se o email já existe
+    // Verificar se o email já existe na tabela users
     const { data: existingUser } = await supabase
       .from('users')
-      .select('id')
+      .select('id, auth_user_id')
       .eq('email', validatedData.email)
       .single();
     
     if (existingUser) {
+      console.log('🔵 Usuário já existe na tabela users:', existingUser);
       return NextResponse.json(
-        { error: 'Email já está registado' },
-        { status: 400 }
+        { 
+          success: true,
+          message: 'Utilizador já registado',
+          user: {
+            id: existingUser.id,
+            email: validatedData.email,
+            nome_completo: validatedData.nome_completo,
+            user_type: validatedData.user_type,
+            is_verified: true
+          }
+        },
+        { status: 200 }
       );
     }
     
@@ -110,23 +121,38 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Criar utilizador no Supabase Auth
-    console.log('🔵 Criando utilizador no Supabase Auth...');
-    console.log('🔵 Email:', validatedData.email);
-    console.log('🔵 Password length:', validatedData.password.length);
-    console.log('🔵 User type:', validatedData.user_type);
+    // Verificar se o usuário já existe no Supabase Auth
+    console.log('🔵 Verificando se usuário existe no Supabase Auth...');
+    const { data: existingAuthUser } = await supabase.auth.getUser();
     
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: validatedData.email,
-      password: validatedData.password,
-      options: {
-        data: {
-          full_name: validatedData.nome_completo,
-          phone_number: validatedData.telefone,
-          user_type: validatedData.user_type
+    let authData, authError;
+    
+    if (existingAuthUser.user && existingAuthUser.user.email === validatedData.email) {
+      console.log('🔵 Usuário já existe no Auth, usando dados existentes');
+      authData = { user: existingAuthUser.user };
+      authError = null;
+    } else {
+      // Criar utilizador no Supabase Auth
+      console.log('🔵 Criando utilizador no Supabase Auth...');
+      console.log('🔵 Email:', validatedData.email);
+      console.log('🔵 Password length:', validatedData.password.length);
+      console.log('🔵 User type:', validatedData.user_type);
+      
+      const authResult = await supabase.auth.signUp({
+        email: validatedData.email,
+        password: validatedData.password,
+        options: {
+          data: {
+            full_name: validatedData.nome_completo,
+            phone_number: validatedData.telefone,
+            user_type: validatedData.user_type
+          }
         }
-      }
-    });
+      });
+      
+      authData = authResult.data;
+      authError = authResult.error;
+    }
     
     console.log('🔵 Auth Data:', authData);
     console.log('🔵 Auth Error:', authError);
