@@ -517,10 +517,6 @@ export function Sidebar({ userType, userName, userPhoto, userEmail }: SidebarPro
         </div>
       )}
 
-              {/* Linha divisória */}
-              <div className="px-2 sm:px-4">
-                <div className="border-t border-gray-200 dark:border-gray-600"></div>
-              </div>
 
       {/* Menu Items */}
       <nav className="flex-1 p-2 sm:p-4 space-y-0.5 sm:space-y-1">

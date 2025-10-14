@@ -19,9 +19,9 @@ export function PageLayout({
   message
 }: PageLayoutProps) {
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-4 ${className}`}>
       {/* Header da página */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors duration-300">
           {title}
         </h1>
@@ -36,8 +36,8 @@ export function PageLayout({
       {message}
 
       {/* Container principal com cartão */}
-      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-colors duration-300">
-        <CardContent className="p-6">
+      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-colors duration-300" style={{ padding: '3px' }}>
+        <CardContent className="p-4">
           {children}
         </CardContent>
       </Card>
@@ -55,8 +55,8 @@ interface SectionProps {
 
 export function Section({ title, description, children, className = '' }: SectionProps) {
   return (
-    <div className={`space-y-4 ${className}`}>
-      <div className="space-y-1">
+    <div className={`space-y-3 ${className}`}>
+      <div className="space-y-0.5">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-300">
           {title}
         </h2>
@@ -80,11 +80,11 @@ interface TwoColumnGridProps {
 
 export function TwoColumnGrid({ left, right, className = '' }: TwoColumnGridProps) {
   return (
-    <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${className}`}>
-      <div className="space-y-4">
+    <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 ${className}`}>
+      <div className="space-y-3">
         {left}
       </div>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {right}
       </div>
     </div>

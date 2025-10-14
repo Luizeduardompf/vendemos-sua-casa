@@ -53,31 +53,39 @@ export function Modal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop com transparência maior */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-50"
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
         onClick={onClose}
       />
       
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-md mx-4">
-        <Card className="shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-center">{title}</CardTitle>
-            <CardDescription className="text-center">
+      <div 
+        className="relative z-10 w-full max-w-md"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-center text-lg font-semibold text-gray-900">
+              {title}
+            </CardTitle>
+            <CardDescription className="text-center text-gray-600">
               {message}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Alert className="mb-4">
-              <AlertDescription>
-                {getIcon()} {message}
-              </AlertDescription>
-            </Alert>
+          <CardContent className="pt-0">
+            <div className="flex items-center justify-center mb-4">
+              <div className="text-4xl">
+                {getIcon()}
+              </div>
+            </div>
             
             {showCloseButton && (
-              <Button onClick={onClose} className="w-full">
+              <Button 
+                onClick={onClose} 
+                className="w-full bg-primary hover:bg-primary/90 text-white"
+              >
                 Entendi
               </Button>
             )}

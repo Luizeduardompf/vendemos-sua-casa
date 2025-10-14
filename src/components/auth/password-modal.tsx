@@ -98,108 +98,120 @@ export default function PasswordModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {hasPassword ? 'Alterar Senha' : 'Definir Senha'}
-            </h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClose}
-              className="h-8 w-8 p-0"
-            >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </Button>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <Label className="text-gray-700 dark:text-gray-300">
-                Email
-              </Label>
-              <Input
-                value={userEmail}
-                disabled
-                className="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
-              />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop com transparência maior */}
+      <div 
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        onClick={handleClose}
+      />
+      
+      {/* Modal */}
+      <div 
+        className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-2xl border-0">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                {hasPassword ? 'Alterar Senha' : 'Definir Senha'}
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClose}
+                className="h-8 w-8 p-0"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </Button>
             </div>
 
-            {error && (
-              <Alert className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
-                <AlertDescription className="text-red-800 dark:text-red-200">
-                  {error}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {success && (
-              <Alert className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
-                <AlertDescription className="text-green-800 dark:text-green-200">
-                  {success}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-4">
               <div>
-                <Label htmlFor="newPassword" className="text-gray-700 dark:text-gray-300">
-                  {hasPassword ? 'Nova Senha *' : 'Senha *'}
+                <Label className="text-gray-700 dark:text-gray-300">
+                  Email
                 </Label>
                 <Input
-                  id="newPassword"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Mínimo 6 caracteres"
-                  required
+                  value={userEmail}
+                  disabled
+                  className="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
                 />
               </div>
 
-              <div>
-                <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300">
-                  Confirmar Senha *
-                </Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Digite a senha novamente"
-                  required
-                />
-              </div>
+              {error && (
+                <Alert className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+                  <AlertDescription className="text-red-800 dark:text-red-200">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              )}
 
-              <div className="flex space-x-3 pt-4">
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex-1"
-                >
-                  {isLoading ? 'Salvando...' : (hasPassword ? 'Alterar Senha' : 'Definir Senha')}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleClose}
-                  className="flex-1"
-                >
-                  Cancelar
-                </Button>
-              </div>
-            </form>
+              {success && (
+                <Alert className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
+                  <AlertDescription className="text-green-800 dark:text-green-200">
+                    {success}
+                  </AlertDescription>
+                </Alert>
+              )}
 
-            <div className="text-xs text-gray-500 dark:text-gray-400">
-              <p>💡 <strong>Dica:</strong> Com uma senha definida, você poderá:</p>
-              <ul className="mt-1 ml-4 list-disc">
-                <li>Fazer login com email e senha</li>
-                <li>Continuar usando o login social</li>
-                <li>Ter mais flexibilidade de acesso</li>
-              </ul>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="newPassword" className="text-gray-700 dark:text-gray-300">
+                    {hasPassword ? 'Nova Senha *' : 'Senha *'}
+                  </Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Mínimo 6 caracteres"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300">
+                    Confirmar Senha *
+                  </Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Digite a senha novamente"
+                    required
+                  />
+                </div>
+
+                <div className="flex space-x-3 pt-4">
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex-1"
+                  >
+                    {isLoading ? 'Salvando...' : (hasPassword ? 'Alterar Senha' : 'Definir Senha')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleClose}
+                    className="flex-1"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </form>
+
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <p>💡 <strong>Dica:</strong> Com uma senha definida, você poderá:</p>
+                <ul className="mt-1 ml-4 list-disc">
+                  <li>Fazer login com email e senha</li>
+                  <li>Continuar usando o login social</li>
+                  <li>Ter mais flexibilidade de acesso</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
