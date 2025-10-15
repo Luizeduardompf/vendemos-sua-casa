@@ -1,14 +1,15 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  
+  // Para rotas do dashboard, deixar o auth guard do cliente fazer a verificação
+  // O middleware apenas adiciona headers de segurança
   const res = NextResponse.next({
     request: {
       headers: req.headers,
     },
   });
-
-  // Middleware simplificado - sem Supabase por enquanto
-  // TODO: Implementar autenticação quando necessário
   
   // Adicionar headers de segurança
   res.headers.set('X-Frame-Options', 'DENY');

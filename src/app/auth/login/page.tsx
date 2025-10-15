@@ -97,11 +97,11 @@ function LoginContent() {
       const dashboardUrl = '/dashboard/proprietario';
       console.log('🔵 Redirecionando para dashboard:', dashboardUrl);
       
-      // Redirecionamento imediato
+      // Aguardar um pouco mais para garantir que o token seja processado
       setTimeout(() => {
         console.log('🔵 Executando redirecionamento...');
         window.location.href = dashboardUrl;
-      }, 1000);
+      }, 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao fazer login. Verifique as suas credenciais.');
       setIsLoading(false);

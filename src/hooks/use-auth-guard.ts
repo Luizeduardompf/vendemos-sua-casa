@@ -16,11 +16,13 @@ export function useAuthGuard() {
       try {
         // Verificação rápida do token primeiro
         const token = localStorage.getItem('access_token');
+        console.log('🔒 Auth Guard - Verificando token:', token ? 'Encontrado' : 'Não encontrado');
+        
         if (!token) {
           console.log('🔒 Token não encontrado, redirecionando para home');
           if (isMounted) {
             setIsAuthenticated(false);
-            router.push('/');
+            window.location.href = '/';
           }
           return false;
         }
@@ -32,14 +34,43 @@ export function useAuthGuard() {
 
         // Verificar sessão do Supabase
         const { data: { session }, error } = await supabase.auth.getSession();
+        console.log('🔒 Auth Guard - Sessão Supabase:', session ? 'Válida' : 'Inválida', error ? `Erro: ${error.message}` : '');
         
+        // Se não há sessão, tentar usar o token diretamente
         if (error || !session) {
-          console.log('🔒 Sessão inválida, redirecionando para home');
-          if (isMounted) {
-            setIsAuthenticated(false);
-            router.push('/');
+          console.log('🔒 Sessão Supabase inválida, tentando usar token diretamente...');
+          
+          // Verificar se o token é válido fazendo uma chamada à API
+          try {
+            const response = await fetch('/api/auth/profile', {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+            
+            if (response.ok) {
+              console.log('🔒 Token válido, permitindo acesso');
+              if (isMounted) {
+                setIsAuthenticated(true);
+              }
+              return true;
+            } else {
+              console.log('🔒 Token inválido, redirecionando para home');
+              if (isMounted) {
+                setIsAuthenticated(false);
+                window.location.href = '/';
+              }
+              return false;
+            }
+          } catch (apiError) {
+            console.log('🔒 Erro ao verificar token via API, redirecionando para home');
+            if (isMounted) {
+              setIsAuthenticated(false);
+              window.location.href = '/';
+            }
+            return false;
           }
-          return false;
         }
 
         // Verificação do usuário
@@ -53,12 +84,13 @@ export function useAuthGuard() {
           console.log('🔒 Usuário não encontrado, redirecionando para home');
           if (isMounted) {
             setIsAuthenticated(false);
-            router.push('/');
+            window.location.href = '/';
           }
           return false;
         }
 
         if (isMounted) {
+          console.log('🔒 Auth Guard - Usuário autenticado com sucesso!');
           setIsAuthenticated(true);
         }
         return true;
@@ -66,7 +98,7 @@ export function useAuthGuard() {
         console.error('🔒 Erro na verificação de autenticação:', error);
         if (isMounted) {
           setIsAuthenticated(false);
-          router.push('/');
+          window.location.href = '/';
         }
         return false;
       }
@@ -92,7 +124,7 @@ export function useAuthGuard() {
         if (event === 'SIGNED_OUT') {
           console.log('🔒 Usuário deslogado, redirecionando para home');
           setIsAuthenticated(false);
-          router.push('/');
+          window.location.href = '/';
         }
       }
     );

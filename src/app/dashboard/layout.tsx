@@ -203,13 +203,13 @@ export default function DashboardLayout({
 
         if (userError) {
           console.error('🔵 Dashboard Layout - Erro ao buscar dados do usuário:', userError);
-          router.push('/');
+          window.location.href = '/';
           return;
         }
 
         if (!userData) {
           console.log('🔵 Dashboard Layout - Usuário não encontrado na tabela users, redirecionando para home');
-          router.push('/');
+          window.location.href = '/';
           return;
         }
 
@@ -220,7 +220,7 @@ export default function DashboardLayout({
         loadConfiguracoes();
       } catch (error) {
         console.error('🔵 Dashboard Layout - Erro ao buscar dados do usuário:', error);
-        router.push('/');
+        window.location.href = '/';
       }
     };
 
@@ -240,7 +240,7 @@ export default function DashboardLayout({
       localStorage.removeItem('access_token');
       localStorage.removeItem('user_id');
       localStorage.removeItem('user_email');
-      router.push('/');
+      window.location.href = '/';
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     }
