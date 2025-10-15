@@ -5,9 +5,9 @@ import { createImovelSlug } from '@/lib/slug';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Eye, 
   Edit, 
-  Trash2, 
+  Eye,
+  EyeOff, 
   MoreHorizontal,
   MapPin,
   Calendar,
@@ -20,7 +20,7 @@ interface Imovel {
   tipo: string;
   preco: number;
   localizacao: string;
-  status: 'ativo' | 'inativo' | 'vendido' | 'alugado' | 'pendente';
+  status: 'publicado' | 'pendente' | 'inativo' | 'finalizado';
   dataCadastro: string;
   visualizacoes: number;
   favoritos: number;
@@ -33,7 +33,7 @@ interface ImoveisCompactTableProps {
   imoveis: Imovel[];
   onView?: (id: string) => void;
   onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onInactivate?: (id: string) => void;
   onToggleStatus?: (id: string) => void;
 }
 
@@ -41,7 +41,7 @@ export function ImoveisCompactTable({
   imoveis, 
   onView, 
   onEdit, 
-  onDelete, 
+  onInactivate, 
   onToggleStatus 
 }: ImoveisCompactTableProps) {
   const [showActions, setShowActions] = useState<string | null>(null);
@@ -65,14 +65,14 @@ export function ImoveisCompactTable({
 
   const getStatusInfo = (status: string) => {
     switch (status) {
-      case 'ativo':
-        return { label: 'Ativo', color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' };
+      case 'publicado':
+        return { label: 'Publicado', color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' };
+      case 'pendente':
+        return { label: 'Pendente', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400' };
       case 'inativo':
         return { label: 'Inativo', color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' };
-      case 'vendido':
-        return { label: 'Vendido', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' };
-      case 'alugado':
-        return { label: 'Alugado', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400' };
+      case 'finalizado':
+        return { label: 'Finalizado', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' };
       default:
         return { label: 'Desconhecido', color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' };
     }
@@ -122,7 +122,10 @@ export function ImoveisCompactTable({
                     {/* Imóvel */}
                     <td className="px-3 py-3">
                       <div className="flex items-center space-x-3">
-                        <div className="flex-shrink-0">
+                        <div 
+                          className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => onView?.(imovel.id)}
+                        >
                           {imovel.imagem ? (
                             <img
                               src={imovel.imagem}
@@ -137,12 +140,15 @@ export function ImoveisCompactTable({
                             </div>
                           )}
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                        <div 
+                          className="min-w-0 flex-1 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/10 rounded-lg p-2 -m-2 transition-colors"
+                          onClick={() => onView?.(imovel.id)}
+                        >
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                             {imovel.titulo}
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                            {imovel.tipo}
+                          <p className="text-xs text-gray-500 dark:text-gray-400 capitalize hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                            <span className="font-mono text-gray-600 dark:text-gray-300">[{imovel.imovel_id || imovel.id.slice(0, 8)}]</span> {imovel.tipo}
                           </p>
                         </div>
                       </div>
@@ -191,45 +197,38 @@ export function ImoveisCompactTable({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            // SEMPRE gerar um novo slug usando o imovel_id (formato ABC-123)
-                            let slug;
-                            if (imovel.imovel_id) {
-                              // Usar o imovel_id novo (formato ABC-123)
-                              slug = createImovelSlug(imovel.titulo, imovel.imovel_id);
-                              console.log('🔍 Tabela Compacta - Slug gerado com imovel_id:', slug);
-                            } else {
-                              // Fallback para UUID se não houver imovel_id
-                              slug = createImovelSlug(imovel.titulo, imovel.id);
-                              console.log('🔍 Tabela Compacta - Slug gerado com UUID:', slug);
-                            }
-                            console.log('🔍 Tabela Compacta - Slug final:', slug);
-                            console.log('🔍 Tabela Compacta - URL final:', `/imovel/${slug}`);
-                            window.open(`/imovel/${slug}`, '_blank', 'noopener,noreferrer');
-                          }}
-                          className="h-8 w-8 p-0"
-                          title="Ver detalhes"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
                           onClick={() => onEdit?.(imovel.id)}
                           className="h-8 w-8 p-0"
                           title="Editar"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onDelete?.(imovel.id)}
-                          className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                          title="Excluir"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {/* Botão de mudança de status - só aparece para publicado e inativo */}
+                        {(imovel.status === 'publicado' || imovel.status === 'inativo') && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onInactivate?.(imovel.id)}
+                            className={`h-8 w-8 p-0 ${
+                              imovel.status === 'publicado'
+                                ? 'text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/20'
+                                : 'text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20'
+                            }`}
+                            title={
+                              imovel.status === 'publicado'
+                                ? 'Inativar'
+                                : 'Publicar'
+                            }
+                          >
+                            {imovel.status === 'publicado' ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </Button>
+                        )}
+                        
+                        {/* Imóveis pendentes NÃO têm botão de mudança de status */}
                       </div>
                     </td>
                   </tr>

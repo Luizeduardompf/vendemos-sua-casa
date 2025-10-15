@@ -12,7 +12,7 @@ import {
   Euro, 
   Eye, 
   Edit, 
-  Trash2, 
+  EyeOff, 
   MoreVertical,
   Calendar,
   Star
@@ -27,7 +27,7 @@ interface Imovel {
   quartos: number;
   banheiros: number;
   localizacao: string;
-  status: 'ativo' | 'inativo' | 'vendido' | 'alugado' | 'pendente';
+  status: 'publicado' | 'pendente' | 'inativo' | 'finalizado';
   dataCadastro: string;
   visualizacoes: number;
   favoritos: number;
@@ -40,7 +40,7 @@ interface ImovelCardProps {
   imovel: Imovel;
   onView?: (id: string) => void;
   onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onInactivate?: (id: string) => void;
   onToggleStatus?: (id: string) => void;
 }
 
@@ -48,7 +48,7 @@ export function ImovelCard({
   imovel, 
   onView, 
   onEdit, 
-  onDelete, 
+  onInactivate, 
   onToggleStatus 
 }: ImovelCardProps) {
   console.log('🔍 ImovelCard renderizado para:', imovel.titulo, 'ID:', imovel.id);
@@ -58,16 +58,14 @@ export function ImovelCard({
 
   const getStatusInfo = (status: string) => {
     switch (status) {
-      case 'ativo':
-        return { label: 'Ativo', color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' };
+      case 'publicado':
+        return { label: 'Publicado', color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' };
+      case 'pendente':
+        return { label: 'Pendente', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400' };
       case 'inativo':
         return { label: 'Inativo', color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' };
-      case 'vendido':
-        return { label: 'Vendido', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' };
-      case 'alugado':
-        return { label: 'Alugado', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400' };
-      case 'pendente':
-        return { label: 'Pendente', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400' };
+      case 'finalizado':
+        return { label: 'Finalizado', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' };
       default:
         return { label: 'Desconhecido', color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' };
     }
@@ -96,7 +94,10 @@ export function ImovelCard({
     <Card className="group hover:shadow-lg transition-all duration-300 border-gray-200 dark:border-gray-700">
       <CardContent className="p-0">
         {/* Imagem do imóvel */}
-        <div className="relative h-48 bg-gray-100 dark:bg-gray-800 rounded-t-lg overflow-hidden">
+        <div 
+          className="relative h-48 bg-gray-100 dark:bg-gray-800 rounded-t-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+          onClick={() => onView?.(imovel.id)}
+        >
           {imovel.imagemPrincipal ? (
             <img
               src={imovel.imagemPrincipal}
@@ -108,22 +109,6 @@ export function ImovelCard({
               <Square className="h-12 w-12" />
             </div>
           )}
-          
-          {/* Botão Ver direto na imagem */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-            <Button
-              onClick={() => {
-                console.log('🔍 Botão Ver direto clicado! ID:', imovel.id);
-                console.log('🔍 onView function:', onView);
-                onView?.(imovel.id);
-              }}
-              size="sm"
-              className="bg-white/90 hover:bg-white text-gray-900 hover:text-gray-900"
-            >
-              <Eye className="h-4 w-4 mr-2" />
-              Ver Imóvel
-            </Button>
-          </div>
           
           {/* Status badge */}
           <div className="absolute top-3 left-3">
@@ -178,16 +163,34 @@ export function ImovelCard({
                     <Star className="h-4 w-4" />
                     <span>Alterar Status</span>
                   </button>
-                  <button
-                    onClick={() => {
-                      onDelete?.(imovel.id);
-                      setShowActions(false);
-                    }}
-                    className="w-full px-3 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-2"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    <span>Excluir</span>
-                  </button>
+                  {/* Botão de mudança de status - só aparece para publicado e inativo */}
+                  {(imovel.status === 'publicado' || imovel.status === 'inativo') && (
+                    <button
+                      onClick={() => {
+                        onInactivate?.(imovel.id);
+                        setShowActions(false);
+                      }}
+                      className={`w-full px-3 py-2 text-left text-sm flex items-center space-x-2 ${
+                        imovel.status === 'publicado'
+                          ? 'text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20'
+                          : 'text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20'
+                      }`}
+                    >
+                      {imovel.status === 'publicado' ? (
+                        <>
+                          <EyeOff className="h-4 w-4" />
+                          <span>Inativar</span>
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="h-4 w-4" />
+                          <span>Publicar</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                  
+                  {/* Imóveis pendentes NÃO têm botão de mudança de status */}
                 </div>
               )}
             </div>
@@ -198,7 +201,10 @@ export function ImovelCard({
         <div className="p-4">
           {/* Título e preço */}
           <div className="mb-3">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-1 line-clamp-1">
+            <h3 
+              className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-1 line-clamp-1 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              onClick={() => onView?.(imovel.id)}
+            >
               {imovel.titulo}
             </h3>
             <p className="text-2xl font-bold text-primary">

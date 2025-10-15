@@ -45,17 +45,38 @@ export async function GET(request: NextRequest) {
     }
 
     // Buscar dados do usuário
-    const { data: userData, error: userDataError } = await supabase
+    console.log('🔵 API Imóveis - Buscando usuário com ID:', authUser.id);
+    let { data: userData, error: userDataError } = await supabase
       .from('users')
       .select('*')
-      .eq('auth_user_id', authUser.id)
+      .eq('id', authUser.id)
       .single();
 
+    console.log('🔵 API Imóveis - UserData encontrado:', !!userData);
+    console.log('🔵 API Imóveis - UserData Error:', userDataError?.message);
+
     if (userDataError || !userData) {
-      return NextResponse.json(
-        { error: 'Usuário não encontrado' },
-        { status: 404 }
-      );
+      console.log('🔵 API Imóveis - Usuário não encontrado, tentando por email...');
+      
+      // Tentar buscar por email como fallback
+      const { data: userDataByEmail, error: userDataByEmailError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', authUser.email)
+        .single();
+      
+      console.log('🔵 API Imóveis - UserData por email:', !!userDataByEmail);
+      console.log('🔵 API Imóveis - UserData por email Error:', userDataByEmailError?.message);
+      
+      if (userDataByEmailError || !userDataByEmail) {
+        return NextResponse.json(
+          { error: 'Usuário não encontrado', details: userDataError?.message },
+          { status: 404 }
+        );
+      }
+      
+      // Usar dados encontrados por email
+      userData = userDataByEmail;
     }
 
     // Buscar imóveis do proprietário
@@ -98,7 +119,10 @@ export async function GET(request: NextRequest) {
       quartos: imovel.quartos || 0,
       banheiros: imovel.casas_banho || 0,
       localizacao: `${imovel.localidade}, ${imovel.distrito}`,
-      status: imovel.status === 'publicado' ? 'ativo' : imovel.status,
+        status: imovel.status === 'publicado' ? 'publicado' :
+                imovel.status === 'pendente' ? 'pendente' :
+                imovel.status === 'inativo' ? 'inativo' :
+                imovel.status === 'finalizado' ? 'finalizado' : 'pendente',
       dataCadastro: imovel.created_at,
       visualizacoes: imovel.visualizacoes || 0,
       favoritos: imovel.favoritos || 0,

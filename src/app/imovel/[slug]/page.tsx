@@ -55,7 +55,7 @@ interface ImovelData {
   orientacao: string;
   descricao: string;
   observacoes: string;
-  status: string;
+  status: 'publicado' | 'pendente' | 'inativo' | 'finalizado';
   dataCadastro: string;
   visualizacoes: number;
   favoritos: number;
@@ -254,16 +254,18 @@ export default function ImovelDetailPage() {
     }
   };
 
-  const getStatusInfo = (status: string) => {
+  const getStatusInfo = (status: 'publicado' | 'pendente' | 'inativo' | 'finalizado') => {
     switch (status) {
-      case 'ativo':
-        return { label: 'Disponível', color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' };
-      case 'vendido':
-        return { label: 'Vendido', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' };
-      case 'alugado':
-        return { label: 'Alugado', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400' };
+      case 'publicado':
+        return { label: 'Publicado', color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' };
+      case 'pendente':
+        return { label: 'Pendente', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400' };
+      case 'inativo':
+        return { label: 'Inativo', color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' };
+      case 'finalizado':
+        return { label: 'Finalizado', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' };
       default:
-        return { label: 'Indisponível', color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' };
+        return { label: 'Desconhecido', color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' };
     }
   };
 

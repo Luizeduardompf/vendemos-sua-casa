@@ -1,6 +1,91 @@
 'use client';
 
+// TEMPORÁRIO: Formulário preenchido com dados fictícios para facilitar testes
+// Remover dados fictícios quando não precisar mais
+
 import { useState, useEffect, useRef } from 'react';
+
+// Função para gerar dados fictícios aleatórios
+const generateFakeData = () => {
+  const titulos = [
+    'Apartamento T3 Moderno - Avenidas Novas',
+    'Casa T4 com Jardim - Estrela',
+    'Apartamento T2 Renovado - Chiado',
+    'Moradia T5 de Luxo - Cascais',
+    'Apartamento T1 Premium - Príncipe Real',
+    'Casa T3 com Piscina - Sintra',
+    'Apartamento T4 com Varanda - Lapa',
+    'Moradia T6 com Garagem - Oeiras'
+  ];
+  
+  const localizacoes = [
+    'Avenidas Novas, Lisboa',
+    'Estrela, Lisboa',
+    'Chiado, Lisboa',
+    'Cascais',
+    'Príncipe Real, Lisboa',
+    'Sintra',
+    'Lapa, Lisboa',
+    'Oeiras'
+  ];
+  
+  const enderecos = [
+    'Rua das Avenidas Novas, 123, 4º andar',
+    'Rua da Estrela, 45, 2º andar',
+    'Rua Garrett, 78, 1º andar',
+    'Avenida Marginal, 234',
+    'Rua do Príncipe Real, 56, 3º andar',
+    'Rua de Sintra, 89, 1º andar',
+    'Rua da Lapa, 12, 5º andar',
+    'Rua de Oeiras, 345, 2º andar'
+  ];
+  
+  const randomIndex = Math.floor(Math.random() * titulos.length);
+  
+  return {
+    titulo: titulos[randomIndex],
+    descricao: 'Propriedade em excelente estado de conservação, com acabamentos de qualidade e localização privilegiada. Ideal para quem procura conforto e praticidade.',
+    preco: (250000 + Math.random() * 300000).toFixed(0),
+    area: (80 + Math.random() * 100).toFixed(0),
+    area_terreno: (100 + Math.random() * 200).toFixed(0),
+    quartos: (2 + Math.floor(Math.random() * 3)).toString(),
+    banheiros: (1 + Math.floor(Math.random() * 2)).toString(),
+    localizacao: localizacoes[randomIndex],
+    endereco: enderecos[randomIndex],
+    codigo_postal: '1000-00' + Math.floor(Math.random() * 10),
+    cidade: 'Lisboa',
+    distrito: 'Lisboa',
+    pais: 'Portugal',
+    tipo_imovel: 'apartamento',
+    estado: 'excelente',
+    ano_construcao: (2010 + Math.floor(Math.random() * 14)).toString(),
+    certificado_energetico: ['A', 'B', 'C'][Math.floor(Math.random() * 3)],
+    orientacao: ['norte', 'sul', 'este', 'oeste'][Math.floor(Math.random() * 4)],
+    garagem: Math.random() > 0.3,
+    elevador: Math.random() > 0.4,
+    varanda: Math.random() > 0.2,
+    terraco: Math.random() > 0.7,
+    jardim: Math.random() > 0.6,
+    piscina: Math.random() > 0.8,
+    ar_condicionado: Math.random() > 0.3,
+    aquecimento: Math.random() > 0.2,
+    lareira: Math.random() > 0.7,
+    alarme: Math.random() > 0.4,
+    portao_automatico: Math.random() > 0.5,
+    internet: true,
+    tv_cabo: Math.random() > 0.3,
+    lugares_garagem: Math.random() > 0.5 ? '1' : '2',
+    tipo_garagem: ['coberta', 'descoberta', 'box'][Math.floor(Math.random() * 3)],
+    observacoes: 'Propriedade em excelente estado de conservação, com acabamentos de qualidade e localização privilegiada.',
+    disponibilidade: 'imediata',
+    tipo_negocio: 'venda',
+    comissao: (2.5 + Math.random() * 2).toFixed(1),
+    contacto_visitas: '+351 912 345 678',
+    palavras_chave: 'apartamento, lisboa, moderno, garagem, elevador, varanda',
+    destaque: Math.random() > 0.5,
+    urgente: Math.random() > 0.8
+  };
+};
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,61 +125,8 @@ export default function CadastrarImovelPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [images, setImages] = useState<ImageFile[]>([]);
 
-  // Dados do formulário
-  const [formData, setFormData] = useState({
-    // Informações básicas
-    titulo: '',
-    descricao: '',
-    preco: '',
-    area: '',
-    area_terreno: '',
-    quartos: '',
-    banheiros: '',
-    localizacao: '',
-    endereco: '',
-    codigo_postal: '',
-    cidade: '',
-    distrito: '',
-    pais: 'Portugal',
-    
-    // Tipo e características
-    tipo_imovel: 'apartamento',
-    estado: 'excelente',
-    ano_construcao: '',
-    certificado_energetico: '',
-    orientacao: '',
-    
-    // Características específicas
-    garagem: false,
-    elevador: false,
-    varanda: false,
-    terraco: false,
-    jardim: false,
-    piscina: false,
-    ar_condicionado: false,
-    aquecimento: false,
-    lareira: false,
-    alarme: false,
-    portao_automatico: false,
-    internet: false,
-    tv_cabo: false,
-    
-    // Detalhes da garagem
-    lugares_garagem: '',
-    tipo_garagem: '',
-    
-    // Informações adicionais
-    observacoes: '',
-    disponibilidade: 'imediata',
-    tipo_negocio: 'venda',
-    comissao: '',
-    contacto_visitas: '',
-    
-    // SEO e marketing
-    palavras_chave: '',
-    destaque: false,
-    urgente: false
-  });
+  // Dados do formulário (preenchido com dados fictícios aleatórios para teste)
+  const [formData, setFormData] = useState(() => generateFakeData());
 
   useEffect(() => {
     setIsLoading(false);
@@ -177,8 +209,8 @@ export default function CadastrarImovelPage() {
     if (!formData.cidade.trim()) newErrors.cidade = 'Cidade é obrigatória';
     if (!formData.codigo_postal.trim()) newErrors.codigo_postal = 'Código postal é obrigatório';
 
-    // Validação de imagens
-    if (images.length === 0) newErrors.images = 'Pelo menos uma imagem é obrigatória';
+    // Validação de imagens (temporariamente desabilitada)
+    // if (images.length === 0) newErrors.images = 'Pelo menos uma imagem é obrigatória';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -187,28 +219,92 @@ export default function CadastrarImovelPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    console.log('🔍 Iniciando validação do formulário...');
+    console.log('📋 Dados atuais:', formData);
+    console.log('🖼️ Imagens:', images);
+    
+    // Validação manual simples
+    if (!formData.titulo.trim()) {
+      setMessage({ type: 'error', text: 'Título é obrigatório' });
       return;
     }
-
+    
+    if (!formData.preco.trim()) {
+      setMessage({ type: 'error', text: 'Preço é obrigatório' });
+      return;
+    }
+    
+    if (!formData.area.trim()) {
+      setMessage({ type: 'error', text: 'Área é obrigatória' });
+      return;
+    }
+    
+    if (!formData.endereco.trim()) {
+      setMessage({ type: 'error', text: 'Endereço é obrigatório' });
+      return;
+    }
+    
+    if (!formData.cidade.trim()) {
+      setMessage({ type: 'error', text: 'Cidade é obrigatória' });
+      return;
+    }
+    
+    if (!formData.distrito.trim()) {
+      setMessage({ type: 'error', text: 'Distrito é obrigatório' });
+      return;
+    }
+    
+    console.log('✅ Validação passou, iniciando envio...');
     setIsSaving(true);
     setMessage(null);
 
     try {
-      // Simular upload de imagens
-      const imageData = images.map(img => ({
-        id: img.id,
-        isMain: img.isMain,
-        name: img.file.name,
-        size: img.file.size,
-        type: img.file.type
-      }));
+      console.log('📝 Enviando dados do imóvel:', formData);
 
-      console.log('Dados do imóvel:', formData);
-      console.log('Imagens:', imageData);
+      // Obter token de autenticação
+      const accessToken = localStorage.getItem('access_token');
+      console.log('🔑 Token encontrado:', accessToken ? accessToken.substring(0, 20) + '...' : 'NENHUM');
+      
+      if (!accessToken) {
+        setMessage({ type: 'error', text: 'Token de autenticação não encontrado. Faça login novamente.' });
+        return;
+      }
 
-      // Simular envio para API
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Testar autenticação primeiro
+      console.log('🧪 Testando autenticação...');
+      const testResponse = await fetch('/api/debug/test-token-auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+      
+      const testResult = await testResponse.json();
+      console.log('🧪 Resultado do teste:', testResult);
+      
+      if (!testResponse.ok) {
+        throw new Error(testResult.error || 'Erro no teste de autenticação');
+      }
+
+      // Enviar dados para a API
+      console.log('📝 Enviando dados para cadastro...');
+      const response = await fetch('/api/imoveis/cadastrar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Erro ao cadastrar imóvel');
+      }
+
+      console.log('✅ Imóvel cadastrado:', result);
       
       setMessage({ 
         type: 'success', 
@@ -221,10 +317,10 @@ export default function CadastrarImovelPage() {
       }, 2000);
       
     } catch (error) {
-      console.error('Erro ao cadastrar imóvel:', error);
+      console.error('❌ Erro ao cadastrar imóvel:', error);
       setMessage({ 
         type: 'error', 
-        text: 'Erro ao cadastrar imóvel. Tente novamente.' 
+        text: error instanceof Error ? error.message : 'Erro ao cadastrar imóvel. Tente novamente.' 
       });
     } finally {
       setIsSaving(false);
@@ -254,6 +350,19 @@ export default function CadastrarImovelPage() {
         />
       ) : undefined}
     >
+      {/* Aviso temporário */}
+      <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <div className="flex items-center">
+          <div className="text-yellow-600 mr-3">⚠️</div>
+          <div>
+            <p className="text-yellow-800 font-medium">Modo de Teste Ativo</p>
+            <p className="text-yellow-700 text-sm">
+              O formulário está preenchido com dados fictícios para facilitar os testes. 
+              Use o botão "🎲 Gerar Dados Fictícios" para gerar novos dados aleatórios.
+            </p>
+          </div>
+        </div>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Informações Básicas */}
         <Section title="Informações Básicas">
@@ -952,6 +1061,14 @@ export default function CadastrarImovelPage() {
 
         {/* Botões de Ação */}
         <div className="flex space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setFormData(generateFakeData())}
+            className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border-yellow-300"
+          >
+            🎲 Gerar Dados Fictícios
+          </Button>
           <Button
             type="submit"
             disabled={isSaving}

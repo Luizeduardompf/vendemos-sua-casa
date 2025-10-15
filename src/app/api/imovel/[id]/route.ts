@@ -129,7 +129,10 @@ export async function GET(
       orientacao: imovel.orientacao,
       descricao: imovel.descricao || '',
       observacoes: imovel.condicoes_pagamento || '',
-      status: imovel.status === 'publicado' ? 'ativo' : imovel.status,
+        status: imovel.status === 'publicado' ? 'publicado' :
+                imovel.status === 'pendente' ? 'pendente' :
+                imovel.status === 'inativo' ? 'inativo' :
+                imovel.status === 'finalizado' ? 'finalizado' : 'pendente',
       dataCadastro: imovel.created_at,
       visualizacoes: imovel.visualizacoes || 0,
       favoritos: imovel.favoritos || 0,

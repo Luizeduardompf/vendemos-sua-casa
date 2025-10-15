@@ -89,7 +89,7 @@ export async function POST() {
           quartos: Math.floor(Math.random() * 4) + 1, // 1 a 5 quartos
           banheiros: Math.floor(Math.random() * 3) + 1, // 1 a 4 banheiros
           localizacao: ['Lisboa', 'Porto', 'Cascais', 'Sintra', 'Oeiras'][Math.floor(Math.random() * 5)],
-          status: 'ativo',
+          status: 'publicado',
           visualizacoes: Math.floor(Math.random() * 1000),
           favoritos: Math.floor(Math.random() * 100)
         };

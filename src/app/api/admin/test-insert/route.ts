@@ -44,7 +44,7 @@ export async function POST() {
       quartos: 2,
       banheiros: 1,
       localizacao: 'Lisboa',
-      status: 'ativo',
+      status: 'publicado',
       visualizacoes: 0,
       favoritos: 0
     };

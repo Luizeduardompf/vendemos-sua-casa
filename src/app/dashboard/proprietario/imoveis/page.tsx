@@ -8,6 +8,7 @@ import { ImoveisCompactTable } from '@/components/dashboard/imoveis-compact-tabl
 import { ImoveisFilters } from '@/components/dashboard/imoveis-filters';
 import { Button } from '@/components/ui/button';
 import { Message } from '@/components/ui/message';
+import { ConfirmationModal } from '@/components/ui/confirmation-modal';
 import { 
   Plus, 
   Grid3X3, 
@@ -16,7 +17,9 @@ import {
   TrendingUp,
   Eye,
   Star,
-  AlertCircle
+  AlertCircle,
+  FileText,
+  Calendar
 } from 'lucide-react';
 
 // Interface para imóvel
@@ -30,7 +33,7 @@ interface Imovel {
   quartos: number;
   banheiros: number;
   localizacao: string;
-  status: 'ativo' | 'inativo' | 'vendido' | 'alugado' | 'pendente';
+  status: 'publicado' | 'pendente' | 'inativo' | 'finalizado';
   dataCadastro: string;
   visualizacoes: number;
   favoritos: number;
@@ -70,6 +73,23 @@ export default function ImoveisPage() {
     sortOrder: 'desc'
   });
 
+  // Estado do modal de confirmação
+  const [confirmationModal, setConfirmationModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'warning' | 'success' | 'danger';
+    confirmText: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'warning',
+    confirmText: 'Confirmar',
+    onConfirm: () => {}
+  });
+
   // Carregar dados da API
   const loadImoveis = async () => {
     try {
@@ -78,21 +98,63 @@ export default function ImoveisPage() {
       // Obter token do localStorage
       const token = localStorage.getItem('access_token');
       
+      if (!token) {
+        throw new Error('Token de autenticação não encontrado. Faça login novamente.');
+      }
+      
+      // Verificar se o token ainda é válido
+      const verifyResponse = await fetch('/api/auth/verify-token', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!verifyResponse.ok) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        throw new Error('Sessão expirada. Faça login novamente.');
+      }
+      
       const response = await fetch('/api/imoveis', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
+      
+      console.log('📡 Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
+        console.error('❌ Erro na resposta:', errorData);
+        
+        if (response.status === 401) {
+          // Token expirado
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          throw new Error('Sessão expirada. Faça login novamente.');
+        }
+        
+        if (response.status === 404) {
+          // Usuário não encontrado - pode ser primeira vez, não limpar token
+          console.warn('⚠️ Usuário não encontrado no banco, mas token é válido');
+          setMessage({
+            type: 'info',
+            text: 'Nenhum imóvel encontrado. Cadastre seu primeiro imóvel!'
+          });
+          setImoveis([]);
+          return;
+        }
+        
+        throw new Error(errorData.error || 'Erro ao carregar imóveis');
+      }
+      
       const data = await response.json();
       console.log('🔍 Dados recebidos da API:', data);
       console.log('🔍 Primeiro imóvel:', data.imoveis?.[0]);
       console.log('🔍 Primeiro imóvel - imovel_id:', data.imoveis?.[0]?.imovel_id);
       console.log('🔍 Primeiro imóvel - slug:', data.imoveis?.[0]?.slug);
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao carregar imóveis');
-      }
 
       setImoveis(data.imoveis || []);
       setMessage(null);
@@ -100,7 +162,7 @@ export default function ImoveisPage() {
       console.error('Erro ao carregar imóveis:', error);
       setMessage({
         type: 'error',
-        text: 'Erro ao carregar imóveis. Tente novamente.'
+        text: error instanceof Error ? error.message : 'Erro ao carregar imóveis. Tente novamente.'
       });
     } finally {
       setIsLoading(false);
@@ -213,18 +275,84 @@ export default function ImoveisPage() {
     console.log('Editar imóvel:', id);
   };
 
-  const handleDeleteImovel = (id: string) => {
-    if (confirm('Tem certeza que deseja excluir este imóvel?')) {
-      setImoveis(prev => prev.filter(imovel => imovel.id !== id));
-      setMessage({ type: 'success', text: 'Imóvel excluído com sucesso!' });
-      setTimeout(() => setMessage(null), 3000);
+  const handleInactivateImovel = async (id: string) => {
+    const imovel = imoveis.find(i => i.id === id);
+    if (!imovel) return;
+    
+    // Imóveis pendentes não podem ter status alterado
+    if (imovel.status === 'pendente') {
+      setMessage({ type: 'error', text: 'Imóveis pendentes não podem ter o status alterado' });
+      setTimeout(() => setMessage(null), 5000);
+      return;
     }
+    
+    // Determinar novo status baseado nas regras
+    let newStatus: string;
+    let action: string;
+    
+    if (imovel.status === 'publicado') {
+      newStatus = 'inativo';
+      action = 'inativar';
+    } else if (imovel.status === 'inativo') {
+      newStatus = 'publicado';
+      action = 'publicar';
+    } else {
+      // Status não reconhecido ou não permite mudança
+      setMessage({ type: 'error', text: 'Este status não permite alteração' });
+      setTimeout(() => setMessage(null), 5000);
+      return;
+    }
+    
+    // Mostrar modal de confirmação
+    setConfirmationModal({
+      isOpen: true,
+      title: `${action.charAt(0).toUpperCase() + action.slice(1)} Imóvel`,
+      message: `Tem certeza que deseja ${action} o imóvel "${imovel.titulo}"?`,
+      type: action === 'inativar' ? 'warning' : 'success',
+      confirmText: action.charAt(0).toUpperCase() + action.slice(1),
+      onConfirm: async () => {
+        setConfirmationModal(prev => ({ ...prev, isOpen: false }));
+        
+        try {
+          const response = await fetch(`/api/imovel/${id}/change-status`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            },
+            body: JSON.stringify({
+              status_novo: newStatus,
+              motivo: `${action.charAt(0).toUpperCase() + action.slice(1)} do imóvel`,
+              observacoes: `Imóvel ${action} via dashboard`
+            })
+          });
+          
+          if (response.ok) {
+            setImoveis(prev => prev.map(imovel => 
+              imovel.id === id 
+                ? { ...imovel, status: newStatus as any }
+                : imovel
+            ));
+            setMessage({ type: 'success', text: `Imóvel ${action} com sucesso!` });
+            setTimeout(() => setMessage(null), 3000);
+          } else {
+            const error = await response.json();
+            setMessage({ type: 'error', text: `Erro ao ${action} imóvel: ${error.error}` });
+            setTimeout(() => setMessage(null), 5000);
+          }
+        } catch (error) {
+          console.error('Erro ao alterar status:', error);
+          setMessage({ type: 'error', text: `Erro ao ${action} imóvel` });
+          setTimeout(() => setMessage(null), 5000);
+        }
+      }
+    });
   };
 
   const handleToggleStatus = (id: string) => {
     setImoveis(prev => prev.map(imovel => 
       imovel.id === id 
-        ? { ...imovel, status: imovel.status === 'ativo' ? 'inativo' : 'ativo' }
+        ? { ...imovel, status: imovel.status === 'publicado' ? 'pendente' : 'publicado' }
         : imovel
     ));
     setMessage({ type: 'success', text: 'Status do imóvel alterado com sucesso!' });
@@ -238,10 +366,11 @@ export default function ImoveisPage() {
   // Estatísticas
   const stats = {
     total: imoveis.length,
-    ativos: imoveis.filter(i => i.status === 'ativo').length,
-    vendidos: imoveis.filter(i => i.status === 'vendido').length,
+    publicados: imoveis.filter(i => i.status === 'publicado').length,
+    pendentes: imoveis.filter(i => i.status === 'pendente').length,
+    inativos: imoveis.filter(i => i.status === 'inativo').length,
+    finalizados: imoveis.filter(i => i.status === 'finalizado').length,
     totalVisualizacoes: imoveis.reduce((sum, i) => sum + i.visualizacoes, 0),
-    totalFavoritos: imoveis.reduce((sum, i) => sum + i.favoritos, 0)
   };
 
   return (
@@ -254,43 +383,53 @@ export default function ImoveisPage() {
     >
       {/* Estatísticas */}
       <Section title="Visão Geral">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+        <div className="grid grid-cols-5 gap-4">
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
             <div className="flex items-center">
-              <Home className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total</p>
-                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{stats.total}</p>
+              <Home className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <div className="ml-2">
+                <p className="text-xs font-medium text-blue-600 dark:text-blue-400">Total</p>
+                <p className="text-xl font-bold text-blue-900 dark:text-blue-100">{stats.total}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+          <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
             <div className="flex items-center">
-              <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-400" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-green-600 dark:text-green-400">Ativos</p>
-                <p className="text-2xl font-bold text-green-900 dark:text-green-100">{stats.ativos}</p>
+              <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <div className="ml-2">
+                <p className="text-xs font-medium text-green-600 dark:text-green-400">Ativos</p>
+                <p className="text-xl font-bold text-green-900 dark:text-green-100">{stats.ativos}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+          <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg">
             <div className="flex items-center">
-              <Eye className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Visualizações</p>
-                <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{stats.totalVisualizacoes}</p>
+              <Eye className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              <div className="ml-2">
+                <p className="text-xs font-medium text-purple-600 dark:text-purple-400">Visualizações</p>
+                <p className="text-xl font-bold text-purple-900 dark:text-purple-100">{stats.totalVisualizacoes}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
             <div className="flex items-center">
-              <Star className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-yellow-600 dark:text-yellow-400">Favoritos</p>
-                <p className="text-2xl font-bold text-yellow-900 dark:text-yellow-100">{stats.totalFavoritos}</p>
+              <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <div className="ml-2">
+                <p className="text-xs font-medium text-blue-600 dark:text-blue-400">Propostas</p>
+                <p className="text-xl font-bold text-blue-900 dark:text-blue-100">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+            <div className="flex items-center">
+              <Calendar className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <div className="ml-2">
+                <p className="text-xs font-medium text-green-600 dark:text-green-400">Agendamentos</p>
+                <p className="text-xl font-bold text-green-900 dark:text-green-100">0</p>
               </div>
             </div>
           </div>
@@ -378,7 +517,7 @@ export default function ImoveisPage() {
                   imovel={imovel}
                   onView={handleViewImovel}
                   onEdit={handleEditImovel}
-                  onDelete={handleDeleteImovel}
+                  onInactivate={handleInactivateImovel}
                   onToggleStatus={handleToggleStatus}
                 />
               );
@@ -389,11 +528,23 @@ export default function ImoveisPage() {
             imoveis={filteredImoveis}
             onView={handleViewImovel}
             onEdit={handleEditImovel}
-            onDelete={handleDeleteImovel}
+            onInactivate={handleInactivateImovel}
             onToggleStatus={handleToggleStatus}
           />
         )}
       </Section>
+
+      {/* Modal de confirmação */}
+      <ConfirmationModal
+        isOpen={confirmationModal.isOpen}
+        onClose={() => setConfirmationModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmationModal.onConfirm}
+        title={confirmationModal.title}
+        message={confirmationModal.message}
+        type={confirmationModal.type}
+        confirmText={confirmationModal.confirmText}
+        cancelText="Cancelar"
+      />
     </PageLayout>
   );
 }

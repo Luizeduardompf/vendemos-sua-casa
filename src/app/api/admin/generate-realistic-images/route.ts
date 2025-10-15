@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
-// Banco de imagens realistas por tipo de imóvel
+// Banco de imagens realistas por tipo de imóvel - EXPANDIDO
 const IMAGENS_POR_TIPO = {
   apartamento: {
     exterior: [
@@ -14,6 +14,16 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80',
         titulo: 'Vista do Edifício',
         descricao: 'Vista panorâmica do edifício e arredores'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&q=80',
+        titulo: 'Entrada Principal',
+        descricao: 'Entrada elegante com portaria e receção'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop&q=80',
+        titulo: 'Vista da Rua',
+        descricao: 'Vista da rua mostrando a localização privilegiada'
       }
     ],
     interior: [
@@ -36,6 +46,21 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1622372738946-62e02505feb3?w=800&h=600&fit=crop&q=80',
         titulo: 'Casa de Banho',
         descricao: 'Casa de banho completa com banheira e chuveiro'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&q=80',
+        titulo: 'Quarto Secundário',
+        descricao: 'Quarto secundário com roupeiro embutido'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop&q=80',
+        titulo: 'Hall de Entrada',
+        descricao: 'Hall de entrada amplo e bem iluminado'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1631889993952-431cc8e4d75e?w=800&h=600&fit=crop&q=80',
+        titulo: 'Escritório',
+        descricao: 'Escritório privado com vista para a cidade'
       }
     ],
     varanda: [
@@ -43,6 +68,18 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80',
         titulo: 'Varanda Principal',
         descricao: 'Varanda privada com vista para a cidade'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop&q=80',
+        titulo: 'Terraço',
+        descricao: 'Terraço amplo com área de lazer'
+      }
+    ],
+    garagem: [
+      {
+        url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80',
+        titulo: 'Garagem',
+        descricao: 'Garagem coberta para 1-2 carros'
       }
     ]
   },
@@ -63,6 +100,16 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop&q=80',
         titulo: 'Jardim Traseiro',
         descricao: 'Jardim privado com área de lazer e piscina'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop&q=80',
+        titulo: 'Entrada Principal',
+        descricao: 'Entrada principal com portão e caminho de acesso'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80',
+        titulo: 'Vista Frontal',
+        descricao: 'Vista frontal da casa com jardim e estacionamento'
       }
     ],
     interior: [
@@ -90,6 +137,16 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&q=80',
         titulo: 'Escritório',
         descricao: 'Escritório privado com vista para o jardim'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop&q=80',
+        titulo: 'Quarto de Hóspedes',
+        descricao: 'Quarto de hóspedes com roupeiro e vista para o jardim'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1631889993952-431cc8e4d75e?w=800&h=600&fit=crop&q=80',
+        titulo: 'Sala de Jantar',
+        descricao: 'Sala de jantar formal com mesa para 8 pessoas'
       }
     ],
     garagem: [
@@ -97,6 +154,18 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80',
         titulo: 'Garagem',
         descricao: 'Garagem para 2 carros com portão automático'
+      }
+    ],
+    jardim: [
+      {
+        url: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop&q=80',
+        titulo: 'Jardim Principal',
+        descricao: 'Jardim privado com área de lazer e piscina'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80',
+        titulo: 'Terraço',
+        descricao: 'Terraço com churrasqueira e área de convívio'
       }
     ]
   },
@@ -117,6 +186,33 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&q=80',
         titulo: 'Vista Panorâmica',
         descricao: 'Vista panorâmica do terreno e arredores'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&q=80',
+        titulo: 'Acesso Principal',
+        descricao: 'Acesso principal ao terreno com estrada pavimentada'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&q=80',
+        titulo: 'Limites do Terreno',
+        descricao: 'Limites bem definidos do terreno com cercas naturais'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&q=80',
+        titulo: 'Vista Aérea',
+        descricao: 'Vista aérea mostrando a dimensão e localização do terreno'
+      }
+    ],
+    infraestrutura: [
+      {
+        url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&q=80',
+        titulo: 'Rede Elétrica',
+        descricao: 'Acesso à rede elétrica próxima ao terreno'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&q=80',
+        titulo: 'Abastecimento de Água',
+        descricao: 'Conexão à rede de abastecimento de água'
       }
     ]
   },
@@ -132,6 +228,16 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop&q=80',
         titulo: 'Vista Lateral',
         descricao: 'Vista lateral mostrando a estrutura completa da moradia'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop&q=80',
+        titulo: 'Entrada Principal',
+        descricao: 'Entrada principal com características tradicionais'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=600&fit=crop&q=80',
+        titulo: 'Jardim Tradicional',
+        descricao: 'Jardim com elementos tradicionais portugueses'
       }
     ],
     interior: [
@@ -149,6 +255,16 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1631889993952-431cc8e4d75e?w=800&h=600&fit=crop&q=80',
         titulo: 'Quarto Principal',
         descricao: 'Quarto principal com roupeiro embutido e varanda'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1622372738946-62e02505feb3?w=800&h=600&fit=crop&q=80',
+        titulo: 'Casa de Banho',
+        descricao: 'Casa de banho com acabamentos tradicionais'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&q=80',
+        titulo: 'Sala de Jantar',
+        descricao: 'Sala de jantar com mesa de madeira tradicional'
       }
     ]
   },
@@ -164,6 +280,16 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
         titulo: 'Entrada Principal',
         descricao: 'Entrada principal com fácil acesso para clientes'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
+        titulo: 'Vitrine',
+        descricao: 'Vitrine atrativa com produtos em destaque'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
+        titulo: 'Vista da Rua',
+        descricao: 'Vista da rua mostrando a localização comercial'
       }
     ],
     interior: [
@@ -181,6 +307,16 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
         titulo: 'Área de Estoque',
         descricao: 'Área de estoque organizada e acessível'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
+        titulo: 'Área de Exposição',
+        descricao: 'Área de exposição de produtos com iluminação adequada'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
+        titulo: 'Casa de Banho',
+        descricao: 'Casa de banho para funcionários e clientes'
       }
     ]
   },
@@ -191,6 +327,16 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&q=80',
         titulo: 'Fachada do Escritório',
         descricao: 'Edifício comercial moderno com fachada de vidro'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&q=80',
+        titulo: 'Entrada Principal',
+        descricao: 'Entrada principal com receção e segurança'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&q=80',
+        titulo: 'Vista do Edifício',
+        descricao: 'Vista do edifício comercial moderno'
       }
     ],
     interior: [
@@ -208,12 +354,27 @@ const IMAGENS_POR_TIPO = {
         url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&q=80',
         titulo: 'Recepção',
         descricao: 'Recepção moderna e acolhedora'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&q=80',
+        titulo: 'Gabinete Privado',
+        descricao: 'Gabinete privado com vista para a cidade'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&q=80',
+        titulo: 'Área de Descanso',
+        descricao: 'Área de descanso para funcionários'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&q=80',
+        titulo: 'Casa de Banho',
+        descricao: 'Casa de banho moderna para funcionários'
       }
     ]
   }
 };
 
-// Função para obter imagens aleatórias de um tipo específico
+// Função para obter imagens aleatórias de um tipo específico - MELHORADA
 function getImagensAleatorias(tipoImovel: string, quantidade: number = 6) {
   const imagensTipo = IMAGENS_POR_TIPO[tipoImovel as keyof typeof IMAGENS_POR_TIPO];
   
@@ -241,9 +402,43 @@ function getImagensAleatorias(tipoImovel: string, quantidade: number = 6) {
     });
   });
   
-  // Embaralhar e pegar a quantidade solicitada
-  const imagensEmbaralhadas = todasImagens.sort(() => Math.random() - 0.5);
-  return imagensEmbaralhadas.slice(0, Math.min(quantidade, 12));
+  // Lógica inteligente de seleção
+  const imagensSelecionadas = [];
+  
+  // 1. SEMPRE incluir pelo menos 1 imagem exterior (se disponível)
+  const imagensExterior = todasImagens.filter(img => img.categoria === 'exterior');
+  if (imagensExterior.length > 0) {
+    imagensSelecionadas.push(imagensExterior[Math.floor(Math.random() * imagensExterior.length)]);
+  }
+  
+  // 2. SEMPRE incluir pelo menos 1 imagem interior (se disponível)
+  const imagensInterior = todasImagens.filter(img => img.categoria === 'interior');
+  if (imagensInterior.length > 0) {
+    imagensSelecionadas.push(imagensInterior[Math.floor(Math.random() * imagensInterior.length)]);
+  }
+  
+  // 3. Preencher o resto com imagens aleatórias de qualquer categoria
+  const imagensRestantes = todasImagens.filter(img => 
+    !imagensSelecionadas.some(sel => sel.url === img.url)
+  );
+  
+  // Embaralhar imagens restantes
+  const imagensEmbaralhadas = imagensRestantes.sort(() => Math.random() - 0.5);
+  
+  // Adicionar imagens até atingir a quantidade desejada
+  const imagensAdicionais = imagensEmbaralhadas.slice(0, Math.max(0, quantidade - imagensSelecionadas.length));
+  imagensSelecionadas.push(...imagensAdicionais);
+  
+  // Garantir que temos pelo menos 3 imagens
+  if (imagensSelecionadas.length < 3 && todasImagens.length >= 3) {
+    const imagensExtras = todasImagens
+      .filter(img => !imagensSelecionadas.some(sel => sel.url === img.url))
+      .slice(0, 3 - imagensSelecionadas.length);
+    imagensSelecionadas.push(...imagensExtras);
+  }
+  
+  // Limitar a 12 imagens máximo
+  return imagensSelecionadas.slice(0, Math.min(quantidade, 12));
 }
 
 export async function POST() {
@@ -279,7 +474,30 @@ export async function POST() {
     // Para cada imóvel, gerar imagens realistas
     for (const imovel of imoveis) {
       const tipoImovel = imovel.tipo_imovel || 'apartamento';
-      const quantidadeImagens = Math.floor(Math.random() * 10) + 3; // 3-12 imagens
+      
+      // Quantidade inteligente baseada no tipo de imóvel
+      let quantidadeImagens;
+      switch (tipoImovel) {
+        case 'terreno':
+          quantidadeImagens = Math.floor(Math.random() * 4) + 3; // 3-6 imagens
+          break;
+        case 'loja':
+        case 'escritorio':
+          quantidadeImagens = Math.floor(Math.random() * 6) + 4; // 4-9 imagens
+          break;
+        case 'apartamento':
+          quantidadeImagens = Math.floor(Math.random() * 8) + 4; // 4-11 imagens
+          break;
+        case 'casa':
+        case 'moradia':
+          quantidadeImagens = Math.floor(Math.random() * 9) + 5; // 5-13 imagens
+          break;
+        default:
+          quantidadeImagens = Math.floor(Math.random() * 7) + 4; // 4-10 imagens
+      }
+      
+      // Garantir mínimo de 3 e máximo de 12
+      quantidadeImagens = Math.max(3, Math.min(12, quantidadeImagens));
       
       const imagens = getImagensAleatorias(tipoImovel, quantidadeImagens);
       

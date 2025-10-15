@@ -78,11 +78,10 @@ export function ImoveisFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
-            <SelectItem value="ativo">Ativo</SelectItem>
-            <SelectItem value="inativo">Inativo</SelectItem>
-            <SelectItem value="vendido">Vendido</SelectItem>
-            <SelectItem value="alugado">Alugado</SelectItem>
+            <SelectItem value="publicado">Publicado</SelectItem>
             <SelectItem value="pendente">Pendente</SelectItem>
+            <SelectItem value="inativo">Inativo</SelectItem>
+            <SelectItem value="finalizado">Finalizado</SelectItem>
           </SelectContent>
         </Select>
 
