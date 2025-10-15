@@ -92,6 +92,9 @@ interface ImovelData {
     url: string;
     isMain: boolean;
     alt: string;
+    titulo: string;
+    descricao: string;
+    categoria: string;
   }>;
   
   // Informações do proprietário/agente
@@ -407,17 +410,38 @@ export default function ImovelDetailPage() {
             {/* Galeria de imagens */}
             <Card className="overflow-hidden">
               <div className="relative">
-                <div className="aspect-video bg-gray-100 dark:bg-gray-800">
+                <div className="aspect-video bg-gray-100 dark:bg-gray-800 relative">
                   {imovel.imagens && imovel.imagens.length > 0 ? (
-                    <img
-                      src={imovel.imagens[currentImageIndex]?.url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop'}
-                      alt={imovel.imagens[currentImageIndex]?.alt || 'Imagem do imóvel'}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        console.log('❌ Erro ao carregar imagem do imóvel:', imovel.imagens[currentImageIndex]?.url);
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop';
-                      }}
-                    />
+                    <>
+                      <img
+                        src={imovel.imagens[currentImageIndex]?.url || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop'}
+                        alt={imovel.imagens[currentImageIndex]?.alt || 'Imagem do imóvel'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.log('❌ Erro ao carregar imagem do imóvel:', imovel.imagens[currentImageIndex]?.url);
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop';
+                        }}
+                      />
+                      {/* Informações da imagem atual */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                        <div className="text-white">
+                          <h3 className="text-lg font-semibold">
+                            {imovel.imagens[currentImageIndex]?.titulo || `Imagem ${currentImageIndex + 1}`}
+                          </h3>
+                          <p className="text-sm opacity-90">
+                            {imovel.imagens[currentImageIndex]?.descricao || `Imagem ${currentImageIndex + 1} do imóvel`}
+                          </p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                              {imovel.imagens[currentImageIndex]?.categoria || 'Geral'}
+                            </span>
+                            <span className="text-xs opacity-75">
+                              {currentImageIndex + 1} de {imovel.imagens.length}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-500">
                       <span>Nenhuma imagem disponível</span>
@@ -497,26 +521,44 @@ export default function ImovelDetailPage() {
                 </div>
               </div>
 
-              {/* Miniaturas */}
+              {/* Miniaturas com títulos */}
               <div className="p-4">
-                <div className="flex space-x-2 overflow-x-auto">
-                  {imovel.imagens.map((imagem, index) => (
-                    <button
-                      key={imagem.id}
-                      onClick={() => setCurrentImageIndex(index)}
-                      className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 ${
-                        index === currentImageIndex 
-                          ? 'border-primary' 
-                          : 'border-gray-200 dark:border-gray-700'
-                      }`}
-                    >
-                      <img
-                        src={imagem.url}
-                        alt={imagem.alt}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Galeria de Imagens ({imovel.imagens.length})
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {imovel.imagens.map((imagem, index) => (
+                      <div
+                        key={imagem.id}
+                        className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                          index === currentImageIndex 
+                            ? 'border-primary ring-2 ring-primary/20' 
+                            : 'border-gray-200 dark:border-gray-700 hover:border-primary/50'
+                        }`}
+                        onClick={() => setCurrentImageIndex(index)}
+                      >
+                        <div className="aspect-video">
+                          <img
+                            src={imagem.url}
+                            alt={imagem.alt}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-end">
+                          <div className="p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <p className="text-xs font-medium truncate">{imagem.titulo}</p>
+                            <p className="text-xs opacity-90 truncate">{imagem.categoria}</p>
+                          </div>
+                        </div>
+                        {index === currentImageIndex && (
+                          <div className="absolute top-2 right-2">
+                            <div className="w-2 h-2 bg-primary rounded-full"></div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </Card>

@@ -84,25 +84,8 @@ export async function POST() {
           continue;
         }
         
-        // Inserir fotos
-        const fotos = [
-          `https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80&auto=format&ixlib=rb-4.0.3&ixid=${imovelId}-1`,
-          `https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop&q=80&auto=format&ixlib=rb-4.0.3&ixid=${imovelId}-2`,
-          `https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80&auto=format&ixlib=rb-4.0.3&ixid=${imovelId}-3`
-        ];
-        
-        for (let j = 0; j < fotos.length; j++) {
-          await supabase
-            .from('imoveis_media')
-            .insert({
-              imovel_id: imovelInserido.id,
-              url_publica: fotos[j],
-              principal: j === 0,
-              ordem: j + 1,
-              nome_arquivo: `foto-${j + 1}.jpg`,
-              caminho_arquivo: `/imoveis/${imovelInserido.id}/foto-${j + 1}.jpg`
-            });
-        }
+        // As imagens serão inseridas pela API de imagens realistas
+        // Removido o código de inserção de imagens básicas
         
         imoveisDoUsuario.push({
           id: imovelInserido.id,

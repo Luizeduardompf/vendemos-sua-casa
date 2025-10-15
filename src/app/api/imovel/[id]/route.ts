@@ -84,7 +84,9 @@ export async function GET(
           url_publica,
           principal,
           ordem,
-          descricao
+          descricao,
+          categoria,
+          nome_arquivo
         ),
         imoveis_amenities!left(
           id,
@@ -159,16 +161,29 @@ export async function GET(
       tipo_garagem: 'coberta',
       
       // Imagens
-      imagens: imovel.imoveis_media?.map((media: { id: string; url_publica?: string; principal?: boolean; descricao?: string }, index: number) => ({
+      imagens: imovel.imoveis_media?.map((media: { 
+        id: string; 
+        url_publica?: string; 
+        principal?: boolean; 
+        descricao?: string;
+        categoria?: string;
+        nome_arquivo?: string;
+      }, index: number) => ({
         id: media.id,
         url: media.url_publica || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop',
         isMain: media.principal || index === 0,
-        alt: media.descricao || `Imagem ${index + 1} do imóvel`
+        alt: media.descricao || `Imagem ${index + 1} do imóvel`,
+        titulo: media.categoria ? `${media.categoria.charAt(0).toUpperCase() + media.categoria.slice(1)}` : `Imagem ${index + 1}`,
+        descricao: media.descricao || `Imagem ${index + 1} do imóvel`,
+        categoria: media.categoria || 'geral'
       })) || [{
         id: '1',
         url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop',
         isMain: true,
-        alt: 'Imagem principal do imóvel'
+        alt: 'Imagem principal do imóvel',
+        titulo: 'Imagem Principal',
+        descricao: 'Imagem principal do imóvel',
+        categoria: 'exterior'
       }],
       
       // Informações do proprietário
